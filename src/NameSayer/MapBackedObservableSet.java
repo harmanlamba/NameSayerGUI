@@ -11,6 +11,9 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.SetChangeListener;
 import javafx.beans.InvalidationListener;
 
+/**
+ * @Deprecated
+ */
 public class MapBackedObservableSet<K,V> extends HashSet<V> implements ObservableSet<V> {
 
     protected final ObservableMap<K,V> _map = FXCollections.observableHashMap();

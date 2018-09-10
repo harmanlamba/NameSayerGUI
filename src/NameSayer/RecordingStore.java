@@ -26,17 +26,17 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
-import javafx.beans.property.SimpleSetProperty;
 
 /**
  * Represents one of the recording folders.
  * The single source of truth lies here. Watches for filesystem changes, and
  * serves as a layer of indirection for all filesystem operations.
  */
-public class RecordingStore extends MapBackedObservableSet<String, Recording> {
+public class RecordingStore {
 
     private final Path _path;
     private final NameStore _nameStore;
+    private final ObservableMap<String,Recording> _recordings = FXCollections.observableHashMap();
     private Task<Void> _taskWatcher;
 
     private static final String QUALITY_FILENAME = "quality.dat";
@@ -108,22 +108,25 @@ public class RecordingStore extends MapBackedObservableSet<String, Recording> {
         if(name == null) {
             name = _nameStore.add(nameStr);
         }
-        _map.put(filename, new Recording(name, date, this));
+        Path path = _path.resolve(filename);
+        Recording recording = new Recording(name, date, path);
+        recording.qualityProperty().addListener(o -> invalidateQualities());
+        _recordings.put(filename, recording);
     }
 
     private void removeByFilename(String filename) {
         assert Platform.isFxApplicationThread();
 
         // Silently ignore recordings that don't already exist.
-        _map.remove(filename);
+        _recordings.remove(filename);
     }
 
     private synchronized void saveQualities() {
         assert !Platform.isFxApplicationThread();
 
         List<String> qualityData = new ArrayList<>();
-        for(String filename : _map.keySet()) {
-            qualityData.add(filename + "\t" + _map.get(filename).getQuality());
+        for(String filename : _recordings.keySet()) {
+            qualityData.add(filename + "\t" + _recordings.get(filename).getQuality());
         }
         try {
             Files.write(_path.resolve(QUALITY_FILENAME), qualityData,
@@ -145,7 +148,7 @@ public class RecordingStore extends MapBackedObservableSet<String, Recording> {
                     String filename = entry[0];
                     String qualityStr = entry[1];
 
-                    if(!_map.containsKey(filename)) return;
+                    if(!_recordings.containsKey(filename)) return;
 
                     Recording.Quality quality;
                     try {
@@ -155,7 +158,7 @@ public class RecordingStore extends MapBackedObservableSet<String, Recording> {
                         // TODO log.
                         return;
                     }
-                    _map.get(filename).setQuality(quality);
+                    _recordings.get(filename).setQuality(quality);
                 });
         } catch (IOException e) {
             // TODO
