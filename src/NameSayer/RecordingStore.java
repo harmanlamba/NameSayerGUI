@@ -106,7 +106,7 @@ public class RecordingStore {
 
         String nameStr = matcher.group("name");
         Name name = _nameStore.get(nameStr);
-        if(name == null) {
+        if (name == null) {
             name = _nameStore.add(nameStr);
         }
         Path path = _path.resolve(filename);
@@ -126,7 +126,7 @@ public class RecordingStore {
         assert !Platform.isFxApplicationThread();
 
         List<String> qualityData = new ArrayList<>();
-        for(String filename : _recordings.keySet()) {
+        for (String filename : _recordings.keySet()) {
             qualityData.add(filename + "\t" + _recordings.get(filename).getQuality());
         }
         try {
@@ -144,12 +144,12 @@ public class RecordingStore {
             Files.lines(_path.resolve(QUALITY_FILENAME))
                 .map(line -> line.split("\t"))
                 .forEach(entry -> {
-                    if(entry.length < 2) return;
+                    if (entry.length < 2) return;
 
                     String filename = entry[0];
                     String qualityStr = entry[1];
 
-                    if(!_recordings.containsKey(filename)) return;
+                    if (!_recordings.containsKey(filename)) return;
 
                     Recording.Quality quality;
                     try {
