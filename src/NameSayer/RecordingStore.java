@@ -25,7 +25,6 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 
 /**
  * Represents one of the recording folders.
@@ -36,6 +35,7 @@ public class RecordingStore {
 
     private final Path _path;
     private final NameStore _nameStore;
+    private final Recording.Type _type;
     private final ObservableMap<String,Recording> _recordings = FXCollections.observableHashMap();
     private Task<Void> _taskWatcher;
 
@@ -44,9 +44,10 @@ public class RecordingStore {
         Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
-    public RecordingStore(Path path, NameStore nameStore) {
+    public RecordingStore(Path path, NameStore nameStore, Recording.Type type) {
         super();
         _path = path;
+        _type = type;
         _nameStore = nameStore;
 
         try {
@@ -109,7 +110,7 @@ public class RecordingStore {
             name = _nameStore.add(nameStr);
         }
         Path path = _path.resolve(filename);
-        Recording recording = new Recording(name, date, path);
+        Recording recording = new Recording(name, date, path, _type);
         recording.qualityProperty().addListener(o -> invalidateQualities());
         _recordings.put(filename, recording);
     }
