@@ -19,16 +19,16 @@
       <RowConstraints maxHeight="120.0" minHeight="0.0" prefHeight="29.0" />
       <RowConstraints />
       <RowConstraints />
-      <RowConstraints maxHeight="-Infinity" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="-Infinity" />
    </rowConstraints>
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.hgrow="ALWAYS">
          <children>
-            <TextField prefHeight="25.0" prefWidth="451.0" promptText="Hello World" />
-            <ComboBox prefHeight="25.0" prefWidth="169.0" />
+            <TextField prefHeight="25.0" prefWidth="451.0" promptText="Hello World" HBox.hgrow="ALWAYS" />
+            <ComboBox prefHeight="25.0" prefWidth="169.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
-      <HBox prefHeight="23.0" prefWidth="307.0" spacing="100.0" GridPane.rowIndex="2">
+      <HBox prefHeight="23.0" prefWidth="307.0" spacing="100.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
          <children>
             <Label text="Label" />
             <Label layoutX="10.0" layoutY="10.0" text="Label" />
@@ -43,13 +43,14 @@
             <Insets top="5.0" />
          </padding>
       </HBox>
-      <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="528.0" spacing="10.0" GridPane.rowIndex="3">
+      <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="528.0" spacing="10.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
          <children>
             <Button minWidth="-Infinity" mnemonicParsing="false" text="Button">
                <HBox.margin>
                   <Insets left="4.0" />
                </HBox.margin>
             </Button>
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
             <Button layoutX="10.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" text="Button">
                <HBox.margin>
                   <Insets left="75.0" />
@@ -57,6 +58,7 @@
             </Button>
             <Button layoutX="62.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Button" />
             <Button layoutX="114.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" text="Button" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
             <Slider minWidth="-Infinity">
                <HBox.margin>
                   <Insets left="35.0" />
