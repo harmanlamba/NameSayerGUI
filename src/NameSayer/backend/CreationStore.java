@@ -1,4 +1,4 @@
-package NameSayer;
+package NameSayer.backend;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;

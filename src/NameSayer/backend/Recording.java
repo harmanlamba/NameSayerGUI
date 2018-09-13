@@ -1,4 +1,4 @@
-package NameSayer;
+package NameSayer.backend;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -30,7 +30,7 @@ public class Recording {
     private ObjectProperty<Quality> _quality =
         new SimpleObjectProperty<Quality>(Quality.QUALITY_UNRATED);
 
-    public Recording(Creation creation, Date date, Path path, Type type) {
+    Recording(Creation creation, Date date, Path path, Type type) {
         _creation = creation;
         _creation.addRecording(this);
         _date = date;
