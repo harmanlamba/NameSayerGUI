@@ -22,7 +22,7 @@ public class Recording {
         ATTEMPT, // From user recording.
     }
 
-    private Name _name;
+    private Creation _creation;
     private Date _date;
     private Path _path;
     private final Type _type;
@@ -30,9 +30,9 @@ public class Recording {
     private ObjectProperty<Quality> _quality =
         new SimpleObjectProperty<Quality>(Quality.QUALITY_UNRATED);
 
-    public Recording(Name name, Date date, Path path, Type type) {
-        _name = name;
-        _name.addRecording(this);
+    public Recording(Creation creation, Date date, Path path, Type type) {
+        _creation = creation;
+        _creation.addRecording(this);
         _date = date;
         _path = path;
         _type = type;

@@ -34,7 +34,7 @@ import javafx.collections.ObservableMap;
 public class RecordingStore {
 
     private final Path _path;
-    private final NameStore _nameStore;
+    private final CreationStore _creationStore;
     private final Recording.Type _type;
     private final ObservableMap<String,Recording> _recordings = FXCollections.observableHashMap();
     private Task<Void> _taskWatcher;
@@ -44,11 +44,11 @@ public class RecordingStore {
         Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
-    public RecordingStore(Path path, NameStore nameStore, Recording.Type type) {
+    public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) {
         super();
         _path = path;
         _type = type;
-        _nameStore = nameStore;
+        _creationStore = creationStore;
 
         try {
             if (Files.notExists(_path)) {
@@ -104,13 +104,13 @@ public class RecordingStore {
             return;
         }
 
-        String nameStr = matcher.group("name");
-        Name name = _nameStore.get(nameStr);
-        if (name == null) {
-            name = _nameStore.add(nameStr);
+        String name = matcher.group("name");
+        Creation creation = _creationStore.get(name);
+        if (creation == null) {
+            creation = _creationStore.add(name);
         }
         Path path = _path.resolve(filename);
-        Recording recording = new Recording(name, date, path, _type);
+        Recording recording = new Recording(creation, date, path, _type);
         recording.qualityProperty().addListener(o -> invalidateQualities());
         _recordings.put(filename, recording);
     }

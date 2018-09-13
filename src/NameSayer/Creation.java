@@ -4,13 +4,13 @@ import java.util.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-public class Name {
+public class Creation {
 
     private String _name;
     private ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
     private ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
 
-    public Name(String name) {
+    public Creation(String name) {
         _name = name;
     }
 
