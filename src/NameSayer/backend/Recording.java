@@ -32,10 +32,10 @@ public class Recording {
 
     Recording(Creation creation, Date date, Path path, Type type) {
         _creation = creation;
-        _creation.addRecording(this);
         _date = date;
         _path = path;
         _type = type;
+        _creation.addRecording(this);
     }
 
     public Date getDate() {
