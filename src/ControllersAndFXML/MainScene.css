@@ -1,0 +1,40 @@
+.root{
+   -fx-background-color: #282828;
+}
+
+#comboBox{
+    -fx-background-color: #383838;
+}
+#labelLeft{
+    -fx-text-fill: white;
+}
+
+#labelRight{
+    -fx-text-fill: white;
+}
+
+#textField {
+    -fx-text-fill: #ff0a6c;
+    -fx-prompt-text-fill: gray;
+    -fx-accent: green;
+}
+
+#Record {
+    -fx-background-color: #383838;
+}
+
+#previousButton{
+    -fx-background-color: #383838;
+}
+
+#playButton{
+    -fx-background-color: #383838;
+}
+
+#nextButton {
+    -fx-background-color: #383838;
+}
+
+#listView {
+    -fx-background-color: #383838;
+}
