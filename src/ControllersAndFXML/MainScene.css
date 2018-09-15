@@ -4,6 +4,16 @@
 
 #comboBox{
     -fx-background-color: #383838;
+    -fx-prompt-text-fill: white;
+}
+
+#comboBox .cell{
+    -fx-text-fill: white;
+    -fx-background-color: #383838;
+}
+
+#comboBox .cell:hover {
+    -fx-background-color: RED;
 }
 #labelLeft{
     -fx-text-fill: white;
@@ -14,6 +24,7 @@
 }
 
 #textField {
+    -fx-background-color: #282828;
     -fx-text-fill: #ff0a6c;
     -fx-prompt-text-fill: gray;
     -fx-accent: green;
@@ -38,3 +49,22 @@
 #listView {
     -fx-background-color: #383838;
 }
+
+#labelsHbox{
+    -fx-background-color: #181818;
+}
+
+#bottomHbox {
+    -fx-background-color: #282828;
+}
+
+#volumeSlider {
+    -fx-background-color: #282828;
+}
+
+
+
+
+
+
+

@@ -13,6 +13,8 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("../ControllersAndFXML/MainSceneFoenix.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 618, 291));
+        primaryStage.setMinWidth(618);
+        primaryStage.setMinHeight(291);
         primaryStage.show();
     }
 
