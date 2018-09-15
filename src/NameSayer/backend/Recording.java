@@ -62,4 +62,10 @@ public class Recording {
         return _quality;
     }
 
+    public void debugDump() {
+        System.out.println("        - date=" + _date);
+        System.out.println("        - path=" + _path);
+        System.out.println("        - type=" + _type);
+    }
+
 }

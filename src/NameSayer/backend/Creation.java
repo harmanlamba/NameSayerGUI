@@ -30,4 +30,16 @@ public class Creation {
         }
     }
 
+    public void debugDump() {
+        System.out.println("    - name=" + _name);
+        for (Date date : _versions.keySet()) {
+            System.out.println("    - version<" + date + ">");
+            _versions.get(date).debugDump();
+        }
+        for (Date date : _attempts.keySet()) {
+            System.out.println("    - attempt<" + date + ">");
+            _attempts.get(date).debugDump();
+        }
+    }
+
 }

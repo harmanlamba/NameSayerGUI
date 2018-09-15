@@ -17,4 +17,13 @@ public class CreationStore {
         _creations.put(name, creation);
         return creation;
     }
+
+    public void debugDump() {
+        System.out.println("Creations Store Dump:");
+        for (String name : _creations.keySet()) {
+            System.out.println(" - Creation<" + name + ">");
+            _creations.get(name).debugDump();
+        }
+    }
+
 }
