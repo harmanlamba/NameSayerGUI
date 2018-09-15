@@ -59,6 +59,7 @@ public class RecordingStore {
               Files.createDirectories(_path);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO
         }
 
@@ -84,6 +85,7 @@ public class RecordingStore {
         try {
             Files.list(_path).forEach(p -> addByFilename(p.getFileName().toString()));
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO
         }
     }
@@ -100,6 +102,7 @@ public class RecordingStore {
         try {
             date = DATE_FORMAT.parse(matcher.group("date"));
         } catch (ParseException e) {
+            e.printStackTrace();
             // Ignore invalid files.
             return;
         }
@@ -133,6 +136,7 @@ public class RecordingStore {
             Files.write(_path.resolve(QUALITY_FILENAME), qualityData,
                     StandardOpenOption.WRITE, StandardOpenOption.CREATE);
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO
         }
     }
@@ -155,6 +159,7 @@ public class RecordingStore {
                     try {
                         quality = Recording.Quality.valueOf(entry[1]);
                     } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
                         // Ignore invalid quality entries.
                         // TODO log.
                         return;
@@ -162,6 +167,7 @@ public class RecordingStore {
                     _recordings.get(filename).setQuality(quality);
                 });
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO
         }
     }
@@ -247,6 +253,7 @@ public class RecordingStore {
 
             th.start();
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO
         }
     }
