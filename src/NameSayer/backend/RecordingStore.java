@@ -41,7 +41,7 @@ public class RecordingStore {
 
     private static final String QUALITY_FILENAME = "quality.dat";
     private static final Pattern FILENAME_PATTERN =
-        Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\z");
+        Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
     public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) {
