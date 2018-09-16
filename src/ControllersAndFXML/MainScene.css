@@ -1,5 +1,5 @@
 .root{
-   -fx-background-color: #282828;
+    -fx-background-color: #282828;
 }
 
 #comboBox{
@@ -21,6 +21,7 @@
 
 #labelRight{
     -fx-text-fill: white;
+    -fx-font-family: "Ionicons";
 }
 
 #textField {
@@ -31,6 +32,8 @@
 }
 
 #Record {
+    -fx-font-family: "Ionicons";
+    -fx-text-fill: green;
     -fx-background-color: #383838;
 }
 
