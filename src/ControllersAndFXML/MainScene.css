@@ -4,32 +4,36 @@
 
 #comboBox{
     -fx-background-color: #383838;
-    -fx-prompt-text-fill: white;
+    -fx-prompt-text-fill: #585858;
+    -jfx-focus-color:#ba8baf;
 }
 
 #comboBox .cell{
-    -fx-text-fill: white;
+    -fx-text-fill: #e8e8e8;
     -fx-background-color: #383838;
 }
 
 #comboBox .cell:hover {
-    -fx-background-color: RED;
+    -fx-background-color: #585858;
 }
-#labelLeft{
-    -fx-text-fill: white;
+#topLabel{
+    -fx-text-fill: #e8e8e8;
 }
 
-#labelRight{
-    -fx-text-fill: white;
-    -fx-font-family: "Ionicons";
+#bottomLabel{
+    -fx-text-fill: #e8e8e8;
 }
 
 #textField {
     -fx-background-color: #282828;
-    -fx-text-fill: #ff0a6c;
-    -fx-prompt-text-fill: gray;
-    -fx-accent: green;
+    -fx-text-fill: #ba8baf;
+    -fx-font-weight: bold;
+    -fx-prompt-text-fill: #585858;
+    -jfx-focus-color:#ba8baf;
+    -fx-highlight-fill: #ba8baf;
+
 }
+
 
 #Record {
     -fx-font-family: "Ionicons";
@@ -53,18 +57,53 @@
     -fx-background-color: #383838;
 }
 
-#labelsHbox{
+
+#bottomVBox {
     -fx-background-color: #181818;
 }
 
-#bottomHbox {
+#volumeSlider > .colored-track {
+    -fx-background-color: #ab4642;
+}
+
+#volumeSlider > .track{
+    -fx-border-color: #181818;
+}
+
+#volumeSlider > .thumb {
+    -fx-background-color: #dc9656;
+}
+
+#volumeSlider > .animated-thumb{
+    -fx-background-color: #dc9656;
+}
+
+#volumeSlider .slider-value{
+    -fx-fill: #282828;
+    -fx-stroke: #282828;
+}
+
+#playbackSlider >.colored-track{
+    -fx-background-color: #86c1b9;
+}
+
+#playbackSlider >.track{
     -fx-background-color: #282828;
 }
 
-#volumeSlider {
-    -fx-background-color: #282828;
+#playbackSlider >.thumb {
+    -fx-background-color: #dc9656;
 }
 
+#playbackSlider >.animated-thumb{
+    -fx-background-color: #dc9656;
+}
+
+
+#playbackSlider .slider-value{
+    -fx-fill: #282828;
+    -fx-stroke: #282828;
+}
 
 
 

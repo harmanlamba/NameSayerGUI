@@ -13,16 +13,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../ControllersAndFXML/MainSceneFoenix.fxml"));
         Font.loadFont(Main.class.getResource("../icons/fa-regular-400.ttf").toExternalForm(), 10);
-        System.out.println(Font.getFontNames());
+        //System.out.println(Font.getFontNames());
         primaryStage.setTitle("NameSayer");
-        primaryStage.setScene(new Scene(root, 618, 291));
-        primaryStage.setMinWidth(618);
-        primaryStage.setMinHeight(291);
+        primaryStage.setScene(new Scene(root, 981, 553));
+        primaryStage.setMinWidth(981);
+        primaryStage.setMinHeight(553);
         primaryStage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);
     }
+
 }
