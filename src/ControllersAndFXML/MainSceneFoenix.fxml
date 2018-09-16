@@ -42,9 +42,24 @@
       <JFXListView id="listView" prefHeight="129.0" prefWidth="600.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
       <VBox id="bottomVBox" prefHeight="200.0" prefWidth="872.0" GridPane.rowIndex="2">
          <children>
-            <Label id="topLabel" fx:id="topLabel" text="Label" />
-            <Label id="bottomLabel" fx:id="bottomLabel" text="Label" />
-            <JFXSlider id="playbackSlider" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Region prefHeight="25.0" prefWidth="476.0" HBox.hgrow="ALWAYS" />
+                  <Label id="topLabel" fx:id="topLabel" text="" />
+                  <Region prefHeight="25.0" prefWidth="498.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Region prefHeight="25.0" prefWidth="465.0" HBox.hgrow="ALWAYS" />
+                  <Label id="bottomLabel" fx:id="bottomLabel" text="Label" />
+                  <Region prefHeight="25.0" prefWidth="488.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <JFXSlider id="playbackSlider">
+               <padding>
+                  <Insets bottom="6.0" />
+               </padding></JFXSlider>
          </children>
       </VBox>
       <JFXToolbar prefHeight="52.0" prefWidth="824.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">

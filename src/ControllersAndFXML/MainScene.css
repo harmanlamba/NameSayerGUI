@@ -21,6 +21,7 @@
 }
 
 #bottomLabel{
+    -fx-font-family: "Ionicon";
     -fx-text-fill: #e8e8e8;
 }
 
