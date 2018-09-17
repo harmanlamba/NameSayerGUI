@@ -18,11 +18,14 @@
 }
 #topLabel{
     -fx-text-fill: #e8e8e8;
+    -fx-font-style: italic;
 }
 
 #bottomLabel{
     -fx-font-family: "Ionicon";
     -fx-text-fill: #e8e8e8;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
 }
 
 #textField {
@@ -105,8 +108,6 @@
     -fx-fill: #282828;
     -fx-stroke: #282828;
 }
-
-
 
 
 
