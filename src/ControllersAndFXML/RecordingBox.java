@@ -1,7 +1,8 @@
 package ControllersAndFXML;
 
-import javafx.animation.Animation;
+
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -9,11 +10,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +37,10 @@ public class RecordingBox {
 
     @FXML
     private Label upperLabel;
+    private Button recordButton;
+    private Button playButton;
+    private Button cancelButton;
+    private Button saveButton;
 
     public void startRecord() {
         Task task = new Task<Void>() {
@@ -71,7 +81,32 @@ public class RecordingBox {
     }
 
     public void playRecording() {
-
+        String creationPathTemp= "/data/attempts/tempCreations"+"\""+_creationName+"\""+".wav";
+        Task task= new Task<Void>(){
+            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            @Override
+            protected Void call() throws Exception {
+                Media media= new Media(new File(creationPathTemp).toURI().toString());
+                MediaPlayer mediaPlayer= new MediaPlayer(media);
+                Platform.runLater(() ->{
+                   mediaPlayer.play();
+                });
+                delay.play();
+                recordButton.setDisable(true);
+                playButton.setDisable(true);
+                cancelButton.setDisable(true);
+                saveButton.setDisable(true);
+                delay.setOnFinished(event ->{
+                    recordButton.setDisable(false);
+                    playButton.setDisable(false);
+                    cancelButton.setDisable(false);
+                    saveButton.setDisable(false);
+                });
+                return null;
+            }
+        };
+        Thread thread= new Thread(task);
+        thread.start();
     }
 
     public void cancelRecordingBox() {
@@ -80,7 +115,7 @@ public class RecordingBox {
     }
 
     public void saveRecording() {
-        String moveCreations= "mv ./data/attempts/tempCreations/"+ "\""+_creationName+"\"";
+        String moveCreations= "mv ./data/attempts/tempCreations/"+ "\""+_creationName+"\""+".wav";
         ProcessBuilder moveCreationsProcess= new ProcessBuilder("/bin/bash","-c",moveCreations);
         try {
             Process moveCreation =moveCreationsProcess.start();

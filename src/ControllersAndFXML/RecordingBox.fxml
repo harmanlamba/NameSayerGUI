@@ -45,14 +45,14 @@
                   <Insets top="10.0" />
                </HBox.margin>
             </JFXProgressBar>
-            <JFXButton id="recordLabel" fx:id="recordLabel" onAction="#startRecord" ripplerFill="RED" text="Record">
+            <JFXButton id="recordButton" fx:id="recordButton" onAction="#startRecord" ripplerFill="RED" text="Record">
                <HBox.margin>
                   <Insets left="30.0" />
                </HBox.margin>
             </JFXButton>
-            <JFXButton id="playLabel" fx:id="playLabel" layoutX="10.0" layoutY="10.0" ripplerFill="RED" text="Play" />
-            <JFXButton id="cancelLabel" fx:id="cancelLabel" layoutX="10.0" layoutY="10.0" onAction="#cancelRecordingBox" ripplerFill="RED" text="Cancel" />
-            <JFXButton id="saveLabel" fx:id="saveLabel" layoutX="114.0" layoutY="10.0" ripplerFill="RED" text="Save" />
+            <JFXButton id="playButton" fx:id="playButton" layoutX="10.0" layoutY="10.0" ripplerFill="RED" text="Play" />
+            <JFXButton id="cancelButton" fx:id="cancelButton" layoutX="10.0" layoutY="10.0" onAction="#cancelRecordingBox" ripplerFill="RED" text="Cancel" />
+            <JFXButton id="saveButton" fx:id="saveButton" layoutX="114.0" layoutY="10.0" ripplerFill="RED" text="Save" />
          </children>
          <GridPane.margin>
             <Insets top="20.0" />
