@@ -1,11 +1,20 @@
 package NameSayer.backend;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
+import javafx.beans.InvalidationListener;
 
-public class CreationStore {
+public class CreationStore extends ObservableBase {
 
     private final ObservableMap<String,Creation> _creations = FXCollections.observableHashMap();
+
+    public CreationStore() {
+        InvalidationListener listener = o -> invalidate();
+        _creations.addListener(listener);
+    }
 
     public Creation get(String name) {
         return _creations.get(name);
@@ -16,6 +25,10 @@ public class CreationStore {
         Creation creation = new Creation(name);
         _creations.put(name, creation);
         return creation;
+    }
+
+    public List<Creation> getCreations() {
+        return new ArrayList<Creation>(_creations.values());
     }
 
     public void debugDump() {

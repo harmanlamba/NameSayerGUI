@@ -1,16 +1,23 @@
 package NameSayer.backend;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
+import javafx.beans.InvalidationListener;
 
-public class Creation {
+public class Creation extends ObservableBase {
 
     private String _name;
-    private ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
-    private ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
+    private final ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
+    private final ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
 
     Creation(String name) {
+        InvalidationListener listener = o -> invalidate();
+        _versions.addListener(listener);
+        _attempts.addListener(listener);
         _name = name;
     }
 
@@ -28,6 +35,14 @@ public class Creation {
                 _attempts.put(date, recording);
                 break;
         }
+    }
+
+    public List<Recording> getVersions() {
+        return new ArrayList<Recording>(_versions.values());
+    }
+
+    public List<Recording> getAttempts() {
+        return new ArrayList<Recording>(_attempts.values());
     }
 
     public void debugDump() {
