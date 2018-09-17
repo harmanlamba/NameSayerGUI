@@ -62,7 +62,7 @@
          <top>
             <HBox id="bottomHbox" prefHeight="23.0" prefWidth="618.0" spacing="3.0" BorderPane.alignment="CENTER">
                <children>
-                  <JFXButton id="Record" prefHeight="36.0" prefWidth="75.0" ripplerFill="RED" text="" textFill="BLACK" textOverrun="CLIP">
+                  <JFXButton id="Record" onAction="#recordButton" prefHeight="36.0" prefWidth="75.0" ripplerFill="RED" text="" textFill="BLACK" textOverrun="CLIP">
                      <graphic>
                         <ImageView fitHeight="26.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true">
                            <image>
