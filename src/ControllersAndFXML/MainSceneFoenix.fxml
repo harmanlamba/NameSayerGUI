@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllersAndFXML.Controller">
+<GridPane hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>

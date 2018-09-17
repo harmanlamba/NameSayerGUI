@@ -33,8 +33,12 @@ public class Controller implements Initializable {
     }
 
     public void recordButton() throws IOException {
-        Parent recordingScene = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
+        //Parent recordingScene = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
         Stage recordingWindow = new Stage();
+        FXMLLoader loader= new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
+        //Important to note that we have a place-holder for the creationName...
+        loader.setController(new RecordingBox(recordingWindow, "creationName"));
+        Parent recordingScene= loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);
         recordingWindow.setTitle("Recording Box");
