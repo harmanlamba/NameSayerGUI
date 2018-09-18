@@ -1,0 +1,39 @@
+
+.root{
+    -fx-background-color: #282828;
+}
+#upperHbox{
+    -fx-background-color: #181818;
+}
+
+#upperLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#micLevelsLabel{
+    -fx-text-fill: #e8e8e8;
+}
+
+#recordButton{
+    -fx-text-fill: #e8e8e8;
+}
+
+#playButton{
+    -fx-text-fill: #e8e8e8;
+}
+
+#cancelButton{
+    -fx-text-fill: #e8e8e8;
+}
+
+#saveButton{
+    -fx-text-fill: #e8e8e8;
+}
+
+#progressBar > .bar{
+    -fx-background-color: #ab4642;
+}
+
+#progressBar > .track{
+    -fx-background-color: #383838;
+}

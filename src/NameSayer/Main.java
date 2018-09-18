@@ -2,6 +2,7 @@ package NameSayer;
 
 import java.nio.file.Paths;
 
+import ControllersAndFXML.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,10 +20,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../ControllersAndFXML/MainSceneFoenix.fxml"));
-        Font font=Font.loadFont(getClass().getResource("../icons/ionicons.ttf").toExternalForm(), 10);
-        System.out.println(font);
-        //System.out.println(Font.getFontNames());
+        //Parent root = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
+        loader.setController(new Controller());
+        Parent root= loader.load();
         primaryStage.setTitle("NameSayer");
         primaryStage.setScene(new Scene(root, 981, 553));
         primaryStage.setMinWidth(981);
