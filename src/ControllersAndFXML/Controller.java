@@ -6,6 +6,8 @@ import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -37,6 +40,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     private CreationStore _creationStore;
+    private MediaView _mediaView = new MediaView();
 
     @FXML
     public Button playButton;
@@ -50,6 +54,7 @@ public class Controller implements Initializable {
     public HBox mediaControlHBox;
     public CreationsListView listView;
     public JFXSlider playbackSlider;
+    public JFXSlider volumeSlider;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -60,6 +65,17 @@ public class Controller implements Initializable {
         bottomLabelHBox.setMouseTransparent(false);
         mediaControlHBox.setMouseTransparent(false);
         bottomLabel.setMouseTransparent(false);
+        if(_mediaView.getMediaPlayer() != null){
+            volumeSlider.setValue(_mediaView.getMediaPlayer().getVolume()*100);
+        }
+        volumeSlider.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                if(_mediaView.getMediaPlayer() != null) {
+                    _mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100);
+                }
+            }
+        });
         comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
         listView.setCreationStore(_creationStore);
     }
@@ -139,6 +155,7 @@ public class Controller implements Initializable {
         PauseTransition delay= new PauseTransition(Duration.seconds(5));
         Media media = new Media(new File(filePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
+        _mediaView.setMediaPlayer(mediaPlayer);
         playbackSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
         mediaPlayer.play();
         delay.play();

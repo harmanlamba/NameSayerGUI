@@ -130,7 +130,7 @@
                         <Insets top="10.0" />
                      </HBox.margin></Region>
                   <Label id="volumeLabel" text="Label" translateY="17.0" />
-                  <JFXSlider id="volumeSlider" prefHeight="36.0" prefWidth="154.0" translateY="6.0">
+                  <JFXSlider id="volumeSlider" fx:id="volumeSlider" prefHeight="36.0" prefWidth="154.0" translateY="6.0">
                      <padding>
                         <Insets top="5.0" />
                      </padding></JFXSlider>
