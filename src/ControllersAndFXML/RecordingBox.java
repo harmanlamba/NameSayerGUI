@@ -65,7 +65,7 @@ public class RecordingBox implements Initializable {
 
             @Override
             protected Void call() throws Exception {
-                Path _path = Paths.get("./data/attempts/tempCreations");
+                Path _path = Paths.get("./data/tempCreations");
                 try {
                     if (Files.notExists(_path)) {
                         Files.createDirectories(_path);
@@ -99,7 +99,7 @@ public class RecordingBox implements Initializable {
     }
 
     public void playRecording() {
-        String creationPathTemp = "/data/attempts/tempCreations" + "\"" + _creationName + "\"" + ".wav";
+        String creationPathTemp = "/data/tempCreations" + "\"" + _creationName + "\"" + ".wav";
         Task task = new Task<Void>() {
             PauseTransition delay = new PauseTransition(Duration.seconds(5));
 
@@ -136,7 +136,7 @@ public class RecordingBox implements Initializable {
     }
 
     public void saveRecording() {
-        String moveCreations = "mv ./data/attempts/tempCreations/" + "\"" + _creationName + "\"" + ".wav";
+        String moveCreations = "mv ./data/tempCreations/" + "\"" + _creationName + "\"" + ".wav" + "./data/attempts/" + "\"" + _creationName + "\"" + ".wav";
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
             Process moveCreation = moveCreationsProcess.start();

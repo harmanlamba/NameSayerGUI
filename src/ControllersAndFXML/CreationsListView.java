@@ -63,12 +63,12 @@ public class CreationsListView extends JFXListView<Creation> {
         return _selectedRecordings;
     }
 
-    public String selectNext() {
-        return "Selecting Next";
+    public void selectNext() {
+        System.out.println("Selecting Next");
     }
 
-    public String selectPrevious() {
-        return "Selecting Previous";
+    public void selectPrevious() {
+        System.out.println("Selecting Previous");
     }
 
 }

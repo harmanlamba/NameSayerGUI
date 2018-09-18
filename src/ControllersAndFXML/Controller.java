@@ -29,6 +29,9 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -81,6 +84,18 @@ public class Controller implements Initializable {
 
     public void playButtonAction() {
         //If concatenation has to be done
+        Path _path = Paths.get("./data/tempPlayback");
+        try {
+            if (Files.notExists(_path)) {
+                Files.createDirectories(_path);
+            }
+            if (!Files.isDirectory(_path)) {
+                Files.delete(_path);
+                Files.createDirectories(_path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //TODO
 
         //Just Playing already existing files
@@ -93,9 +108,9 @@ public class Controller implements Initializable {
         }
 
         if (selectedCreations.size() > 1) {
-            filePath = "./data/attempts/" + concatenatedFileName;
+            filePath = "./data/tempPlayback/tempAudio.wav";
         } else {
-            filePath = "./data/attempts/" + concatenatedFileName;
+            filePath = selectedCreations.get(0).getPath().toString();
         }
 
         Thread thread = new Thread(new Runnable() {
@@ -109,21 +124,13 @@ public class Controller implements Initializable {
     }
 
     public void nextButtonAction() {
-       Thread thread= new Thread (new Runnable() {
-           @Override
-           public void run() {
-               mediaLoaderAndPlayer(listView.selectNext());
-           }
-       });
+       listView.selectNext();
+       playButtonAction();
     }
 
     public void previousButtonAction(){
-        Thread thread= new Thread (new Runnable() {
-            @Override
-            public void run() {
-              mediaLoaderAndPlayer(listView.selectPrevious());
-            }
-        });
+        listView.selectPrevious();
+        playButtonAction();
     }
 
 
@@ -148,7 +155,6 @@ public class Controller implements Initializable {
         });
 
         //configuring the playback slider
-
         mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
@@ -163,18 +169,6 @@ public class Controller implements Initializable {
             }
         });
 
-    }
-
-    //Could potentially use. But going based on the assumption that concatenated files will be saved in attempts
-    public boolean creationTypeChecker(ObservableList<Recording> selectedCreations) {
-        int size = selectedCreations.size();
-        boolean sameType = true;
-        for (Recording counter : selectedCreations) {
-            if (counter.getType() == Recording.Type.ATTEMPT) {
-                sameType = false;
-            }
-        }
-        return sameType;
     }
 
 }
