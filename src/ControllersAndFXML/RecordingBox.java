@@ -1,6 +1,7 @@
 package ControllersAndFXML;
 
 
+import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
@@ -46,11 +47,13 @@ public class RecordingBox implements Initializable {
 
     @FXML
     private Label upperLabel;
+    public Label recordingLabel;
     private Button recordButton;
     private Button playButton;
     private Button cancelButton;
     private Button saveButton;
     public ProgressBar progressBar;
+    public JFXSpinner recordingSpinner;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -146,7 +149,7 @@ public class RecordingBox implements Initializable {
     }
 
     private void recordingTimer() {
-
+        final int[] seconds2 = {seconds};
         Timeline time = new Timeline();
         time.setCycleCount(Timeline.INDEFINITE);
         if (time != null) {
@@ -155,15 +158,18 @@ public class RecordingBox implements Initializable {
         KeyFrame frame = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                upperLabel.setAlignment(Pos.CENTER);
-                upperLabel.setWrapText(true);
-                upperLabel.setTextFill(Color.web("ab4642"));
-                upperLabel.setText("Recording NOW: You have " + seconds + " remaining");
-                seconds--;
-                if (seconds <= 0) {
+                recordingLabel.setOpacity(1);
+                recordingSpinner.setDisable(false);
+                recordingSpinner.setOpacity(1);
+                recordingLabel.setWrapText(true);
+                recordingLabel.setTextFill(Color.web("ab4642"));
+                recordingLabel.setText("Recording NOW: You have " + seconds2[0] + " seconds remaining");
+                seconds2[0]--;
+                if (seconds2[0] <= 0) {
                     time.stop();
-                    upperLabel.setTextFill(Color.web("#e8e8e8"));
-                    upperLabel.setText("Baboons");
+                    recordingLabel.setOpacity(0);
+                    recordingSpinner.setDisable(true);
+                    recordingSpinner.setOpacity(0);
                 }
             }
         });

@@ -23,16 +23,16 @@ public class CreationsListView extends JFXListView<Creation> {
         _creationStore.addListener(observer1 -> {
             // Dummy:
             _selectedRecordings.setAll(
-                _creationStore
-                    .getValue()
-                    .get("Ratnayake")
-                    .getVersions()
-                    .get(0),
-                _creationStore
-                    .getValue()
-                    .get("Xuyun")
-                    .getVersions()
-                    .get(0));
+                    _creationStore
+                            .getValue()
+                            .get("Ratnayake")
+                            .getVersions()
+                            .get(0),
+                    _creationStore
+                            .getValue()
+                            .get("Xuyun")
+                            .getVersions()
+                            .get(0));
 
             getItems().setAll(_creationStore.getValue().getCreations());
             _creationStore.getValue().addListener(observer2 -> {
@@ -43,8 +43,7 @@ public class CreationsListView extends JFXListView<Creation> {
 
         setCellFactory(listView -> new JFXListCell<Creation>() {
             @Override
-            public void updateItem(Creation creation, boolean empty)
-            {
+            public void updateItem(Creation creation, boolean empty) {
                 super.updateItem(creation, empty);
                 if (!empty) {
                     assert creation != null;
@@ -64,12 +63,12 @@ public class CreationsListView extends JFXListView<Creation> {
         return _selectedRecordings;
     }
 
-    public void selectNext() {
-        System.out.println("Selecting next");
+    public String selectNext() {
+        return "Selecting Next";
     }
 
-    public void selectPrevious() {
-        System.out.println("Selecting previous");
+    public String selectPrevious() {
+        return "Selecting Previous";
     }
 
 }

@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXProgressBar?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -17,6 +18,7 @@
   <rowConstraints>
     <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="367.0" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="195.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="195.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <HBox id="upperHbox" prefHeight="100.0" prefWidth="200.0">
@@ -30,6 +32,25 @@
                </HBox.margin>
             </Label>
          </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="recordingLabel" minWidth="-Infinity" opacity="0.0" prefHeight="17.0" prefWidth="401.0" text="Label">
+               <HBox.margin>
+                  <Insets left="150.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <JFXSpinner fx:id="recordingSpinner" disable="true" opacity="0.0" />
+         </children>
+         <padding>
+            <Insets top="6.0" />
+         </padding>
+         <GridPane.margin>
+            <Insets top="2.0" />
+         </GridPane.margin>
       </HBox>
       <HBox id="lowerHbox" prefHeight="84.0" prefWidth="600.0" spacing="18.0" GridPane.rowIndex="1">
          <children>
