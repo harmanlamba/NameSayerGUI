@@ -38,6 +38,10 @@ public class Recording {
         _creation.addRecording(this);
     }
 
+    public Creation getCreation() {
+        return _creation;
+    }
+
     public Date getDate() {
         return _date;
     }

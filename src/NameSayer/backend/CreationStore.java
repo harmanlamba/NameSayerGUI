@@ -23,6 +23,11 @@ public class CreationStore extends ObservableBase {
     public Creation add(String name) {
         assert !_creations.containsKey(name);
         Creation creation = new Creation(name);
+        creation.addListener(o -> {
+            if (creation.getRecordingCount() == 0) {
+                _creations.remove(name);
+            }
+        });
         _creations.put(name, creation);
         return creation;
     }

@@ -23,7 +23,6 @@ public class Creation extends ObservableBase {
 
     void addRecording(Recording recording) {
         Date date = recording.getDate();
-        Recording.Type type = recording.getType();
 
         switch (recording.getType()) {
             case VERSION:
@@ -37,12 +36,35 @@ public class Creation extends ObservableBase {
         }
     }
 
+    void removeRecording(Recording recording) {
+        Date date = recording.getDate();
+
+        switch (recording.getType()) {
+            case VERSION:
+                assert _versions.containsKey(date);
+                _versions.remove(date);
+                break;
+            case ATTEMPT:
+                assert _attempts.containsKey(date);
+                _attempts.remove(date);
+                break;
+        }
+    }
+
+    public String getName() {
+        return _name;
+    }
+
     public List<Recording> getVersions() {
         return new ArrayList<Recording>(_versions.values());
     }
 
     public List<Recording> getAttempts() {
         return new ArrayList<Recording>(_attempts.values());
+    }
+
+    public int getRecordingCount() {
+        return _versions.size() + _attempts.size();
     }
 
     public void debugDump() {

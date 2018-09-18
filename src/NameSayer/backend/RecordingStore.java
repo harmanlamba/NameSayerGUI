@@ -121,7 +121,12 @@ public class RecordingStore {
     private void removeByFilename(String filename) {
         assert Platform.isFxApplicationThread();
 
+        Recording recording = _recordings.get(filename);
+
         // Silently ignore recordings that don't already exist.
+        if (recording == null) return;
+
+        recording.getCreation().removeRecording(recording);
         _recordings.remove(filename);
     }
 
