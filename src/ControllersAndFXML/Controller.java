@@ -2,6 +2,7 @@ package ControllersAndFXML;
 
 
 import NameSayer.Main;
+import NameSayer.backend.CreationStore;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    private CreationStore _creationStore;
 
     @FXML
     public Button playButton;
@@ -31,6 +33,11 @@ public class Controller implements Initializable {
     public Label bottomLabel;
     public HBox bottomLabelHBox;
     public HBox mediaControlHBox;
+    public CreationsListView listView;
+
+    public Controller(CreationStore creationStore) {
+        _creationStore = creationStore;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -38,7 +45,7 @@ public class Controller implements Initializable {
         mediaControlHBox.setMouseTransparent(false);
         bottomLabel.setMouseTransparent(false);
         comboBox.getItems().addAll("Baboons","Soajsdlkfasd");
-
+        listView.setCreationStore(_creationStore);
     }
 
     public void recordButton() throws IOException {

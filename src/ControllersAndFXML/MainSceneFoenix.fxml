@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import ControllersAndFXML.CreationsListView?>
 
 <GridPane hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
@@ -39,7 +40,7 @@
             </HBox>
          </top>
       </JFXToolbar>
-      <JFXListView id="listView" prefHeight="129.0" prefWidth="600.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+      <CreationsListView id="listView" fx:id="listView" prefHeight="129.0" prefWidth="600.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
       <VBox id="bottomVBox" prefHeight="200.0" prefWidth="872.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
          <children>
             <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0">
