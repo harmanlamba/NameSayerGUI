@@ -9,9 +9,12 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -19,14 +22,20 @@ import javafx.util.Duration;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
 
-public class RecordingBox {
+
+public class RecordingBox implements Initializable {
+    private Task _loopingTask;
     private Stage _recordingWindow;
+    private Scene _primaryScene;
     private String _creationName;
     private int seconds = 5;
 
@@ -41,6 +50,12 @@ public class RecordingBox {
     private Button playButton;
     private Button cancelButton;
     private Button saveButton;
+    public ProgressBar progressBar;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loopingMicLevel();
+    }
 
     public void startRecord() {
         Task task = new Task<Void>() {
@@ -81,22 +96,23 @@ public class RecordingBox {
     }
 
     public void playRecording() {
-        String creationPathTemp= "/data/attempts/tempCreations"+"\""+_creationName+"\""+".wav";
-        Task task= new Task<Void>(){
+        String creationPathTemp = "/data/attempts/tempCreations" + "\"" + _creationName + "\"" + ".wav";
+        Task task = new Task<Void>() {
             PauseTransition delay = new PauseTransition(Duration.seconds(5));
+
             @Override
             protected Void call() throws Exception {
-                Media media= new Media(new File(creationPathTemp).toURI().toString());
-                MediaPlayer mediaPlayer= new MediaPlayer(media);
-                Platform.runLater(() ->{
-                   mediaPlayer.play();
+                Media media = new Media(new File(creationPathTemp).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                Platform.runLater(() -> {
+                    mediaPlayer.play();
                 });
                 delay.play();
                 recordButton.setDisable(true);
                 playButton.setDisable(true);
                 cancelButton.setDisable(true);
                 saveButton.setDisable(true);
-                delay.setOnFinished(event ->{
+                delay.setOnFinished(event -> {
                     recordButton.setDisable(false);
                     playButton.setDisable(false);
                     cancelButton.setDisable(false);
@@ -105,24 +121,28 @@ public class RecordingBox {
                 return null;
             }
         };
-        Thread thread= new Thread(task);
+        Thread thread = new Thread(task);
         thread.start();
     }
 
     public void cancelRecordingBox() {
         deleteTempCreations();
         _recordingWindow.close();
+        _loopingTask.cancel(true);
+
     }
 
     public void saveRecording() {
-        String moveCreations= "mv ./data/attempts/tempCreations/"+ "\""+_creationName+"\""+".wav";
-        ProcessBuilder moveCreationsProcess= new ProcessBuilder("/bin/bash","-c",moveCreations);
+        String moveCreations = "mv ./data/attempts/tempCreations/" + "\"" + _creationName + "\"" + ".wav";
+        ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
-            Process moveCreation =moveCreationsProcess.start();
+            Process moveCreation = moveCreationsProcess.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
         deleteTempCreations();
+        _recordingWindow.close();
+        _loopingTask.cancel(true);
     }
 
     private void recordingTimer() {
@@ -160,6 +180,84 @@ public class RecordingBox {
             e.printStackTrace();
         }*/
 
+    }
+
+    public int micInputLevel() {
+        int level = 0;
+        byte tempBuffer[] = new byte[4096];
+
+        TargetDataLine targetRecordLine;
+        AudioFormat format = new AudioFormat(11025, 8, 1, false, false);
+        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+        System.out.println("micInputLevelRunBeforeTry");
+        try {
+            targetRecordLine = (TargetDataLine) AudioSystem.getLine(info);
+            targetRecordLine.open(format);
+            System.out.println("After Try");
+            while (true) {
+                if (targetRecordLine.read(tempBuffer, 0, tempBuffer.length) > 0) {
+                    level = calculateAudioLevel(tempBuffer);
+                    System.out.println(level);
+                    targetRecordLine.close();
+                    return level;
+                }else{
+                    System.out.println("Closing");
+                    targetRecordLine.close();
+                    break;
+                }
+            }
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Before 0");
+        return 0;
+    }
+
+    public int calculateAudioLevel(byte[] audioData) {
+        long lSum = 0;
+        for (int i = 0; i < audioData.length; i++) {
+            lSum = lSum + audioData[i];
+        }
+
+        double dAvg = lSum / audioData.length;
+        double sumMeanSquare = 0d;
+
+        for (int j = 0; j < audioData.length; j++) {
+            sumMeanSquare += Math.pow(audioData[j] - dAvg, 2d);
+        }
+
+        double averageMeanSquare = sumMeanSquare / audioData.length;
+
+        return (int) (Math.pow(averageMeanSquare, 0.5d) + 0.5);
+    }
+
+    public void loopingMicLevel() {
+        _loopingTask = new Task<Void>() {
+            int micLevel = 0;
+
+            @Override
+            protected Void call() throws Exception {
+                System.out.println("Before While loop" + isCancelled());
+                while (!isCancelled()) {
+                    System.out.println("After While loop" + isCancelled());
+                    micLevel = micInputLevel();
+                    System.out.println("IS" + micLevel);
+                    Platform.runLater(() -> {
+                        progressBar.setProgress((double) micLevel);
+                    });
+
+                }
+                return null;
+            }
+
+            @Override
+            public void failed() {
+                getException().printStackTrace();
+            }
+        };
+        Thread thread = new Thread(_loopingTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
 }

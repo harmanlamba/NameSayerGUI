@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -21,15 +22,23 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+
+
     @FXML
     public Button playButton;
     public ComboBox comboBox;
     public Label topLabel;
     public Label bottomLabel;
+    public HBox bottomLabelHBox;
+    public HBox mediaControlHBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        bottomLabelHBox.setMouseTransparent(false);
+        mediaControlHBox.setMouseTransparent(false);
+        bottomLabel.setMouseTransparent(false);
         comboBox.getItems().addAll("Baboons","Soajsdlkfasd");
+
     }
 
     public void recordButton() throws IOException {
@@ -44,6 +53,10 @@ public class Controller implements Initializable {
         recordingWindow.setTitle("Recording Box");
         recordingWindow.setScene(new Scene(recordingScene, 600 , 168));
         recordingWindow.show();
+        recordingScene.requestFocus();
+        recordingWindow.setOnHidden(e ->{
+            topLabel.requestFocus();
+        });
     }
 }
 

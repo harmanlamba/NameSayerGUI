@@ -50,9 +50,9 @@
                   <Insets left="30.0" />
                </HBox.margin>
             </JFXButton>
-            <JFXButton id="playButton" fx:id="playButton" layoutX="10.0" layoutY="10.0" ripplerFill="RED" text="Play" />
+            <JFXButton id="playButton" fx:id="playButton" layoutX="10.0" layoutY="10.0" onAction="#playRecording" ripplerFill="RED" text="Play" />
             <JFXButton id="cancelButton" fx:id="cancelButton" layoutX="10.0" layoutY="10.0" onAction="#cancelRecordingBox" ripplerFill="RED" text="Cancel" />
-            <JFXButton id="saveButton" fx:id="saveButton" layoutX="114.0" layoutY="10.0" ripplerFill="RED" text="Save" />
+            <JFXButton id="saveButton" fx:id="saveButton" layoutX="114.0" layoutY="10.0" onAction="#saveRecording" ripplerFill="RED" text="Save" />
          </children>
          <GridPane.margin>
             <Insets top="20.0" />
