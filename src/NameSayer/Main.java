@@ -20,6 +20,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         initStores();
 
+        Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
+
         //Parent root = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
         loader.setController(new Controller(_creationStore));

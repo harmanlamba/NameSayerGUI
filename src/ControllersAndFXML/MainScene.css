@@ -38,22 +38,13 @@
 
 }
 
-
-#Record {
+#Record, #previousButton, #playButton, #nextButton, #volumeLabel {
     -fx-font-family: "Ionicons";
-    -fx-text-fill: green;
-    -fx-background-color: #383838;
+    -fx-font-size: 20px;
+    -fx-text-fill: #ab4642;
 }
 
-#previousButton{
-    -fx-background-color: #383838;
-}
-
-#playButton{
-    -fx-background-color: #383838;
-}
-
-#nextButton {
+#Record, #previousButton, #playButton, #nextButton {
     -fx-background-color: #383838;
 }
 
