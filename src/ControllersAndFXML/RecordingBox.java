@@ -164,13 +164,13 @@ public class RecordingBox implements Initializable {
                 recordingLabel.setWrapText(true);
                 recordingLabel.setTextFill(Color.web("ab4642"));
                 recordingLabel.setText("Recording NOW: You have " + seconds2[0] + " seconds remaining");
-                seconds2[0]--;
                 if (seconds2[0] <= 0) {
                     time.stop();
                     recordingLabel.setOpacity(0);
                     recordingSpinner.setDisable(true);
                     recordingSpinner.setOpacity(0);
                 }
+                seconds2[0]--;
             }
         });
         time.getKeyFrames().add(frame);
