@@ -38,14 +38,18 @@
 
 }
 
-#Record, #previousButton, #playButton, #nextButton, #volumeLabel {
+#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel {
     -fx-font-family: "Ionicons";
     -fx-font-size: 20px;
     -fx-text-fill: #ab4642;
 }
 
-#Record, #previousButton, #playButton, #nextButton {
+#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #compareButton {
     -fx-background-color: #383838;
+}
+
+#compareButton {
+  -fx-text-fill: #e8e8e8;
 }
 
 #listView {

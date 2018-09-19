@@ -107,6 +107,10 @@ public class Controller implements Initializable {
         });
     }
 
+    public void shuffleButtonAction() {
+        // TODO
+    }
+
     public void playButtonAction() {
         //If concatenation has to be done
         Path _path = Paths.get("./data/tempPlayback");
