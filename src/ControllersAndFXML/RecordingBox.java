@@ -46,12 +46,12 @@ public class RecordingBox implements Initializable {
     }
 
     @FXML
-    private Label upperLabel;
+    public Label upperLabel;
     public Label recordingLabel;
-    private Button recordButton;
-    private Button playButton;
-    private Button cancelButton;
-    private Button saveButton;
+    public Button recordButton;
+    public Button playButton;
+    public Button cancelButton;
+    public Button saveButton;
     public ProgressBar progressBar;
     public JFXSpinner recordingSpinner;
 
@@ -78,17 +78,24 @@ public class RecordingBox implements Initializable {
                     e.printStackTrace();
                 }
 
-                //String recordingCmd ="ffmpeg -f alsa -ac 2 -i default -t 5  ./Data/attempts/" + "\"" + _creationName + "\"" + ".wav";
+                String recordingCmd ="ffmpeg -nostdin -y -f alsa -ac 2 -i default -t 5  ./data/tempCreations/tempAudio.wav";
                 Platform.runLater(() -> {
                     recordingTimer();
                 });
 
-               /* ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
+                ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
                 try {
                     Process process = recordingAudio.start();
+                    try {
+                        if (process.waitFor() != 0) {
+                            System.out.println("Error in recording audio");
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
-                }*/
+                }
 
                 return null;
             }
@@ -99,33 +106,24 @@ public class RecordingBox implements Initializable {
     }
 
     public void playRecording() {
-        String creationPathTemp = "/data/tempCreations" + "\"" + _creationName + "\"" + ".wav";
-        Task task = new Task<Void>() {
-            PauseTransition delay = new PauseTransition(Duration.seconds(5));
-
-            @Override
-            protected Void call() throws Exception {
-                Media media = new Media(new File(creationPathTemp).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                Platform.runLater(() -> {
-                    mediaPlayer.play();
-                });
-                delay.play();
-                recordButton.setDisable(true);
-                playButton.setDisable(true);
-                cancelButton.setDisable(true);
-                saveButton.setDisable(true);
-                delay.setOnFinished(event -> {
-                    recordButton.setDisable(false);
-                    playButton.setDisable(false);
-                    cancelButton.setDisable(false);
-                    saveButton.setDisable(false);
-                });
-                return null;
-            }
-        };
-        Thread thread = new Thread(task);
-        thread.start();
+        String creationPathTemp = "./data/tempCreations/tempAudio.wav";
+        PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        Media media = new Media(new File(creationPathTemp).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        Platform.runLater(() -> {
+            mediaPlayer.play();
+        });
+        delay.play();
+        recordButton.setDisable(true);
+        playButton.setDisable(true);
+        cancelButton.setDisable(true);
+        saveButton.setDisable(true);
+        delay.setOnFinished(event -> {
+            recordButton.setDisable(false);
+            playButton.setDisable(false);
+            cancelButton.setDisable(false);
+            saveButton.setDisable(false);
+        });
     }
 
     public void cancelRecordingBox() {
@@ -136,10 +134,18 @@ public class RecordingBox implements Initializable {
     }
 
     public void saveRecording() {
-        String moveCreations = "mv ./data/tempCreations/" + "\"" + _creationName + "\"" + ".wav" + "./data/attempts/" + "\"" + _creationName + "\"" + ".wav";
+        String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" + "\"" + "se206_16-5-2018_23-34-53_Harman" + "\"" + ".wav";
+        System.out.println("moveCreations = " + moveCreations);
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
             Process moveCreation = moveCreationsProcess.start();
+            try {
+                if (moveCreation.waitFor() != 0) {
+                    System.out.println("Error in saving recording");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -195,19 +201,15 @@ public class RecordingBox implements Initializable {
         TargetDataLine targetRecordLine;
         AudioFormat format = new AudioFormat(11025, 8, 1, false, false);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-        System.out.println("micInputLevelRunBeforeTry");
         try {
             targetRecordLine = (TargetDataLine) AudioSystem.getLine(info);
             targetRecordLine.open(format);
-            System.out.println("After Try");
             while (true) {
                 if (targetRecordLine.read(tempBuffer, 0, tempBuffer.length) > 0) {
                     level = calculateAudioLevel(tempBuffer);
-                    System.out.println(level);
                     targetRecordLine.close();
                     return level;
                 }else{
-                    System.out.println("Closing");
                     targetRecordLine.close();
                     break;
                 }
@@ -215,7 +217,6 @@ public class RecordingBox implements Initializable {
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
-        System.out.println("Before 0");
         return 0;
     }
 
@@ -243,11 +244,8 @@ public class RecordingBox implements Initializable {
 
             @Override
             protected Void call() throws Exception {
-                System.out.println("Before While loop" + isCancelled());
                 while (!isCancelled()) {
-                    System.out.println("After While loop" + isCancelled());
                     micLevel = micInputLevel();
-                    System.out.println("IS" + micLevel);
                     Platform.runLater(() -> {
                         progressBar.setProgress((double) micLevel);
                     });
