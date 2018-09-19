@@ -16,18 +16,22 @@
 
 #recordButton{
     -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
 }
 
 #playButton{
     -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
 }
 
 #cancelButton{
     -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
 }
 
 #saveButton{
     -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
 }
 
 #progressBar > .bar{
