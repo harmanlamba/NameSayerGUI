@@ -49,7 +49,7 @@
                               <Insets top="3.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXSlider id="leftVolumeSlider">
+                        <JFXSlider id="leftVolumeSlider" fx:id="leftVolumeSlider">
                            <HBox.margin>
                               <Insets top="6.0" />
                            </HBox.margin>
@@ -57,7 +57,7 @@
                               <Insets left="3.0" />
                            </padding>
                         </JFXSlider>
-                        <JFXButton id="leftPlayButton" fx:id="leftPlayButton" prefHeight="25.0" prefWidth="52.0" text="Play">
+                        <JFXButton id="leftPlayButton" fx:id="leftPlayButton" onAction="#leftPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="Play">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin></JFXButton>
@@ -75,7 +75,7 @@
                               <Insets top="3.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXSlider id="rightVolumeSlider">
+                        <JFXSlider id="rightVolumeSlider" fx:id="rightVolumeSlider">
                            <HBox.margin>
                               <Insets top="6.0" />
                            </HBox.margin>
@@ -83,7 +83,7 @@
                               <Insets left="3.0" />
                            </padding>
                         </JFXSlider>
-                        <JFXButton id="rightPlayButton" fx:id="rightPlayButton" prefHeight="25.0" prefWidth="52.0" text="Play">
+                        <JFXButton id="rightPlayButton" fx:id="rightPlayButton" onAction="#rightPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="Play">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin></JFXButton>
