@@ -1,5 +1,6 @@
 package ControllersAndFXML;
 
+import NameSayer.MicrophoneLevel;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
@@ -34,16 +35,23 @@ import java.util.ResourceBundle;
 
 
 public class RecordingBox implements Initializable {
-    private Task _loopingTask;
     private Stage _recordingWindow;
     private Scene _primaryScene;
     private String _creationName;
     private int seconds = 5;
     private MediaPlayer _mediaPlayer;
+    private MicrophoneLevel _microphoneLevel;
 
     public RecordingBox(Stage recordingWindow, String creationName) {
         _recordingWindow = recordingWindow;
         _creationName = creationName;
+
+        _microphoneLevel = new MicrophoneLevel();
+
+        _recordingWindow.setOnHiding(e -> {
+            deleteTempCreations();
+            _microphoneLevel.close();
+        });
     }
 
     @FXML
@@ -58,7 +66,7 @@ public class RecordingBox implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loopingMicLevel();
+        progressBar.progressProperty().bind(_microphoneLevel.levelProperty());
         playButton.setDisable(true);
     }
 
@@ -141,10 +149,7 @@ public class RecordingBox implements Initializable {
     }
 
     public void cancelRecordingBox() {
-        deleteTempCreations();
         _recordingWindow.close();
-        _loopingTask.cancel(true);
-
     }
 
     public void saveRecording() {
@@ -163,9 +168,7 @@ public class RecordingBox implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        deleteTempCreations();
         _recordingWindow.close();
-        _loopingTask.cancel(true);
     }
 
     private void recordingTimer() {
@@ -205,74 +208,5 @@ public class RecordingBox implements Initializable {
 
     }
 
-    public int micInputLevel() {
-        int level = 0;
-        byte tempBuffer[] = new byte[4096];
-
-        TargetDataLine targetRecordLine;
-        AudioFormat format = new AudioFormat(11025, 8, 1, false, false);
-        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-        try {
-            targetRecordLine = (TargetDataLine) AudioSystem.getLine(info);
-            targetRecordLine.open(format);
-            while (true) {
-                if (targetRecordLine.read(tempBuffer, 0, tempBuffer.length) > 0) {
-                    level = calculateAudioLevel(tempBuffer);
-                    targetRecordLine.close();
-                    return level;
-                }else{
-                    targetRecordLine.close();
-                    break;
-                }
-            }
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public int calculateAudioLevel(byte[] audioData) {
-        long lSum = 0;
-        for (int i = 0; i < audioData.length; i++) {
-            lSum = lSum + audioData[i];
-        }
-
-        double dAvg = lSum / audioData.length;
-        double sumMeanSquare = 0d;
-
-        for (int j = 0; j < audioData.length; j++) {
-            sumMeanSquare += Math.pow(audioData[j] - dAvg, 2d);
-        }
-
-        double averageMeanSquare = sumMeanSquare / audioData.length;
-
-        return (int) (Math.pow(averageMeanSquare, 0.5d) + 0.5);
-    }
-
-    public void loopingMicLevel() {
-        _loopingTask = new Task<Void>() {
-            int micLevel = 0;
-
-            @Override
-            protected Void call() throws Exception {
-                while (!isCancelled()) {
-                    micLevel = micInputLevel();
-                    Platform.runLater(() -> {
-                        progressBar.setProgress((double) micLevel);
-                    });
-
-                }
-                return null;
-            }
-
-            @Override
-            public void failed() {
-                getException().printStackTrace();
-            }
-        };
-        Thread thread = new Thread(_loopingTask);
-        thread.setDaemon(true);
-        thread.start();
-    }
 
 }
