@@ -65,14 +65,14 @@ public class Controller implements Initializable {
         bottomLabelHBox.setMouseTransparent(false);
         mediaControlHBox.setMouseTransparent(false);
         bottomLabel.setMouseTransparent(false);
-        if(_mediaView.getMediaPlayer() != null){
-            volumeSlider.setValue(_mediaView.getMediaPlayer().getVolume()*100);
-        }
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
+                System.out.println("new volume value: " + (volumeSlider.getValue() / 100));
                 if(_mediaView.getMediaPlayer() != null) {
+                    System.out.println("media player not null");
                     _mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100);
+                    System.out.println("media player volume: " + _mediaView.getMediaPlayer().getVolume());
                 }
             }
         });
@@ -133,7 +133,7 @@ public class Controller implements Initializable {
 
             @Override
             public void run() {
-                mediaLoaderAndPlayer("./data/attempts/se206_2-5-2018_15-23-50_Mason.wav");
+                mediaLoaderAndPlayer("./data/attempts/audio.wav");
             }
         });
         thread.start();
@@ -156,7 +156,12 @@ public class Controller implements Initializable {
         Media media = new Media(new File(filePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _mediaView.setMediaPlayer(mediaPlayer);
-        playbackSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
+        mediaPlayer.totalDurationProperty().addListener(new ChangeListener<Duration>() {
+            @Override
+            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                playbackSlider.setMax(newValue.toSeconds());
+            }
+        });
         mediaPlayer.play();
         delay.play();
         recordButton.setDisable(true);
@@ -170,6 +175,8 @@ public class Controller implements Initializable {
             playButton.setDisable(false);
             nextButton.setDisable(false);
         });
+
+        mediaPlayer.setVolume(volumeSlider.getValue()/100);
 
         //configuring the playback slider
         mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
