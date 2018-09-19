@@ -1,0 +1,96 @@
+.root {
+    -fx-background-color: #181818;
+}
+
+
+#leftVBox {
+    -fx-background-color: #282828;
+}
+
+#rightVBox {
+    -fx-background-color: #282828;
+}
+
+#recordingLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#leftTitleLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#leftVolumeLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#leftVolumeSlider > .colored-track {
+    -fx-background-color: #ab4642;
+}
+
+#leftVolumeSlider > .track{
+    -fx-border-color: #181818;
+}
+
+#leftVolumeSlider > .thumb {
+    -fx-background-color: #dc9656;
+}
+
+#leftVolumeSlider > .animated-thumb{
+    -fx-background-color: #dc9656;
+}
+
+#leftVolumeSlider .slider-value{
+    -fx-fill: #282828;
+    -fx-stroke: #282828;
+}
+
+#leftPlayButton {
+    -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
+}
+
+#rightTitleLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#rightVolumeLabel {
+    -fx-text-fill: #e8e8e8;
+}
+
+#rightVolumeSlider > .colored-track {
+    -fx-background-color: #ab4642;
+}
+
+#rightVolumeSlider > .track{
+    -fx-border-color: #181818;
+}
+
+#rightVolumeSlider > .thumb {
+    -fx-background-color: #dc9656;
+}
+
+#rightVolumeSlider > .animated-thumb{
+    -fx-background-color: #dc9656;
+}
+
+#rightVolumeSlider .slider-value{
+    -fx-fill: #282828;
+    -fx-stroke: #282828;
+}
+
+#rightPlayButton {
+    -fx-text-fill: #e8e8e8;
+    -fx-background-color: #383838;
+}
+
+
+
+
+
+
+
+
+
+
+
+
