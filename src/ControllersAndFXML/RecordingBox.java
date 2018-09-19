@@ -39,6 +39,7 @@ public class RecordingBox implements Initializable {
     private Scene _primaryScene;
     private String _creationName;
     private int seconds = 5;
+    private MediaPlayer _mediaPlayer;
 
     public RecordingBox(Stage recordingWindow, String creationName) {
         _recordingWindow = recordingWindow;
@@ -58,6 +59,7 @@ public class RecordingBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loopingMicLevel();
+        playButton.setDisable(true);
     }
 
     public void startRecord() {
@@ -99,6 +101,21 @@ public class RecordingBox implements Initializable {
 
                 return null;
             }
+
+            @Override
+            protected void succeeded() {
+                playButton.setDisable(false);
+                recordingLabel.setOpacity(0);
+                recordingSpinner.setDisable(true);
+                recordingSpinner.setOpacity(0);
+            }
+
+            @Override
+            protected void failed() {
+                recordingLabel.setOpacity(0);
+                recordingSpinner.setDisable(true);
+                recordingSpinner.setOpacity(0);
+            }
         };
         Thread thread = new Thread(task);
         thread.start();
@@ -107,22 +124,19 @@ public class RecordingBox implements Initializable {
 
     public void playRecording() {
         String creationPathTemp = "./data/tempCreations/tempAudio.wav";
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
         Media media = new Media(new File(creationPathTemp).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        Platform.runLater(() -> {
-            mediaPlayer.play();
-        });
-        delay.play();
+        _mediaPlayer = new MediaPlayer(media);
+        _mediaPlayer.play();
         recordButton.setDisable(true);
         playButton.setDisable(true);
         cancelButton.setDisable(true);
         saveButton.setDisable(true);
-        delay.setOnFinished(event -> {
+        _mediaPlayer.setOnEndOfMedia(() -> {
             recordButton.setDisable(false);
             playButton.setDisable(false);
             cancelButton.setDisable(false);
             saveButton.setDisable(false);
+            upperLabel.requestFocus();
         });
     }
 
@@ -161,26 +175,23 @@ public class RecordingBox implements Initializable {
         if (time != null) {
             time.stop();
         }
+        recordingLabel.setOpacity(1);
+        recordingSpinner.setDisable(false);
+        recordingSpinner.setOpacity(1);
+        recordingLabel.setWrapText(true);
+        recordingLabel.setTextFill(Color.web("ab4642"));
         KeyFrame frame = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                recordingLabel.setOpacity(1);
-                recordingSpinner.setDisable(false);
-                recordingSpinner.setOpacity(1);
-                recordingLabel.setWrapText(true);
-                recordingLabel.setTextFill(Color.web("ab4642"));
                 recordingLabel.setText("Recording NOW: You have " + seconds2[0] + " seconds remaining");
                 if (seconds2[0] <= 0) {
                     time.stop();
-                    recordingLabel.setOpacity(0);
-                    recordingSpinner.setDisable(true);
-                    recordingSpinner.setOpacity(0);
                 }
                 seconds2[0]--;
             }
         });
         time.getKeyFrames().add(frame);
-        time.playFromStart();
+        time.playFrom(Duration.seconds(0.999));
     }
 
     public void deleteTempCreations() {
