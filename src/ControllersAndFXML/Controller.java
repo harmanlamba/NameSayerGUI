@@ -78,6 +78,15 @@ public class Controller implements Initializable {
         });
         comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
         listView.setCreationStore(_creationStore);
+        listView.getSelectedRecordings().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                boolean isSelected = listView.getSelectedRecordings().size() > 0;
+                playbackSlider.setDisable(!isSelected);
+            }
+        });
+        playbackSlider.setDisable(true);
+        playbackSlider.setMax(-1);
     }
 
     public void recordButtonAction() throws IOException {
