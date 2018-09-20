@@ -100,6 +100,7 @@ public class CreationsListView extends JFXListView<Creation> {
             _labelDate.setText(recording.getDate().toString());
             _qualityStars.setRecording(recording);
             _btnDelete.setText("DEL");
+            _qualityStars.setRecording(recording);
 
             BooleanProperty isHovered = new SimpleBooleanProperty(false);
             setOnMouseEntered(event -> isHovered.setValue(true));
@@ -167,17 +168,6 @@ public class CreationsListView extends JFXListView<Creation> {
             _listView.getItems().setAll(creation.getVersions()); // TODO
 
             getChildren().setAll(new HBox(_labelArrow, _labelName, _labelCount), _listView);
-        }
-
-    }
-
-    private class QualityStars extends HBox {
-
-        public QualityStars() {
-            getChildren().setAll(new Label("Stars"));
-        }
-
-        public void setRecording(Recording recording) {
         }
 
     }

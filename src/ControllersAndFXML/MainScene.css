@@ -104,6 +104,6 @@
     -fx-stroke: #282828;
 }
 
-
-
-
+.quality-star {
+  -fx-font-family: "Ionicons";
+}
