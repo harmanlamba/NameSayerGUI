@@ -3,24 +3,19 @@
 }
 
 
-#leftVBox {
+#leftVBox, #rightVBox {
     -fx-background-color: #282828;
 }
 
-#rightVBox {
-    -fx-background-color: #282828;
-}
-
-#recordingLabel {
+#recordingLabel, #leftTitleLabel {
     -fx-text-fill: #e8e8e8;
 }
 
-#leftTitleLabel {
-    -fx-text-fill: #e8e8e8;
-}
 
-#leftVolumeLabel {
-    -fx-text-fill: #e8e8e8;
+#leftVolumeLabel, #rightVolumeLabel {
+    -fx-font-family: "Ionicons";
+    -fx-font-size: 20px;
+    -fx-text-fill: #ab4642;
 }
 
 #leftVolumeSlider > .colored-track {
@@ -44,18 +39,10 @@
     -fx-stroke: #282828;
 }
 
-#leftPlayButton {
-    -fx-text-fill: #e8e8e8;
-    -fx-background-color: #383838;
-}
-
 #rightTitleLabel {
     -fx-text-fill: #e8e8e8;
 }
 
-#rightVolumeLabel {
-    -fx-text-fill: #e8e8e8;
-}
 
 #rightVolumeSlider > .colored-track {
     -fx-background-color: #ab4642;
@@ -78,8 +65,10 @@
     -fx-stroke: #282828;
 }
 
-#rightPlayButton {
-    -fx-text-fill: #e8e8e8;
+#rightPlayButton, #leftPlayButton {
+    -fx-font-family: "Ionicons";
+    -fx-font-size: 20px;
+    -fx-text-fill: #ab4642;
     -fx-background-color: #383838;
 }
 

@@ -30,8 +30,8 @@ public class CreationsListView extends JFXListView<Creation> {
                             .get(0),
                     _creationStore
                             .getValue()
-                            .get("Xuyun")
-                            .getVersions()
+                            .get("Mason")
+                            .getAttempts()
                             .get(0));
 
             getItems().setAll(_creationStore.getValue().getCreations());
