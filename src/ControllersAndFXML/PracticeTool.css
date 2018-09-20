@@ -21,6 +21,10 @@
     -jfx-focus-color:#ba8baf;
 }
 
+#userPlayButton , #userRecordButton, #databasePlayButton, #databaseShuffleButton{
+    -fx-background-color: #383838;
+}
+
 #databaseVolumeSlider > .colored-track, #userVolumeSlider > .colored-track {
     -fx-background-color: #ab4642;
 }
