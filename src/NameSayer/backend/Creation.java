@@ -55,6 +55,10 @@ public class Creation extends ObservableBase {
         return _name;
     }
 
+    public boolean has(Recording recording) {
+        return _versions.containsValue(recording) || _attempts.containsValue(recording);
+    }
+
     public List<Recording> getVersions() {
         return new ArrayList<Recording>(_versions.values());
     }
