@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+rm -rf ./bin
+mkdir -p ./bin
+
+javac -cp ./lib/jfoenix-8.0.7.jar -d ./bin/ $(find ./src/ -name "*.java") -Xlint
+
+pushd ./src
+cp --parents $(find . -type f -name "*") ../bin
+popd
+
+pushd ./bin
+jar cvfm ../namesayer.jar ../manifest.mf $(find .)
+popd
+
+chmod +x ./namesayer.jar
+
+rm -rf ./dist
+mkdir -p ./dist
+cp -r ./src ./dist/src
+cp ./run-dist.sh ./dist/run
+cp ./namesayer.jar ./dist/namesayer.jar
+cp ./README ./dist/README
+
+tar -C ./dist -cvf submission.tar ./
