@@ -36,16 +36,15 @@ public class RecordingStore {
     private final Path _path;
     private final CreationStore _creationStore;
     private final Recording.Type _type;
-    private final ObservableMap<String,Recording> _recordings = FXCollections.observableHashMap();
+    private final ObservableMap<String, Recording> _recordings = FXCollections.observableHashMap();
     private Task<Void> _taskWatcher;
 
     private static final String QUALITY_FILENAME = "quality.dat";
     private static final Pattern FILENAME_PATTERN =
-        Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
+            Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
     public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) {
-        super();
         _path = path;
         _type = type;
         _creationStore = creationStore;
@@ -55,8 +54,8 @@ public class RecordingStore {
                 Files.createDirectories(_path);
             }
             if (!Files.isDirectory(_path)) {
-              Files.delete(_path);
-              Files.createDirectories(_path);
+                Files.delete(_path);
+                Files.createDirectories(_path);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +66,7 @@ public class RecordingStore {
         watchDirectory();
     }
 
-    public void invalidateQualities() {
+    private void invalidateQualities() {
         assert Platform.isFxApplicationThread();
 
         Task<Void> qualityWriter = new Task<Void>() {
@@ -151,26 +150,26 @@ public class RecordingStore {
 
         try {
             Files.lines(_path.resolve(QUALITY_FILENAME))
-                .map(line -> line.split("\t"))
-                .forEach(entry -> {
-                    if (entry.length < 2) return;
+                    .map(line -> line.split("\t"))
+                    .forEach(entry -> {
+                        if (entry.length < 2) return;
 
-                    String filename = entry[0];
-                    String qualityStr = entry[1];
+                        String filename = entry[0];
+                        String qualityStr = entry[1];
 
-                    if (!_recordings.containsKey(filename)) return;
+                        if (!_recordings.containsKey(filename)) return;
 
-                    Recording.Quality quality;
-                    try {
-                        quality = Recording.Quality.valueOf(entry[1]);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                        // Ignore invalid quality entries.
-                        // TODO log.
-                        return;
-                    }
-                    _recordings.get(filename).setQuality(quality);
-                });
+                        Recording.Quality quality;
+                        try {
+                            quality = Recording.Quality.valueOf(entry[1]);
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                            // Ignore invalid quality entries.
+                            // TODO log.
+                            return;
+                        }
+                        _recordings.get(filename).setQuality(quality);
+                    });
         } catch (IOException e) {
             e.printStackTrace();
             // TODO
@@ -197,8 +196,7 @@ public class RecordingStore {
                 protected Void call() throws Exception {
                     WatchKey key;
                     while ((key = _watcher.take()) != null) {
-                        for (WatchEvent<?> event : key.pollEvents())
-                        {
+                        for (WatchEvent<?> event : key.pollEvents()) {
                             handleEvent(event);
                         }
                         boolean isValid = key.reset();
@@ -224,13 +222,13 @@ public class RecordingStore {
 
                     if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
 
-                        String filename = ((Path)event.context()).toString();
+                        String filename = ((Path) event.context()).toString();
                         if (filename == QUALITY_FILENAME) return;
                         Platform.runLater(() -> addByFilename(filename));
 
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
 
-                        String filename = ((Path)event.context()).toString();
+                        String filename = ((Path) event.context()).toString();
                         if (filename == QUALITY_FILENAME) {
                             // Fight back the deletion by recreating the file.
                             saveQualities();
@@ -240,7 +238,7 @@ public class RecordingStore {
 
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
 
-                        String filename = ((Path)event.context()).toString();
+                        String filename = ((Path) event.context()).toString();
                         if (filename == QUALITY_FILENAME) {
                             reloadQualities();
                         }

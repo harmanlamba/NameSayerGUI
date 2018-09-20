@@ -16,6 +16,8 @@ import javafx.scene.media.MediaPlayer;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class CompareRecordingsBox implements Initializable {
@@ -43,8 +45,6 @@ public class CompareRecordingsBox implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Recording> selectedRecordings= _listView.getSelectedRecordings();
         recordingLabel.setText(selectedRecordings.get(0).getCreation().getName());
-        leftTitleLabel.setText("User Recording");
-        rightTitleLabel.setText("Database Recording");
         determineRecordingType(_listView.getSelectedRecordings().get(0),_listView.getSelectedRecordings().get(1));
         leftVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
@@ -69,24 +69,38 @@ public class CompareRecordingsBox implements Initializable {
         //paths[0]= represents attempts
         //paths[1]= represents versions
         Path[] paths= new Path[2];
+        String pattern= "dd/mm/yyyy hh:mm:ss";
+        SimpleDateFormat simpleDateFormat= new SimpleDateFormat(pattern);
 
         switch(recording1.getType()){
             case ATTEMPT:
                 paths[0]=recording1.getPath();
+                String date1Left= simpleDateFormat.format(recording1.getDate());
+                leftTitleLabel.setText("User Recording: " +date1Left);
                 break;
             case VERSION:
                 paths[1]=recording1.getPath();
+                String date1Right= simpleDateFormat.format(recording1.getDate());
+                rightTitleLabel.setText("Database Recording: "+date1Right);
                 break;
         }
 
         switch(recording2.getType()) {
             case ATTEMPT:
                 paths[0] = recording2.getPath();
+                String date2Left= simpleDateFormat.format(recording2.getDate());
+                leftTitleLabel.setText("User Recording: " +date2Left);
                 break;
             case VERSION:
                 paths[1] = recording2.getPath();
+                String date2Right= simpleDateFormat.format(recording1.getDate());
+                rightTitleLabel.setText("Database Recording: "+date2Right);
                 break;
         }
+
+
+
+
     }
 
     public void leftPlayButtonAction(){
