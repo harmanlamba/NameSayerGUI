@@ -20,6 +20,7 @@ data
 
 # Package Files #
 *.jar
+!lib/jfoenix-8.0.7.jar
 *.war
 *.nar
 *.ear
