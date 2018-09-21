@@ -5,6 +5,8 @@ import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import NameSayer.backend.RecordingStore;
 import com.jfoenix.controls.JFXSlider;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +35,7 @@ public class PracticeTool implements Initializable {
 
     @FXML
     public ComboBox databaseComboBox;
+    public ComboBox userComboBox;
     public Button databaseShuffleButton;
     public JFXSlider databaseVolumeSlider;
     public JFXSlider userVolumeSlider;
@@ -41,12 +44,29 @@ public class PracticeTool implements Initializable {
     public PracticeTool(Controller controller, CreationsListView listView, RecordingStore recordingStore) {
         _controller = controller;
         _listView = listView;
-        _recordingStore= recordingStore;
+        _recordingStore = recordingStore;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateDatabaseRecordings();
+        userVolumeSlider.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                if(_userMediaView.getMediaPlayer() != null) {
+                    _userMediaView.getMediaPlayer().setVolume(userVolumeSlider.getValue() / 100);
+                }
+            }
+        });
+        databaseVolumeSlider.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                if(_databaseMediaView.getMediaPlayer() != null) {
+                    _databaseMediaView.getMediaPlayer().setVolume(databaseVolumeSlider.getValue() / 100);
+                }
+            }
+        });
+
     }
 
 
@@ -68,18 +88,22 @@ public class PracticeTool implements Initializable {
     }
 
     public void userPlayButtonAction() {
-
+        String creationName = userComboBox.getValue().toString();
+        Recording selectedRecording = _recordingStore;
+        String filePath = selectedRecording.getPath();
+        Media media = new Media(new File(filePath.toString()).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        _userMediaView.setMediaPlayer(mediaPlayer);
 
     }
 
     public void databasePlayButtonAction() {
         String creationName = databaseComboBox.getValue().toString();
-        Recording selectedRecording= _recordingStore.
-        String filePath= selectedCreation.getPath();
+        Recording selectedRecording = _recordingStore;
+        String filePath = selectedCreation.getPath();
         Media media = new Media(new File(filePath.toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _databaseMediaView.setMediaPlayer(mediaPlayer);
     }
-
 
 }

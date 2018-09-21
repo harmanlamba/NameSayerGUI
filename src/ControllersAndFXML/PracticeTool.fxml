@@ -91,7 +91,7 @@
                         <Insets />
                      </opaqueInsets>
                   </Label>
-                  <JFXComboBox id="userComboBox" prefHeight="25.0" prefWidth="282.0" />
+                  <JFXComboBox id="userComboBox" fx:id="userComboBox" prefHeight="25.0" prefWidth="282.0" />
                   <HBox prefHeight="32.0" prefWidth="260.0">
                      <children>
                         <Label id="userVolumeLabel" text="">
