@@ -18,8 +18,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
+import javafx.concurrent.Task;
 
 import java.util.List;
+import java.nio.file.Files;
 
 import NameSayer.backend.Recording;
 import NameSayer.backend.Creation;
@@ -33,6 +35,8 @@ public class CreationsListView extends JFXListView<Creation> {
     public CreationsListView() {
 
         InvalidationListener creationListener = observer -> {
+            refreshList();
+
             // Prune selected recordings.
             for (Recording recording : _selectedRecordings) {
                 if (!recording.getCreation().has(recording)) {
@@ -42,11 +46,11 @@ public class CreationsListView extends JFXListView<Creation> {
         };
 
         _creationStore.addListener(observer1 -> {
-            getItems().setAll(_creationStore.getValue().getCreations());
+            refreshList();
 
             _creationStore.getValue().addListener(observer2 -> {
+                refreshList();
                 // TODO: search filtered, preserve selections.
-                getItems().setAll(_creationStore.getValue().getCreations());
 
                 // Linear pass through is okay here
                 for (Creation creation : _creationStore.getValue().getCreations()) {
@@ -76,6 +80,10 @@ public class CreationsListView extends JFXListView<Creation> {
         System.out.println("Selecting Previous");
     }
 
+    private void refreshList() {
+        getItems().setAll(_creationStore.getValue().getCreations());
+    }
+
     private class SingleCellContents extends HBox {
 
         private JFXCheckBox _checkBox = new JFXCheckBox();
@@ -83,7 +91,11 @@ public class CreationsListView extends JFXListView<Creation> {
         private Label _labelName = new Label();
         private Label _labelDate = new Label();
         private QualityStars _qualityStars = new QualityStars();
-        private JFXButton _btnDelete = new JFXButton();
+        private JFXButton _btnDelete = new JFXButton() {
+            public void fire() {
+                deleteRecording();
+            }
+        };
 
         private Recording _recording;
         private JFXListCell<?> _cell;
@@ -99,7 +111,6 @@ public class CreationsListView extends JFXListView<Creation> {
             _labelName.setText(recording.getCreation().getName());
             _labelDate.setText(recording.getDate().toString());
             _qualityStars.setRecording(recording);
-            _btnDelete.setText("DEL");
             _qualityStars.setRecording(recording);
 
             BooleanProperty isHovered = new SimpleBooleanProperty(false);
@@ -114,8 +125,29 @@ public class CreationsListView extends JFXListView<Creation> {
                 setSelected(_checkBox.isSelected());
             });
 
+            _btnDelete.setText("\uf252");
+            _btnDelete.getStyleClass().add("delete-btn");
+            _btnDelete.setVisible(recording.getType() == Recording.Type.ATTEMPT);
+
             getChildren().setAll(_checkBox, _labelNumber, _labelName,
                     _labelDate, _qualityStars, _btnDelete);
+        }
+
+        private void deleteRecording() {
+            Task<Void> deleter = new Task<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    Files.delete(_recording.getPath());
+                    return null;
+                }
+
+                @Override
+                public void failed() {
+                    getException().printStackTrace();
+                }
+            };
+            Thread th = new Thread(deleter);
+            th.start();
         }
 
         private void updateNumber() {
@@ -151,23 +183,21 @@ public class CreationsListView extends JFXListView<Creation> {
 
     private class MultiCellContents extends VBox {
 
-        private Label _labelArrow = new Label();
         private Label _labelName = new Label();
         private Label _labelCount = new Label();
         private JFXListView<Recording> _listView = new JFXListView<>();
 
         public MultiCellContents(Creation creation, ObservableList<Recording> selectedRecordings) {
             super();
-            _labelArrow.setText("EXPAND");
             _labelName.setText(creation.getName());
-            _labelCount.setText("Versions: " + creation.getRecordingCount());
+            _labelCount.setText(creation.getRecordingCount() + " versions");
 
             _listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             _listView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
 
-            _listView.getItems().setAll(creation.getVersions()); // TODO
+            _listView.getItems().setAll(creation.getAllRecordings());
 
-            getChildren().setAll(new HBox(_labelArrow, _labelName, _labelCount), _listView);
+            getChildren().setAll(new HBox(_labelName, _labelCount), _listView);
         }
 
     }

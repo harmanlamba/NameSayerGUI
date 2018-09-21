@@ -67,6 +67,12 @@ public class Creation extends ObservableBase {
         return new ArrayList<Recording>(_attempts.values());
     }
 
+    public List<Recording> getAllRecordings() {
+        List<Recording> recordings = getVersions();
+        recordings.addAll(getAttempts());
+        return recordings;
+    }
+
     public int getRecordingCount() {
         return _versions.size() + _attempts.size();
     }
