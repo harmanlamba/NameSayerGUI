@@ -153,8 +153,8 @@ public class RecordingBox implements Initializable {
     }
 
     public void saveRecording() {
-        String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" + "\"" + "se206_16-5-2018_23-34-53_Harman" + "\"" + ".wav";
-        System.out.println("moveCreations = " + moveCreations);
+        // TODO
+        String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" + "\"" + "se206_16-5-2018_23-34-53_" + _creationName + "\"" + ".wav";
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
             Process moveCreation = moveCreationsProcess.start();

@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import ControllersAndFXML.QualityStars?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="794.0" stylesheets="@PracticeTool.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
@@ -45,15 +46,7 @@
                      </VBox.margin>
                   </Label>
                   <JFXComboBox id="databaseComboBox" fx:id="databaseComboBox" prefHeight="25.0" prefWidth="278.0" />
-                  <HBox prefHeight="32.0" prefWidth="260.0">
-                     <children>
-                        <Label text="Label" />
-                        <Label text="Label" />
-                        <Label text="Label" />
-                        <Label text="Label" />
-                        <Label text="Label" />
-                     </children>
-                  </HBox>
+                  <QualityStars fx:id="databaseQualityStars"></QualityStars>
                   <HBox prefHeight="32.0" prefWidth="260.0">
                      <children>
                         <Label id="databaseVolumeLabel" text="&#xf259;">
@@ -66,7 +59,7 @@
                               <Insets left="4.0" top="10.0" />
                            </HBox.margin>
                         </JFXSlider>
-                        <JFXButton id="databasePlayButton" text="&#xf215;">
+                        <JFXButton id="databasePlayButton" text="&#xf215;" onAction="#databasePlayButtonAction">
                            <HBox.margin>
                               <Insets left="3.0" />
                            </HBox.margin></JFXButton>
@@ -104,11 +97,11 @@
                               <Insets left="4.0" top="10.0" />
                            </HBox.margin>
                         </JFXSlider>
-                        <JFXButton id="userPlayButton" text="&#xf215;">
+                        <JFXButton id="userPlayButton" fx:id="userPlayButton" text="&#xf215;" onAction="#userPlayButtonAction">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin></JFXButton>
-                        <JFXButton id="userRecordButton" text="&#xf21b;">
+                        <JFXButton id="userRecordButton" text="&#xf21b;" onAction="#recordButtonAction">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin></JFXButton>

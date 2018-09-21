@@ -41,6 +41,7 @@ public class Controller implements Initializable {
 
     private CreationStore _creationStore;
     private MediaView _mediaView = new MediaView();
+    private ObservableList<Recording> _selectedRecordings;
 
     @FXML
     public Button playButton;
@@ -89,18 +90,24 @@ public class Controller implements Initializable {
         });
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
+
+        _selectedRecordings = listView.getSelectedRecordings();
     }
 
     public void recordButtonAction() throws IOException {
+        openRecordingBox(getCombinedName());
+    }
+
+    public void openRecordingBox(String creationName) throws IOException {
         //Parent recordingScene = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
         Stage recordingWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
         //Important to note that we have a place-holder for the creationName...
-        loader.setController(new RecordingBox(recordingWindow, "creationName"));
+        loader.setController(new RecordingBox(recordingWindow, creationName));
         Parent recordingScene = loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);
-        recordingWindow.setTitle("Recording Box");
+        recordingWindow.setTitle("Recording Box - " + creationName);
         recordingWindow.setScene(new Scene(recordingScene, 600, 168));
         recordingWindow.show();
         recordingScene.requestFocus();
@@ -131,17 +138,11 @@ public class Controller implements Initializable {
 
         //Just Playing already existing files
         String filePath;
-        StringBuilder concatenatedFileName = new StringBuilder();
-        ObservableList<Recording> selectedCreations = listView.getSelectedRecordings();
 
-        for (Recording counter : selectedCreations) {
-            concatenatedFileName.append(counter.getCreation().getName());
-        }
-
-        if (selectedCreations.size() > 1) {
+        if (_selectedRecordings.size() > 1) {
             filePath = "./data/tempPlayback/tempAudio.wav";
         } else {
-            filePath = selectedCreations.get(0).getPath().toString();
+            filePath = _selectedRecordings.get(0).getPath().toString();
         }
 
         Thread thread = new Thread(new Runnable() {
@@ -229,7 +230,7 @@ public class Controller implements Initializable {
     public void practiceRecordingsAction() throws IOException {
         Stage practiceRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/PracticeTool.fxml"));
-        loader.setController(new PracticeTool(this, listView));
+        loader.setController(new PracticeTool(this, _selectedRecordings));
         Parent comparingScene = loader.load();
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
@@ -240,6 +241,20 @@ public class Controller implements Initializable {
         practiceRecordingsWindow.setOnHidden(e -> {
             topLabel.requestFocus();
         });
+    }
+
+    private String getCombinedName() {
+        StringBuilder concatenatedName = new StringBuilder();
+
+        if (_selectedRecordings.size() == 0) return "";
+
+        for (Recording recording : _selectedRecordings) {
+            concatenatedName.append(recording.getCreation().getName());
+            concatenatedName.append(" ");
+        }
+        concatenatedName.deleteCharAt(concatenatedName.length() - 1);
+
+        return concatenatedName.toString();
     }
 
 }
