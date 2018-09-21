@@ -52,10 +52,37 @@
   -fx-text-fill: #e8e8e8;
 }
 
-#listView {
-    -fx-background-color: #383838;
+.list-view {
+    -fx-background-color: #181818;
 }
 
+.list-view .scroll-bar{
+    -fx-background-color: #282828;
+}
+
+.list-view .scroll-bar .thumb{
+    -fx-background-color: #ab4642;
+}
+ .list-cell:selected, #listView .list-cell:selected:hover, #listView .list-cell:hover:selected  {
+    -fx-background-color: #ab4642;
+}
+
+.list-cell .jfx-rippler{
+    -jfx-rippler-fill: #f7ca88;
+}
+  .list-cell {
+    -fx-background-color: #383838;
+    -fx-opacity: 0.8;
+}
+
+ .list-cell .label{
+    -fx-text-fill:#e8e8e8;
+}
+
+ .list-cell:filled:hover {
+
+    -fx-opacity: 1;
+}
 
 #bottomVBox {
     -fx-background-color: #181818;

@@ -37,6 +37,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Collections;
 
@@ -233,6 +236,7 @@ public class Controller implements Initializable {
         compareRecordingsWindow.setOnHidden(e -> {
             topLabel.requestFocus();
         });
+
     }
 
     public void practiceRecordingsAction() throws IOException {
@@ -249,6 +253,7 @@ public class Controller implements Initializable {
         practiceRecordingsWindow.setOnHidden(e -> {
             topLabel.requestFocus();
         });
+
     }
 
     private String getCombinedName() {
@@ -265,5 +270,25 @@ public class Controller implements Initializable {
         return concatenatedName.toString();
     }
 
+    public void createFileNameForConcatenation() throws IOException{
+        ObservableList<Recording> selectedRecordings =listView.getSelectedRecordings();
+        List<String> concatData= new ArrayList<String>();
+
+        for (Recording counter : selectedRecordings) {
+            concatData.add("file './"+counter.getPath()+"'");
+        }
+        
+       Path path=Paths.get("/Data/tempCreation/concat.txt");
+        try {
+            Files.write(path, concatData,
+                StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO
+        }
+
+
+
+    }
 }
 
