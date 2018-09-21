@@ -33,6 +33,8 @@ public class CreationsListView extends JFXListView<Creation> {
     public CreationsListView() {
 
         InvalidationListener creationListener = observer -> {
+            refreshList();
+
             // Prune selected recordings.
             for (Recording recording : _selectedRecordings) {
                 if (!recording.getCreation().has(recording)) {
@@ -42,11 +44,11 @@ public class CreationsListView extends JFXListView<Creation> {
         };
 
         _creationStore.addListener(observer1 -> {
-            getItems().setAll(_creationStore.getValue().getCreations());
+            refreshList();
 
             _creationStore.getValue().addListener(observer2 -> {
+                refreshList();
                 // TODO: search filtered, preserve selections.
-                getItems().setAll(_creationStore.getValue().getCreations());
 
                 // Linear pass through is okay here
                 for (Creation creation : _creationStore.getValue().getCreations()) {
@@ -74,6 +76,10 @@ public class CreationsListView extends JFXListView<Creation> {
 
     public void selectPrevious() {
         System.out.println("Selecting Previous");
+    }
+
+    private void refreshList() {
+        getItems().setAll(_creationStore.getValue().getCreations());
     }
 
     private class SingleCellContents extends HBox {
@@ -165,7 +171,7 @@ public class CreationsListView extends JFXListView<Creation> {
             _listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             _listView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
 
-            _listView.getItems().setAll(creation.getVersions()); // TODO
+            _listView.getItems().setAll(creation.getAllRecordings());
 
             getChildren().setAll(new HBox(_labelArrow, _labelName, _labelCount), _listView);
         }
