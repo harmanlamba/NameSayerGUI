@@ -9,11 +9,14 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
@@ -31,31 +34,30 @@ import java.util.ResourceBundle;
 
 public class PracticeTool implements Initializable {
     private Controller _controller;
-    private CreationsListView _listView;
-    private MediaView _databaseMediaView;
-    private MediaView _userMediaView;
+    private MediaView _databaseMediaView = new MediaView();
+    private MediaView _userMediaView = new MediaView();
     private ObservableList<Recording> _databaseRecordings;
     private ObservableList<Recording> _attemptRecordings;
-    private RecordingStore _recordingStore;
 
     @FXML
     public ComboBox<Recording> databaseComboBox;
     public ComboBox<Recording> userComboBox;
-    public Button databaseShuffleButton;
+    public Button userPlayButton;
     public JFXSlider databaseVolumeSlider;
     public JFXSlider userVolumeSlider;
+    public QualityStars databaseQualityStars;
 
 
-    public PracticeTool(Controller controller, CreationsListView listView, RecordingStore recordingStore) {
+    public PracticeTool(Controller controller, List<Recording> recordings) {
         _controller = controller;
-        _listView = listView;
-        _recordingStore = recordingStore;
+
+        // Clone. Don't break the recording box if the selection changes in the main scene.
+        _databaseRecordings = FXCollections.observableArrayList(recordings);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
-
             @Override
             protected void updateItem(Recording item, boolean empty) {
                 super.updateItem(item, empty);
@@ -66,6 +68,8 @@ public class PracticeTool implements Initializable {
                 }
             }
         });
+        databaseComboBox.setButtonCell(databaseComboBox.getCellFactory().call(null));
+
         userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
             protected void updateItem(Recording item, boolean empty) {
@@ -77,11 +81,18 @@ public class PracticeTool implements Initializable {
                 }
             }
         });
+        userComboBox.setButtonCell(userComboBox.getCellFactory().call(null));
+        userComboBox.setPlaceholder(new Label("No attempts yet. Make one below"));
+
+        populateDatabaseRecordings();
+
         refreshUserComboBox();
+        databaseQualityStars.setRecording(databaseComboBox.getValue());
         databaseComboBox.getSelectionModel().selectedItemProperty().addListener(e -> {
+            databaseQualityStars.setRecording(databaseComboBox.getValue());
             refreshUserComboBox();
         });
-        populateDatabaseRecordings();
+
         userVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -99,16 +110,17 @@ public class PracticeTool implements Initializable {
             }
         });
 
+        BooleanBinding isUserRecordingSelected = userComboBox.valueProperty().isNotNull();
+        userPlayButton.disableProperty().bind(isUserRecordingSelected.not());
     }
 
-
     public void recordButtonAction() throws IOException {
-        _controller.recordButtonAction();
+        _controller.openRecordingBox(databaseComboBox.getValue().getCreation().getName());
     }
 
     public void populateDatabaseRecordings() {
-        _databaseRecordings = _listView.getSelectedRecordings();
         databaseComboBox.setItems(_databaseRecordings);
+        databaseComboBox.getSelectionModel().select(0);
     }
 
     public void shuffleDatabaseRecordings() {
@@ -121,7 +133,7 @@ public class PracticeTool implements Initializable {
         Media media = new Media(new File(userRecordingToPlay.getPath().toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _userMediaView.setMediaPlayer(mediaPlayer);
-
+        mediaPlayer.play();
     }
 
     public void databasePlayButtonAction() {
@@ -129,11 +141,12 @@ public class PracticeTool implements Initializable {
         Media media = new Media(new File(recordingToPlay.getPath().toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _databaseMediaView.setMediaPlayer(mediaPlayer);
+        mediaPlayer.play();
     }
 
     private void refreshUserComboBox() {
-        //userComboBox.setItems(databaseComboBox.getSelectionModel().getSelectedItem().getCreation().getAttempts());
-
+        List<Recording> attempts = databaseComboBox.getValue().getCreation().getAttempts();
+        userComboBox.getItems().setAll(attempts);
     }
 
 }

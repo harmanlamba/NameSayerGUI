@@ -6,6 +6,8 @@ import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -39,17 +41,21 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Collections;
 
 public class Controller implements Initializable {
 
     private CreationStore _creationStore;
     private MediaView _mediaView = new MediaView();
+    private ObservableList<Recording> _selectedRecordings;
 
     @FXML
     public Button playButton;
     public Button nextButton;
     public Button previousButton;
     public Button recordButton;
+    public Button compareButton;
+    public Button practiceButton;
     public ComboBox comboBox;
     public Label topLabel;
     public Label bottomLabel;
@@ -81,27 +87,38 @@ public class Controller implements Initializable {
         });
         comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
         listView.setCreationStore(_creationStore);
-        listView.getSelectedRecordings().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                boolean isSelected = listView.getSelectedRecordings().size() > 0;
-                playbackSlider.setDisable(!isSelected);
-            }
-        });
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
+
+        _selectedRecordings = listView.getSelectedRecordings();
+        BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
+        playbackSlider.disableProperty().bind(isSelected.not());
+        practiceButton.disableProperty().bind(isSelected.not());
+        recordButton.disableProperty().bind(isSelected.not());
+
+        compareButton.setDisable(true);
+        _selectedRecordings.addListener((Observable observable) -> {
+            compareButton.setDisable(
+                    _selectedRecordings.size() != 2 ||
+                    _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
+                    _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType());
+        });
     }
 
     public void recordButtonAction() throws IOException {
+        openRecordingBox(getCombinedName());
+    }
+
+    public void openRecordingBox(String creationName) throws IOException {
         //Parent recordingScene = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
         Stage recordingWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
         //Important to note that we have a place-holder for the creationName...
-        loader.setController(new RecordingBox(recordingWindow, "creationName"));
+        loader.setController(new RecordingBox(recordingWindow, creationName));
         Parent recordingScene = loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);
-        recordingWindow.setTitle("Recording Box");
+        recordingWindow.setTitle("Recording Box - " + creationName);
         recordingWindow.setScene(new Scene(recordingScene, 600, 168));
         recordingWindow.show();
         recordingScene.requestFocus();
@@ -111,7 +128,7 @@ public class Controller implements Initializable {
     }
 
     public void shuffleButtonAction() {
-        // TODO
+        Collections.shuffle(_selectedRecordings);
     }
 
     public void playButtonAction() {
@@ -132,17 +149,11 @@ public class Controller implements Initializable {
 
         //Just Playing already existing files
         String filePath;
-        StringBuilder concatenatedFileName = new StringBuilder();
-        ObservableList<Recording> selectedCreations = listView.getSelectedRecordings();
 
-        for (Recording counter : selectedCreations) {
-            concatenatedFileName.append(counter.getCreation().getName());
-        }
-
-        if (selectedCreations.size() > 1) {
+        if (_selectedRecordings.size() > 1) {
             filePath = "./data/tempPlayback/tempAudio.wav";
         } else {
-            filePath = selectedCreations.get(0).getPath().toString();
+            filePath = _selectedRecordings.get(0).getPath().toString();
         }
 
         Thread thread = new Thread(new Runnable() {
@@ -214,7 +225,6 @@ public class Controller implements Initializable {
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/ComparingRecordingsBox.fxml"));
-        //Important to note that we have a place-holder for the creationName...
         loader.setController(new CompareRecordingsBox(listView));
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
@@ -226,8 +236,39 @@ public class Controller implements Initializable {
         compareRecordingsWindow.setOnHidden(e -> {
             topLabel.requestFocus();
         });
+
     }
 
+    public void practiceRecordingsAction() throws IOException {
+        Stage practiceRecordingsWindow = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/PracticeTool.fxml"));
+        loader.setController(new PracticeTool(this, _selectedRecordings));
+        Parent comparingScene = loader.load();
+        practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
+        practiceRecordingsWindow.setResizable(false);
+        practiceRecordingsWindow.setTitle("Practice Tool");
+        practiceRecordingsWindow.setScene(new Scene(comparingScene, 716, 198));
+        practiceRecordingsWindow.show();
+        practiceRecordingsWindow.requestFocus();
+        practiceRecordingsWindow.setOnHidden(e -> {
+            topLabel.requestFocus();
+        });
+
+    }
+
+    private String getCombinedName() {
+        StringBuilder concatenatedName = new StringBuilder();
+
+        if (_selectedRecordings.size() == 0) return "";
+
+        for (Recording recording : _selectedRecordings) {
+            concatenatedName.append(recording.getCreation().getName());
+            concatenatedName.append(" ");
+        }
+        concatenatedName.deleteCharAt(concatenatedName.length() - 1);
+
+        return concatenatedName.toString();
+    }
 
     public void createFileNameForConcatenation() throws IOException{
         ObservableList<Recording> selectedRecordings =listView.getSelectedRecordings();
@@ -245,6 +286,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
             // TODO
         }
+
 
 
     }

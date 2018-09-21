@@ -45,7 +45,7 @@
          <children>
             <BorderPane>
               <left>
-                <Region prefWidth="100" HBox.hgrow="NEVER">
+                <Region prefWidth="220" HBox.hgrow="NEVER">
                   <BorderPane.margin>
                     <Insets bottom="0.0" left="10.0" right="10.0" top="0.0" />
                   </BorderPane.margin></Region>
@@ -65,10 +65,19 @@
                 </VBox>
               </center>
               <right>
-                <JFXButton id="compareButton" fx:id="compareButton" onAction="#compareRecordingsAction" ripplerFill="RED" text="Compare" textFill="BLACK" textOverrun="CLIP" prefWidth="100" HBox.hgrow="NEVER" BorderPane.alignment="CENTER">
+                <HBox>
                   <BorderPane.margin>
                     <Insets bottom="0.0" left="10.0" right="10.0" top="0.0" />
-                  </BorderPane.margin></JFXButton>
+                  </BorderPane.margin>
+                  <JFXButton id="compareButton" fx:id="compareButton" onAction="#compareRecordingsAction" ripplerFill="RED" text="Compare" textFill="BLACK" textOverrun="CLIP" prefWidth="90" HBox.hgrow="NEVER" BorderPane.alignment="CENTER">
+                    <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </HBox.margin></JFXButton>
+                  <JFXButton id="practiceButton" fx:id="practiceButton" onAction="#practiceRecordingsAction" ripplerFill="RED" text="Practice" textFill="BLACK" textOverrun="CLIP" prefWidth="90" HBox.hgrow="NEVER" BorderPane.alignment="CENTER">
+                    <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </HBox.margin></JFXButton>
+                </HBox>
               </right>
             </BorderPane>
             <JFXSlider fx:id="playbackSlider" id="playbackSlider">
