@@ -4,6 +4,8 @@ import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import NameSayer.backend.RecordingStore;
+import com.jfoenix.controls.JFXListCell;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -12,9 +14,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +39,8 @@ public class PracticeTool implements Initializable {
     private RecordingStore _recordingStore;
 
     @FXML
-    public ComboBox databaseComboBox;
-    public ComboBox userComboBox;
+    public ComboBox<Recording> databaseComboBox;
+    public ComboBox<Recording> userComboBox;
     public Button databaseShuffleButton;
     public JFXSlider databaseVolumeSlider;
     public JFXSlider userVolumeSlider;
@@ -49,11 +54,38 @@ public class PracticeTool implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
+
+            @Override
+            protected void updateItem(Recording item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.getCreation().getName());
+                }
+            }
+        });
+        userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
+            @Override
+            protected void updateItem(Recording item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.getDate().toString());
+                }
+            }
+        });
+        refreshUserComboBox();
+        databaseComboBox.getSelectionModel().selectedItemProperty().addListener(e -> {
+            refreshUserComboBox();
+        });
         populateDatabaseRecordings();
         userVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                if(_userMediaView.getMediaPlayer() != null) {
+                if (_userMediaView.getMediaPlayer() != null) {
                     _userMediaView.getMediaPlayer().setVolume(userVolumeSlider.getValue() / 100);
                 }
             }
@@ -61,7 +93,7 @@ public class PracticeTool implements Initializable {
         databaseVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                if(_databaseMediaView.getMediaPlayer() != null) {
+                if (_databaseMediaView.getMediaPlayer() != null) {
                     _databaseMediaView.getMediaPlayer().setVolume(databaseVolumeSlider.getValue() / 100);
                 }
             }
@@ -76,10 +108,7 @@ public class PracticeTool implements Initializable {
 
     public void populateDatabaseRecordings() {
         _databaseRecordings = _listView.getSelectedRecordings();
-        for (Recording counter : _databaseRecordings) {
-            databaseComboBox.getItems().add(counter.getCreation().getName());
-        }
-
+        databaseComboBox.setItems(_databaseRecordings);
     }
 
     public void shuffleDatabaseRecordings() {
@@ -88,22 +117,23 @@ public class PracticeTool implements Initializable {
     }
 
     public void userPlayButtonAction() {
-        String creationName = userComboBox.getValue().toString();
-        Recording selectedRecording = _recordingStore;
-        String filePath = selectedRecording.getPath();
-        Media media = new Media(new File(filePath.toString()).toURI().toString());
+        Recording userRecordingToPlay = userComboBox.getValue();
+        Media media = new Media(new File(userRecordingToPlay.getPath().toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _userMediaView.setMediaPlayer(mediaPlayer);
 
     }
 
     public void databasePlayButtonAction() {
-        String creationName = databaseComboBox.getValue().toString();
-        Recording selectedRecording = _recordingStore;
-        String filePath = selectedCreation.getPath();
-        Media media = new Media(new File(filePath.toString()).toURI().toString());
+        Recording recordingToPlay = databaseComboBox.getValue();
+        Media media = new Media(new File(recordingToPlay.getPath().toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _databaseMediaView.setMediaPlayer(mediaPlayer);
+    }
+
+    private void refreshUserComboBox() {
+        //userComboBox.setItems(databaseComboBox.getSelectionModel().getSelectedItem().getCreation().getAttempts());
+
     }
 
 }
