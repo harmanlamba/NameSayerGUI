@@ -6,6 +6,8 @@ import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -82,17 +84,22 @@ public class Controller implements Initializable {
         });
         comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
         listView.setCreationStore(_creationStore);
-        listView.getSelectedRecordings().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                boolean isSelected = listView.getSelectedRecordings().size() > 0;
-                playbackSlider.setDisable(!isSelected);
-            }
-        });
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
 
         _selectedRecordings = listView.getSelectedRecordings();
+        BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
+        playbackSlider.disableProperty().bind(isSelected.not());
+        practiceButton.disableProperty().bind(isSelected.not());
+        recordButton.disableProperty().bind(isSelected.not());
+
+        compareButton.setDisable(true);
+        _selectedRecordings.addListener((Observable observable) -> {
+            compareButton.setDisable(
+                    _selectedRecordings.size() != 2 ||
+                    _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
+                    _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType());
+        });
     }
 
     public void recordButtonAction() throws IOException {
