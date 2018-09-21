@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import java.util.Collections;
 
 public class Controller implements Initializable {
 
@@ -117,7 +118,7 @@ public class Controller implements Initializable {
     }
 
     public void shuffleButtonAction() {
-        // TODO
+        Collections.shuffle(_selectedRecordings);
     }
 
     public void playButtonAction() {
