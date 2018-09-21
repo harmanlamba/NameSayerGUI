@@ -75,18 +75,62 @@ public class RecordingStore {
                 saveQualities();
                 return null;
             }
+
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
         };
         Thread th = new Thread(qualityWriter);
         th.start();
     }
 
     private void populateFromFilesystem() {
-        try {
-            Files.list(_path).forEach(p -> addByFilename(p.getFileName().toString()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO
-        }
+        assert Platform.isFxApplicationThread();
+
+        Task<Void> qualityReloader = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                reloadQualities();
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+
+        Task<Void> populator = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Files.list(_path).forEach(p -> {
+                    Platform.runLater(() -> {
+                        addByFilename(p.getFileName().toString());
+                    });
+                });
+
+                // Last file not guaranteed to be added yet.
+                // Need to runLater to put it at the end of event stack.
+                scheduleReloadQualities();
+
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
+
+            private void scheduleReloadQualities() {
+                Platform.runLater(() -> {
+                    Thread th = new Thread(qualityReloader);
+                    th.start();
+                });
+            }
+        };
+        Thread th = new Thread(populator);
+        th.start();
     }
 
     private void addByFilename(String filename) {
@@ -148,8 +192,13 @@ public class RecordingStore {
     private synchronized void reloadQualities() {
         assert !Platform.isFxApplicationThread();
 
+        Path qualityPath = _path.resolve(QUALITY_FILENAME);
+        if (Files.notExists(qualityPath)) {
+            return;
+        }
+
         try {
-            Files.lines(_path.resolve(QUALITY_FILENAME))
+            Files.lines(qualityPath)
                     .map(line -> line.split("\t"))
                     .forEach(entry -> {
                         if (entry.length < 2) return;
@@ -215,6 +264,7 @@ public class RecordingStore {
                 @Override
                 protected void failed() {
                     // TODO
+                    getException().printStackTrace();
                 }
 
                 private void handleEvent(WatchEvent<?> event) {
