@@ -30,6 +30,7 @@ public class QualityStars extends HBox {
             _stars[i].getStyleClass().add("quality-star");
         }
         _recording.addListener(o1 -> {
+            renderQuality();
             _recording.getValue().qualityProperty().addListener(o2 -> renderQuality());
         });
     }
