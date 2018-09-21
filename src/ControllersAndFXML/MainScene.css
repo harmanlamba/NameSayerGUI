@@ -44,11 +44,11 @@
     -fx-text-fill: #ab4642;
 }
 
-#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #compareButton {
+#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #compareButton, #practiceButton {
     -fx-background-color: #383838;
 }
 
-#compareButton {
+#compareButton, #practiceButton {
   -fx-text-fill: #e8e8e8;
 }
 

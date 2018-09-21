@@ -47,6 +47,8 @@ public class Controller implements Initializable {
     public Button nextButton;
     public Button previousButton;
     public Button recordButton;
+    public Button compareButton;
+    public Button practiceButton;
     public ComboBox comboBox;
     public Label topLabel;
     public Label bottomLabel;
@@ -211,7 +213,6 @@ public class Controller implements Initializable {
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/ComparingRecordingsBox.fxml"));
-        //Important to note that we have a place-holder for the creationName...
         loader.setController(new CompareRecordingsBox(listView));
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
@@ -223,12 +224,23 @@ public class Controller implements Initializable {
         compareRecordingsWindow.setOnHidden(e -> {
             topLabel.requestFocus();
         });
-
-
     }
 
-
-
+    public void practiceRecordingsAction() throws IOException {
+        Stage practiceRecordingsWindow = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/PracticeTool.fxml"));
+        loader.setController(new PracticeTool(this, listView));
+        Parent comparingScene = loader.load();
+        practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
+        practiceRecordingsWindow.setResizable(false);
+        practiceRecordingsWindow.setTitle("Practice Tool");
+        practiceRecordingsWindow.setScene(new Scene(comparingScene, 716, 198));
+        practiceRecordingsWindow.show();
+        practiceRecordingsWindow.requestFocus();
+        practiceRecordingsWindow.setOnHidden(e -> {
+            topLabel.requestFocus();
+        });
+    }
 
 }
 
