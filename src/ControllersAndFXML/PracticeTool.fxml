@@ -44,7 +44,7 @@
                         <Insets left="80.0" />
                      </VBox.margin>
                   </Label>
-                  <JFXComboBox id="databaseComboBox" prefHeight="25.0" prefWidth="278.0" />
+                  <JFXComboBox id="databaseComboBox" fx:id="databaseComboBox" prefHeight="25.0" prefWidth="278.0" />
                   <HBox prefHeight="32.0" prefWidth="260.0">
                      <children>
                         <Label text="Label" />
@@ -61,7 +61,7 @@
                               <Insets left="10.0" top="7.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXSlider id="databaseVolumeSlider">
+                        <JFXSlider id="databaseVolumeSlider" fx:id="databaseVolumeSlider">
                            <HBox.margin>
                               <Insets left="4.0" top="10.0" />
                            </HBox.margin>
@@ -70,7 +70,7 @@
                            <HBox.margin>
                               <Insets left="3.0" />
                            </HBox.margin></JFXButton>
-                        <JFXButton id="databaseShuffleButton" text="">
+                        <JFXButton id="databaseShuffleButton" fx:id="databaseShuffleButton" onAction="#shuffleDatabaseRecordings" text="">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin></JFXButton>
@@ -99,7 +99,7 @@
                               <Insets left="10.0" top="7.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXSlider id="userVolumeSlider">
+                        <JFXSlider id="userVolumeSlider" fx:id="userVolumeSlider">
                            <HBox.margin>
                               <Insets left="4.0" top="10.0" />
                            </HBox.margin>
