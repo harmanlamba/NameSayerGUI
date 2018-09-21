@@ -9,12 +9,41 @@ import javafx.beans.property.SimpleObjectProperty;
 public class Recording {
 
     public enum Quality {
-        QUALITY_UNRATED,
-        QUALITY_1_STAR,
-        QUALITY_2_STAR,
-        QUALITY_3_STAR,
-        QUALITY_4_STAR,
-        QUALITY_5_STAR,
+        QUALITY_UNRATED(0),
+        QUALITY_1_STAR(1),
+        QUALITY_2_STAR(2),
+        QUALITY_3_STAR(3),
+        QUALITY_4_STAR(4),
+        QUALITY_5_STAR(5);
+
+        private int _index;
+
+        private Quality(int index) {
+            _index = index;
+        }
+
+        public int getIndex() {
+            return _index;
+        }
+
+        public static Quality fromIndex(int index) {
+            switch (index) {
+                case 0:
+                    return QUALITY_UNRATED;
+                case 1:
+                    return QUALITY_1_STAR;
+                case 2:
+                    return QUALITY_2_STAR;
+                case 3:
+                    return QUALITY_3_STAR;
+                case 4:
+                    return QUALITY_4_STAR;
+                case 5:
+                    return QUALITY_5_STAR;
+            }
+            assert false : "Invalid index of " + index;
+            return QUALITY_UNRATED;
+        }
     }
 
     public enum Type {
