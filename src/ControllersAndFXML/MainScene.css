@@ -38,7 +38,7 @@
 
 }
 
-#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel {
+#Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
     -fx-font-family: "Ionicons";
     -fx-font-size: 20px;
     -fx-text-fill: #ab4642;
