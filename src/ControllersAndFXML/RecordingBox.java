@@ -88,7 +88,7 @@ public class RecordingBox implements Initializable {
                     e.printStackTrace();
                 }
 
-                String recordingCmd ="ffmpeg -nostdin -y -f alsa -ac 2 -i default -t 5  ./data/tempCreations/tempAudio.wav";
+                String recordingCmd ="ffmpeg -nostdin -y -f alsa -ac 1 -i default -t 5  ./data/tempCreations/tempAudio.wav";
                 Platform.runLater(() -> {
                     saveButton.setDisable(true);
                     recordButton.setDisable(true);
