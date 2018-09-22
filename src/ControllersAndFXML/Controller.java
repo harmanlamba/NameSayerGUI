@@ -170,13 +170,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
-        try {
-            createFileNameForConcatenation();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ConcatAndSilence concatAndSilence = new ConcatAndSilence() {
+        ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
             @Override
             public void ready(String filePath) {
                 mediaLoaderAndPlayer(filePath);
@@ -281,24 +275,5 @@ public class Controller implements Initializable {
         return concatenatedName.toString();
     }
 
-    public void createFileNameForConcatenation() throws IOException {
-        ObservableList<Recording> selectedRecordings = listView.getSelectedRecordings();
-        List<String> concatData = new ArrayList<String>();
-
-        for (Recording counter : selectedRecordings) {
-            concatData.add("file '../../" + counter.getPath() + "'");
-        }
-
-        Path path = Paths.get("./data/tempCreations/concat.txt");
-        try {
-            Files.write(path, concatData,
-                StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO
-        }
-
-
-    }
 }
 

@@ -6,15 +6,39 @@ import javafx.concurrent.Task;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.ArrayList;
+
+import NameSayer.backend.Recording;
 
 public abstract class ConcatAndSilence {
     public abstract void ready(String filePath);
 
-    public ConcatAndSilence() {
+    public ConcatAndSilence(List<Recording> recordings) {
 
         Task<Void> task = new Task<Void>() {
+            private final List<Recording> _recordings = new ArrayList<>(recordings);
             @Override
             protected Void call() throws Exception {
+
+                List<String> concatData = new ArrayList<String>();
+
+                for (Recording counter : _recordings) {
+                    concatData.add("file '../../" + counter.getPath() + "'");
+                }
+
+                Path path = Paths.get("./data/tempCreations/concat.txt");
+                try {
+                    Files.write(path, concatData,
+                        StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // TODO
+                }
 
                 ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -f concat -safe 0 -y -i ./data/tempCreations/concat.txt -c copy ./data/tempPlayback/playBack.wav");
                 ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -hide_banner -y -i ./data/tempPlayback/playBack.wav -af " +
