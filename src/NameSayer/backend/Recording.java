@@ -1,6 +1,7 @@
 package NameSayer.backend;
 
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javafx.beans.property.ObjectProperty;
@@ -73,6 +74,11 @@ public class Recording {
 
     public Date getDate() {
         return _date;
+    }
+
+    public String getDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss");
+        return format.format(_date);
     }
 
     public Path getPath() {

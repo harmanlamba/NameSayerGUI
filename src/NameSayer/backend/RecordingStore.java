@@ -208,7 +208,7 @@ public class RecordingStore {
 
                         if (!_recordings.containsKey(filename)) return;
 
-                        Recording.Quality quality;
+                        final Recording.Quality quality;
                         try {
                             quality = Recording.Quality.valueOf(entry[1]);
                         } catch (IllegalArgumentException e) {
@@ -217,7 +217,7 @@ public class RecordingStore {
                             // TODO log.
                             return;
                         }
-                        _recordings.get(filename).setQuality(quality);
+                        Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
                     });
         } catch (IOException e) {
             e.printStackTrace();
@@ -289,7 +289,7 @@ public class RecordingStore {
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
 
                         String filename = ((Path) event.context()).toString();
-                        if (filename == QUALITY_FILENAME) {
+                        if (filename.equals(QUALITY_FILENAME)) {
                             reloadQualities();
                         }
 

@@ -16,7 +16,6 @@ import javafx.scene.media.MediaPlayer;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -68,32 +67,26 @@ public class CompareRecordingsBox implements Initializable {
     public void determineRecordingType(Recording recording1, Recording recording2){
         //_paths[0]= represents attempts
         //_paths[1]= represents versions
-        String pattern= "dd/mm/yyyy hh:mm:ss";
-        SimpleDateFormat simpleDateFormat= new SimpleDateFormat(pattern);
 
         switch(recording1.getType()){
             case ATTEMPT:
                 _paths[0]=recording1.getPath();
-                String date1Left= simpleDateFormat.format(recording1.getDate());
-                leftTitleLabel.setText("User Recording: " +date1Left);
+                leftTitleLabel.setText("User Recording: " + recording1.getDateString());
                 break;
             case VERSION:
                 _paths[1]=recording1.getPath();
-                String date1Right= simpleDateFormat.format(recording1.getDate());
-                rightTitleLabel.setText("Database Recording: "+date1Right);
+                rightTitleLabel.setText("Database Recording: "+ recording1.getDateString());
                 break;
         }
 
         switch(recording2.getType()) {
             case ATTEMPT:
                 _paths[0] = recording2.getPath();
-                String date2Left= simpleDateFormat.format(recording2.getDate());
-                leftTitleLabel.setText("User Recording: " +date2Left);
+                leftTitleLabel.setText("User Recording: " + recording2.getDateString());
                 break;
             case VERSION:
                 _paths[1] = recording2.getPath();
-                String date2Right= simpleDateFormat.format(recording1.getDate());
-                rightTitleLabel.setText("Database Recording: "+date2Right);
+                rightTitleLabel.setText("Database Recording: "+ recording2.getDateString());
                 break;
         }
 
