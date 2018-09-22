@@ -58,6 +58,7 @@ public class Controller implements Initializable {
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
     private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
+    private BooleanProperty _isMediaPaused= new SimpleBooleanProperty();
 
     @FXML
     public Button playButton;
@@ -157,13 +158,23 @@ public class Controller implements Initializable {
     }
 
     public void playButtonAction() {
-        ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
-            @Override
-            public void ready(String filePath) {
-                mediaLoaderAndPlayer(filePath);
-            }
-        };
+        if(!_isMediaPlaying.get()){
+            ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
+                @Override
+                public void ready(String filePath) {
+                    mediaLoaderAndPlayer(filePath);
+                }
+            };
+        }else if(_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
+            _mediaView.getMediaPlayer().pause();
+            _isMediaPaused.set(true);
+            playButton.setText("&#xf478"); //paused
+        }else if(_isMediaPlaying.getValue() && _isMediaPaused.get()){
+            _mediaView.getMediaPlayer().play();
+            _isMediaPaused.set(false);
+            playButton.setText("&#xf215;"); //playing
 
+        }
     }
 
     public void nextButtonAction() {
