@@ -69,23 +69,38 @@ public class CreationsListView extends JFXListView<Creation> {
     }
 
     public void selectNext() {
-        Recording cursor = _selectedRecordings.get(_selectedRecordings.size() - 1);
-        int indexToSelect = _creationsList.indexOf(cursor.getCreation()) + 1;
+        int indexToSelect = -1;
+        for (Recording recording : _selectedRecordings) {
+            int candidateIndex = _creationsList.indexOf(recording.getCreation());
+            if (candidateIndex > indexToSelect) {
+                indexToSelect = candidateIndex;
+            }
+        }
+        indexToSelect++;
+        indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
+        System.out.println(indexToSelect);
         Creation creationToSelect = _creationsList.get(indexToSelect);
         Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
         _selectedRecordings.setAll(recordingToSelect);
-        refreshList();
+        scrollTo(creationToSelect);
     }
 
     public void selectPrevious() {
-        Recording cursor = _selectedRecordings.get(0);
-        int indexToSelect = _creationsList.indexOf(cursor.getCreation()) - 1;
+        int indexToSelect = _creationsList.size();
+        for (Recording recording : _selectedRecordings) {
+            int candidateIndex = _creationsList.indexOf(recording.getCreation());
+            if (candidateIndex < indexToSelect) {
+                indexToSelect = candidateIndex;
+            }
+        }
+        indexToSelect--;
+        indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
         Creation creationToSelect = _creationsList.get(indexToSelect);
         Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
         _selectedRecordings.setAll(recordingToSelect);
-        refreshList();
+        scrollTo(creationToSelect);
     }
 
     private void refreshList() {
