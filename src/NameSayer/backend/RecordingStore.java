@@ -66,6 +66,10 @@ public class RecordingStore {
         watchDirectory();
     }
 
+    public static String getDateStringNow() {
+        return DATE_FORMAT.format(new Date());
+    }
+
     private void invalidateQualities() {
         assert Platform.isFxApplicationThread();
 

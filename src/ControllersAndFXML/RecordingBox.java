@@ -1,6 +1,7 @@
 package ControllersAndFXML;
 
 import NameSayer.MicrophoneLevel;
+import NameSayer.backend.RecordingStore;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
@@ -158,8 +159,8 @@ public class RecordingBox implements Initializable {
     }
 
     public void saveRecording() {
-        // TODO
-        String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" + "\"" + "se206_16-5-2018_23-34-53_" + _creationName + "\"" + ".wav";
+        String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" +
+            "\"" + "se206_" + RecordingStore.getDateStringNow() + "_" + _creationName + "\"" + ".wav";
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
             Process moveCreation = moveCreationsProcess.start();
