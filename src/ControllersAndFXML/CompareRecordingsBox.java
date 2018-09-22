@@ -1,5 +1,6 @@
 package ControllersAndFXML;
 
+import NameSayer.ConcatAndSilence;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
@@ -16,7 +17,9 @@ import javafx.scene.media.MediaPlayer;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class CompareRecordingsBox implements Initializable {
@@ -25,6 +28,7 @@ public class CompareRecordingsBox implements Initializable {
     private MediaPlayer _rightPlayer;
     private Path[] _paths= new Path[2];
     private CreationsListView _listView;
+    private List<Recording> recordings= new ArrayList<Recording>();
 
     public CompareRecordingsBox(CreationsListView listView){
         _listView=listView;
@@ -61,6 +65,20 @@ public class CompareRecordingsBox implements Initializable {
                 }
             }
         });
+        leftPlayButton.sceneProperty().addListener(o -> {
+            leftPlayButton.getScene().windowProperty().addListener(o1 -> {
+                leftPlayButton.getScene().getWindow().setOnHiding(e -> {
+                if (_leftPlayer != null) {
+                    _leftPlayer.stop();
+                }
+                if (_rightPlayer != null) {
+                    _rightPlayer.stop();
+                }
+
+                });
+            });
+        });
+
     }
 
 
@@ -75,6 +93,7 @@ public class CompareRecordingsBox implements Initializable {
                 break;
             case VERSION:
                 _paths[1]=recording1.getPath();
+                recordings.add(recording1);
                 rightTitleLabel.setText("Database Recording: "+ recording1.getDateString());
                 break;
         }
@@ -86,6 +105,7 @@ public class CompareRecordingsBox implements Initializable {
                 break;
             case VERSION:
                 _paths[1] = recording2.getPath();
+                recordings.add(recording2);
                 rightTitleLabel.setText("Database Recording: "+ recording2.getDateString());
                 break;
         }
@@ -109,16 +129,21 @@ public class CompareRecordingsBox implements Initializable {
     }
 
     public void rightPlayButtonAction(){
-        Media rightMedia= new Media(new File(_paths[1].toString()).toURI().toString());
-        _rightPlayer=new MediaPlayer(rightMedia);
-        _rightPlayer.play();
-        leftPlayButton.setDisable(true);
-        rightPlayButton.setDisable(true);
-        _rightPlayer.setOnEndOfMedia(() -> {
-            leftPlayButton.setDisable(false);
-            rightPlayButton.setDisable(false);
-        });
+        new ConcatAndSilence(recordings){
 
+            @Override
+            public void ready(String filePath) {
+                Media rightMedia= new Media(new File(filePath).toURI().toString());
+                _rightPlayer=new MediaPlayer(rightMedia);
+                _rightPlayer.play();
+                leftPlayButton.setDisable(true);
+                rightPlayButton.setDisable(true);
+                _rightPlayer.setOnEndOfMedia(() -> {
+                    leftPlayButton.setDisable(false);
+                    rightPlayButton.setDisable(false);
+                });
+            }
+        };
     }
 
 
