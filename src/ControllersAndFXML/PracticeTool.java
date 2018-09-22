@@ -4,9 +4,7 @@ import NameSayer.ConcatAndSilence;
 import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
-import NameSayer.backend.RecordingStore;
 import com.jfoenix.controls.JFXListCell;
-import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -20,12 +18,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +43,7 @@ public class PracticeTool implements Initializable {
     private ObservableList<Recording> _databaseRecordings;
     private ObservableList<Recording> _databaseOptions;
     private ObservableList<Recording> _attemptRecordings;
+    private List<Recording> _recordings;
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
 
@@ -67,14 +63,15 @@ public class PracticeTool implements Initializable {
     public PracticeTool(Controller controller, CreationStore creationStore, List<Recording> recordings) {
         _controller = controller;
         _creationStore = creationStore;
+        _recordings=recordings;
 
         // Clone. Don't break the recording box if the selection changes in the main scene.
-        _databaseRecordings = FXCollections.observableArrayList(recordings);
         _databaseOptions = FXCollections.observableArrayList();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        filterSelectedRecordings();
         populateDatabaseRecordings();
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -219,12 +216,27 @@ public class PracticeTool implements Initializable {
             // Note: using this indirect method to handle phantom recordings of concatenated names.
             String name = databaseComboBox.getValue().getCreation().getName();
             Creation creation = _creationStore.get(name);
-            if (creation == null) return;
+            if (creation == null) {
+                return;
+            }
             creation.addListener(o -> refreshUserComboBox());
             List<Recording> attempts = creation.getAttempts();
             userComboBox.getItems().setAll(attempts);
             if (attempts.size() > 0) {
                 userComboBox.getSelectionModel().selectLast();
+            }
+        }
+    }
+
+    public void filterSelectedRecordings(){
+        _databaseRecordings= FXCollections.observableArrayList();
+        for (Recording counter: _recordings){
+            System.out.println(counter.getCreation().getName());
+            switch (counter.getType()){
+                case VERSION:
+                    _databaseRecordings.add(counter);
+                case ATTEMPT:
+                    //Do nothing
             }
         }
     }
