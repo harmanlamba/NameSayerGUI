@@ -15,8 +15,9 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.Observable;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
@@ -25,14 +26,21 @@ import java.util.List;
 
 import NameSayer.backend.Recording;
 import NameSayer.backend.Creation;
-import NameSayer.backend.CreationStore;
 
 public class CreationsListView extends JFXListView<Creation> {
 
     private ObservableList<Recording> _selectedRecordings = FXCollections.observableArrayList();
-    private ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
+    private ObservableList<Creation> _creationsList;
 
     public CreationsListView() {
+        getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
+        setPlaceholder(new Label("No recordings found.\nAdd them to the ./data/database folder."));
+    }
+
+    public void setCreationsList(ObservableList<Creation> creationsList) {
+        _creationsList = creationsList;
+        refreshList();
 
         InvalidationListener creationListener = observer -> {
             refreshList();
@@ -45,28 +53,15 @@ public class CreationsListView extends JFXListView<Creation> {
             }
         };
 
-        _creationStore.addListener(observer1 -> {
+        _creationsList.addListener((Observable observer2) -> {
             refreshList();
 
-            _creationStore.getValue().addListener(observer2 -> {
-                refreshList();
-                // TODO: search filtered, preserve selections.
-
-                // Linear pass through is okay here
-                for (Creation creation : _creationStore.getValue().getCreations()) {
-                    creation.removeListener(creationListener);
-                    creation.addListener(creationListener);
-                }
-            });
+            // Linear pass through is okay here
+            for (Creation creation : _creationsList) {
+                creation.removeListener(creationListener);
+                creation.addListener(creationListener);
+            }
         });
-
-        getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
-        setPlaceholder(new Label("No recordings found.\nAdd them to the ./data/database folder."));
-    }
-
-    public void setCreationStore(CreationStore store) {
-        _creationStore.setValue(store);
     }
 
     public ObservableList<Recording> getSelectedRecordings() {
@@ -82,7 +77,7 @@ public class CreationsListView extends JFXListView<Creation> {
     }
 
     private void refreshList() {
-        getItems().setAll(_creationStore.getValue().getCreations());
+        getItems().setAll(_creationsList);
     }
 
     private class SingleCellContents extends HBox {
