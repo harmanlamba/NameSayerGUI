@@ -1,11 +1,13 @@
 package NameSayer.backend;
 
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
 
 public class Recording {
 
@@ -99,6 +101,23 @@ public class Recording {
 
     public ObjectProperty<Quality> qualityProperty() {
         return _quality;
+    }
+
+    public void delete() {
+        Task<Void> deleter = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Files.delete(getPath());
+                return null;
+            }
+
+            @Override
+            public void failed() {
+                getException().printStackTrace();
+            }
+        };
+        Thread th = new Thread(deleter);
+        th.start();
     }
 
     public void debugDump() {

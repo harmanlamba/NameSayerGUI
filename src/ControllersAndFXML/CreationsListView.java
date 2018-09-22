@@ -20,10 +20,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
-import javafx.concurrent.Task;
 
 import java.util.List;
-import java.nio.file.Files;
 
 import NameSayer.backend.Recording;
 import NameSayer.backend.Creation;
@@ -96,7 +94,7 @@ public class CreationsListView extends JFXListView<Creation> {
         private QualityStars _qualityStars = new QualityStars();
         private JFXButton _btnDelete = new JFXButton() {
             public void fire() {
-                deleteRecording();
+                _recording.delete();
             }
         };
 
@@ -153,23 +151,6 @@ public class CreationsListView extends JFXListView<Creation> {
                     _qualityStars,
                     spaceBetweenStarsDelete,
                     _btnDelete);
-        }
-
-        private void deleteRecording() {
-            Task<Void> deleter = new Task<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    Files.delete(_recording.getPath());
-                    return null;
-                }
-
-                @Override
-                public void failed() {
-                    getException().printStackTrace();
-                }
-            };
-            Thread th = new Thread(deleter);
-            th.start();
         }
 
         private void updateNumber() {
