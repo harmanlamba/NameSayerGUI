@@ -143,7 +143,7 @@ public class Controller implements Initializable {
         Parent recordingScene = loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);
-        recordingWindow.setTitle("Recording Box - " + creationName);
+        recordingWindow.setTitle("Recording Tool - " + creationName);
         recordingWindow.setScene(new Scene(recordingScene, 600, 168));
         recordingWindow.show();
         recordingScene.requestFocus();
@@ -234,7 +234,7 @@ public class Controller implements Initializable {
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         compareRecordingsWindow.setResizable(false);
-        compareRecordingsWindow.setTitle("Recording Box");
+        compareRecordingsWindow.setTitle("Comparing Tool");
         compareRecordingsWindow.setScene(new Scene(comparingScene, 716, 198));
         compareRecordingsWindow.show();
         compareRecordingsWindow.requestFocus();

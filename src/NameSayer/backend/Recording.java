@@ -79,7 +79,7 @@ public class Recording {
     }
 
     public String getDateString() {
-        SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         return format.format(_date);
     }
 
