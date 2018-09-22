@@ -127,6 +127,20 @@ public class PracticeTool implements Initializable {
         userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
         databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
 
+        databaseComboBox.sceneProperty().addListener(o -> {
+            databaseComboBox.getScene().windowProperty().addListener(o1 -> {
+                databaseComboBox.getScene().getWindow().setOnHiding(event -> {
+                    if (_databaseMediaView.getMediaPlayer() != null) {
+                        _databaseMediaView.getMediaPlayer().stop();
+                    }
+                    if (_userMediaView.getMediaPlayer() != null) {
+                        _userMediaView.getMediaPlayer().stop();
+                    }
+                });
+            });
+        });
+
+
     }
 
     public void recordButtonAction() throws IOException {

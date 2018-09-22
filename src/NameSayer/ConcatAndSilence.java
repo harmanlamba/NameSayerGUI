@@ -53,7 +53,7 @@ public abstract class ConcatAndSilence {
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(processSilence.getErrorStream()));
                     String line = "";
                     while ((line = stderr.readLine()) != null) {
-                        System.out.println(line + "\n");
+                        //System.out.println(line + "\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
