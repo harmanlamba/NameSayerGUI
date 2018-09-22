@@ -1,5 +1,6 @@
 package ControllersAndFXML;
 
+import NameSayer.ConcatAndSilence;
 import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;

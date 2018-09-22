@@ -1,6 +1,7 @@
 package ControllersAndFXML;
 
 
+import NameSayer.ConcatAndSilence;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
@@ -168,43 +169,13 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
-        Task<Void> task = new Task<Void>() {
+        ConcatAndSilence concatAndSilence = new ConcatAndSilence() {
             @Override
-            protected Void call() throws Exception {
-
-                ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -f concat -safe 0 -y -i ./data/tempCreations/concat.txt -c copy ./data/tempPlayback/playBack.wav");
-                ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -hide_banner -y -i ./data/tempPlayback/playBack.wav -af " +
-                    "silenceremove=1:0:-35dB:1:5:-35dB:0:peak ./data/tempPlayback/playBackSilenced.wav");
-                try {
-                    Process process = concatBuilder.start();
-                    int exitCodeConcat = process.waitFor();
-                    Process processSilence = silenceRemoverBuilder.start();
-                    int exitCodeSilence = processSilence.waitFor();
-                    System.out.println(exitCodeConcat);
-                    System.out.println("Exit Code for Silencing: " + exitCodeSilence);
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(processSilence.getErrorStream()));
-                    String line = "";
-                    while ((line = stderr.readLine()) != null) {
-                        System.out.println(line + "\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                Platform.runLater(() -> {
-                    _isMediaPlaying.set(true);
-                    mediaLoaderAndPlayer("./data/tempPlayback/playBackSilenced.wav");
-                });
+            public void ready(String filePath) {
+                mediaLoaderAndPlayer(filePath);
             }
         };
-        Thread thread = new Thread(task);
-        thread.start();
+
     }
 
     public void nextButtonAction() {
@@ -230,6 +201,7 @@ public class Controller implements Initializable {
             }
         });
         mediaPlayer.play();
+        _isMediaPlaying.set(true);
         mediaPlayer.setVolume(volumeSlider.getValue() / 100);
 
         //configuring the playback slider
