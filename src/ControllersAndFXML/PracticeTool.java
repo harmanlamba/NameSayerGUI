@@ -29,6 +29,8 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -37,10 +39,14 @@ import java.util.ResourceBundle;
 
 
 public class PracticeTool implements Initializable {
+    private static final String PRACTICE_TEMP_FOLDER = "tempPractice";
+
     private Controller _controller;
+    private CreationStore _creationStore;
     private MediaView _databaseMediaView = new MediaView();
     private MediaView _userMediaView = new MediaView();
     private ObservableList<Recording> _databaseRecordings;
+    private ObservableList<Recording> _databaseOptions;
     private ObservableList<Recording> _attemptRecordings;
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
@@ -58,11 +64,13 @@ public class PracticeTool implements Initializable {
     public QualityStars databaseQualityStars;
 
 
-    public PracticeTool(Controller controller, List<Recording> recordings) {
+    public PracticeTool(Controller controller, CreationStore creationStore, List<Recording> recordings) {
         _controller = controller;
+        _creationStore = creationStore;
 
         // Clone. Don't break the recording box if the selection changes in the main scene.
         _databaseRecordings = FXCollections.observableArrayList(recordings);
+        _databaseOptions = FXCollections.observableArrayList();
     }
 
     @Override
@@ -86,6 +94,7 @@ public class PracticeTool implements Initializable {
             refreshUserComboBox();
         });
         refreshUserComboBox();
+        _creationStore.addListener(o -> refreshUserComboBox());
         databaseQualityStars.setRecording(databaseComboBox.getValue());
 
         userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
@@ -148,8 +157,22 @@ public class PracticeTool implements Initializable {
     }
 
     public void populateDatabaseRecordings() {
-        databaseComboBox.setItems(_databaseRecordings);
-        databaseComboBox.getSelectionModel().select(0);
+        if(_databaseRecordings.size() > 1) {
+            new ConcatAndSilence(_databaseRecordings, PRACTICE_TEMP_FOLDER) {
+                @Override
+                public void ready(String filePathString) {
+                    Path recordingPath = Paths.get(filePathString);
+                    _databaseOptions.setAll(_databaseRecordings);
+                    _databaseOptions.add(0, Recording.representConcatenated(_databaseRecordings, recordingPath));
+                    databaseComboBox.setItems(_databaseOptions);
+                    databaseComboBox.getSelectionModel().select(0);
+                }
+            };
+        } else {
+            _databaseOptions.setAll(_databaseRecordings);
+            databaseComboBox.setItems(_databaseOptions);
+            databaseComboBox.getSelectionModel().select(0);
+        }
     }
 
     public void shuffleDatabaseRecordings() {
@@ -190,8 +213,20 @@ public class PracticeTool implements Initializable {
     }
 
     private void refreshUserComboBox() {
-        List<Recording> attempts = databaseComboBox.getValue().getCreation().getAttempts();
-        userComboBox.getItems().setAll(attempts);
+        if(databaseComboBox.getValue() == null) {
+            userComboBox.getItems().clear();
+        } else {
+            // Note: using this indirect method to handle phantom recordings of concatenated names.
+            String name = databaseComboBox.getValue().getCreation().getName();
+            Creation creation = _creationStore.get(name);
+            if (creation == null) return;
+            creation.addListener(o -> refreshUserComboBox());
+            List<Recording> attempts = creation.getAttempts();
+            userComboBox.getItems().setAll(attempts);
+            if (attempts.size() > 0) {
+                userComboBox.getSelectionModel().selectLast();
+            }
+        }
     }
 
 }

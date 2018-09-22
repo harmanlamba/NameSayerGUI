@@ -157,19 +157,6 @@ public class Controller implements Initializable {
     }
 
     public void playButtonAction() {
-        Path _path = Paths.get("./data/tempPlayback");
-        try {
-            if (Files.notExists(_path)) {
-                Files.createDirectories(_path);
-            }
-            if (!Files.isDirectory(_path)) {
-                Files.delete(_path);
-                Files.createDirectories(_path);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
             @Override
             public void ready(String filePath) {
@@ -247,7 +234,7 @@ public class Controller implements Initializable {
     public void practiceRecordingsAction() throws IOException {
         Stage practiceRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/PracticeTool.fxml"));
-        loader.setController(new PracticeTool(this, _selectedRecordings));
+        loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings));
         Parent comparingScene = loader.load();
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
@@ -262,17 +249,7 @@ public class Controller implements Initializable {
     }
 
     private String getCombinedName() {
-        StringBuilder concatenatedName = new StringBuilder();
-
-        if (_selectedRecordings.size() == 0) return "";
-
-        for (Recording recording : _selectedRecordings) {
-            concatenatedName.append(recording.getCreation().getName());
-            concatenatedName.append(" ");
-        }
-        concatenatedName.deleteCharAt(concatenatedName.length() - 1);
-
-        return concatenatedName.toString();
+        return Recording.getCombinedName(_selectedRecordings);
     }
 
 }
