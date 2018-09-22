@@ -4,6 +4,7 @@ package ControllersAndFXML;
 import NameSayer.ConcatAndSilence;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
+import NameSayer.CreationFilter;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -26,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
@@ -52,6 +54,7 @@ import java.util.Collections;
 public class Controller implements Initializable {
 
     private CreationStore _creationStore;
+    private CreationFilter _creationFilter;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
     private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
@@ -72,6 +75,7 @@ public class Controller implements Initializable {
     public CreationsListView listView;
     public JFXSlider playbackSlider;
     public JFXSlider volumeSlider;
+    public TextField textField;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -94,7 +98,10 @@ public class Controller implements Initializable {
             }
         });
         comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
-        listView.setCreationStore(_creationStore);
+
+        _creationFilter = new CreationFilter(textField.textProperty(), _creationStore);
+        listView.setCreationsList(_creationFilter.getFilterResults());
+
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
         playbackSlider.setMin(0);

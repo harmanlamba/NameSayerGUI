@@ -34,7 +34,7 @@
          <top>
             <HBox prefHeight="27.0" prefWidth="618.0" BorderPane.alignment="CENTER">
                <children>
-                  <JFXTextField id="textField" prefHeight="25.0" prefWidth="515.0" promptText="Filter Name" HBox.hgrow="ALWAYS" />
+                  <JFXTextField id="textField" fx:id="textField" prefHeight="25.0" prefWidth="515.0" promptText="Filter Name" HBox.hgrow="ALWAYS" />
                   <JFXComboBox id="comboBox" fx:id="comboBox" prefHeight="25.0" prefWidth="115.0" promptText="Filter Settings" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
