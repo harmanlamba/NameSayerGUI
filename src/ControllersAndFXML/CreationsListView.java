@@ -69,11 +69,23 @@ public class CreationsListView extends JFXListView<Creation> {
     }
 
     public void selectNext() {
-        System.out.println("Selecting Next");
+        Recording cursor = _selectedRecordings.get(_selectedRecordings.size() - 1);
+        int indexToSelect = _creationsList.indexOf(cursor.getCreation()) + 1;
+        indexToSelect %= _creationsList.size();
+        Creation creationToSelect = _creationsList.get(indexToSelect);
+        Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
+        _selectedRecordings.setAll(recordingToSelect);
+        refreshList();
     }
 
     public void selectPrevious() {
-        System.out.println("Selecting Previous");
+        Recording cursor = _selectedRecordings.get(0);
+        int indexToSelect = _creationsList.indexOf(cursor.getCreation()) - 1;
+        indexToSelect %= _creationsList.size();
+        Creation creationToSelect = _creationsList.get(indexToSelect);
+        Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
+        _selectedRecordings.setAll(recordingToSelect);
+        refreshList();
     }
 
     private void refreshList() {
@@ -114,7 +126,7 @@ public class CreationsListView extends JFXListView<Creation> {
             setOnMouseExited(event -> isHovered.setValue(false));
 
             _labelNumber.visibleProperty().bind(_checkBox.selectedProperty());
-            _selectedRecordings.addListener((InvalidationListener)(o -> updateNumber()));
+            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
 
             _checkBox.visibleProperty().bind(isHovered.or(_checkBox.selectedProperty()));
             _checkBox.selectedProperty().addListener(o -> {
@@ -148,9 +160,8 @@ public class CreationsListView extends JFXListView<Creation> {
                     _btnDelete);
         }
 
-        private void updateNumber() {
-            int selectionNumber = _selectedRecordings.indexOf(_recording) + 1;
-            _labelNumber.setText(selectionNumber + "");
+        private void updateFromSelectedRecordings() {
+            setSelected(_selectedRecordings.contains(_recording));
         }
 
         public Recording getRecording() {
@@ -168,7 +179,8 @@ public class CreationsListView extends JFXListView<Creation> {
                 if (!_selectedRecordings.contains(_recording)) {
                     _selectedRecordings.add(_recording);
                 }
-                updateNumber();
+                int selectionNumber = _selectedRecordings.indexOf(_recording) + 1;
+                _labelNumber.setText(selectionNumber + "");
             } else {
                 selectionModel.clearSelection(_cell.getIndex());
                 if (_selectedRecordings.contains(_recording)) {
