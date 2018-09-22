@@ -58,7 +58,7 @@ public class Controller implements Initializable {
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
     private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
-    private BooleanProperty _isMediaPaused= new SimpleBooleanProperty();
+    private BooleanProperty _isMediaPaused = new SimpleBooleanProperty(true);
 
     @FXML
     public Button playButton;
@@ -132,6 +132,24 @@ public class Controller implements Initializable {
         _selectedRecordings.addListener(compareButtonDisabler);
         _isMediaPlaying.addListener(compareButtonDisabler);
 
+        _selectedRecordings.addListener((Observable o) -> {
+            // Reset player whenever we change selections.
+            playbackSlider.setValue(0);
+            _isMediaPlaying.set(false);
+            _isMediaPaused.set(true);
+            if (_mediaView.getMediaPlayer() != null) {
+                _mediaView.getMediaPlayer().stop();
+                _mediaView.setMediaPlayer(null);
+            }
+        });
+
+        _isMediaPaused.addListener(o -> {
+            if (_isMediaPaused.get()) {
+                playButton.setText("\uf215"); // play
+            } else {
+                playButton.setText("\uf478"); // pause
+            }
+        });
     }
 
     public void recordButtonAction() throws IOException {
@@ -171,11 +189,9 @@ public class Controller implements Initializable {
         }else if(_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
             _mediaView.getMediaPlayer().pause();
             _isMediaPaused.set(true);
-            playButton.setText("&#xf478"); //paused
         }else if(_isMediaPlaying.getValue() && _isMediaPaused.get()){
             _mediaView.getMediaPlayer().play();
             _isMediaPaused.set(false);
-            playButton.setText("&#xf215;"); //playing
 
         }
     }
@@ -204,6 +220,7 @@ public class Controller implements Initializable {
         });
         mediaPlayer.play();
         _isMediaPlaying.set(true);
+        _isMediaPaused.set(false);
         mediaPlayer.setVolume(volumeSlider.getValue() / 100);
 
         //configuring the playback slider
@@ -216,6 +233,7 @@ public class Controller implements Initializable {
 
         mediaPlayer.setOnEndOfMedia(() -> {
             _isMediaPlaying.set(false);
+            _isMediaPaused.set(true);
             playbackSlider.setValue(playbackSlider.getMax());
         });
 
