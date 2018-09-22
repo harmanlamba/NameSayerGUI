@@ -49,7 +49,6 @@ public class RecordingBox implements Initializable {
         _microphoneLevel = new MicrophoneLevel();
 
         _recordingWindow.setOnHiding(e -> {
-            deleteTempCreations();
             _microphoneLevel.close();
         });
     }
@@ -202,17 +201,4 @@ public class RecordingBox implements Initializable {
         time.getKeyFrames().add(frame);
         time.playFrom(Duration.seconds(0.999));
     }
-
-    public void deleteTempCreations() {
-        String deleteCmd = "rm -r ./data/attempts/tempCreations";
-        /*ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c", deleteCmd);
-        try {
-            Process process = deleteTempCreations.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-    }
-
-
 }
