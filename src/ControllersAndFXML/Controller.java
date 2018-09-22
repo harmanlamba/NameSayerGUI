@@ -67,7 +67,7 @@ public class Controller implements Initializable {
     public Button compareButton;
     public Button practiceButton;
     public Button shuffleButton;
-    public ComboBox comboBox;
+    public ComboBox<CreationFilter.SortStrategy> comboBox;
     public Label topLabel;
     public Label bottomLabel;
     public HBox bottomLabelHBox;
@@ -97,10 +97,13 @@ public class Controller implements Initializable {
                 }
             }
         });
-        comboBox.getItems().addAll("Baboons", "Soajsdlkfasd");
+        comboBox.getItems().addAll(CreationFilter.SortStrategy.SORT_BY_NAME,
+                CreationFilter.SortStrategy.SORT_BY_DATE);
+        comboBox.getSelectionModel().selectFirst();
 
         _creationFilter = new CreationFilter(textField.textProperty(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
+        comboBox.valueProperty().bindBidirectional(_creationFilter.sortStrategyProperty());
 
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
