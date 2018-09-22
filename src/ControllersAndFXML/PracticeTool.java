@@ -4,9 +4,7 @@ import NameSayer.ConcatAndSilence;
 import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
-import NameSayer.backend.RecordingStore;
 import com.jfoenix.controls.JFXListCell;
-import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -20,12 +18,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +71,7 @@ public class PracticeTool implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        filterDatabaseRecordings();
+        filterSelectedRecordings();
         populateDatabaseRecordings();
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -221,7 +216,9 @@ public class PracticeTool implements Initializable {
             // Note: using this indirect method to handle phantom recordings of concatenated names.
             String name = databaseComboBox.getValue().getCreation().getName();
             Creation creation = _creationStore.get(name);
-            if (creation == null) return;
+            if (creation == null) {
+                return;
+            }
             creation.addListener(o -> refreshUserComboBox());
             List<Recording> attempts = creation.getAttempts();
             userComboBox.getItems().setAll(attempts);
@@ -231,7 +228,7 @@ public class PracticeTool implements Initializable {
         }
     }
 
-    public void filterDatabaseRecordings(){
+    public void filterSelectedRecordings(){
         _databaseRecordings= FXCollections.observableArrayList();
         for (Recording counter: _recordings){
             System.out.println(counter.getCreation().getName());
