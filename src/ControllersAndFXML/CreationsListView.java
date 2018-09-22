@@ -23,6 +23,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import NameSayer.backend.Recording;
 import NameSayer.backend.Creation;
@@ -77,7 +78,9 @@ public class CreationsListView extends JFXListView<Creation> {
     }
 
     private void refreshList() {
+        List<Recording> wasSelected = new ArrayList<>(_selectedRecordings);
         getItems().setAll(_creationsList);
+        _selectedRecordings.setAll(wasSelected);
     }
 
     private class SingleCellContents extends HBox {
