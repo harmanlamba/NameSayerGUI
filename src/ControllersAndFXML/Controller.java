@@ -1,11 +1,11 @@
 package ControllersAndFXML;
 
 
-
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.InvalidationListener;
@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,8 +34,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,7 +85,7 @@ public class Controller implements Initializable {
             @Override
             public void invalidated(Observable observable) {
                 System.out.println("new volume value: " + (volumeSlider.getValue() / 100));
-                if(_mediaView.getMediaPlayer() != null) {
+                if (_mediaView.getMediaPlayer() != null) {
                     System.out.println("media player not null");
                     _mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100);
                     System.out.println("media player volume: " + _mediaView.getMediaPlayer().getVolume());
@@ -93,10 +96,11 @@ public class Controller implements Initializable {
         listView.setCreationStore(_creationStore);
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
+        playbackSlider.setMin(0);
 
         _selectedRecordings = listView.getSelectedRecordings();
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
-        BooleanBinding isMultipleSelections= Bindings.size(_selectedRecordings).greaterThan(1);
+        BooleanBinding isMultipleSelections = Bindings.size(_selectedRecordings).greaterThan(1);
         playbackSlider.disableProperty().bind(isSelected.not());
         practiceButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
@@ -117,6 +121,7 @@ public class Controller implements Initializable {
         _isMediaPlaying.addListener(compareButtonDisabler);
 
     }
+
     public void recordButtonAction() throws IOException {
         openRecordingBox(getCombinedName());
     }
@@ -144,7 +149,6 @@ public class Controller implements Initializable {
     }
 
     public void playButtonAction() {
-        //If concatenation has to be done
         Path _path = Paths.get("./data/tempPlayback");
         try {
             if (Files.notExists(_path)) {
@@ -157,34 +161,58 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //TODO
 
-        //Just Playing already existing files
-        String filePath;
-
-        if (_selectedRecordings.size() > 1) {
-            filePath = "./data/tempPlayback/tempAudio.wav";
-        } else {
-            filePath = _selectedRecordings.get(0).getPath().toString();
+        try {
+            createFileNameForConcatenation();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        Thread thread = new Thread(new Runnable() {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+
+                ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -f concat -safe 0 -y -i ./data/tempCreations/concat.txt -c copy ./data/tempPlayback/playBack.wav");
+                ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -hide_banner -y -i ./data/tempPlayback/playBack.wav -af " +
+                    "silenceremove=1:0:-35dB:1:5:-35dB:0:peak ./data/tempPlayback/playBackSilenced.wav");
+                try {
+                    Process process = concatBuilder.start();
+                    int exitCodeConcat = process.waitFor();
+                    Process processSilence = silenceRemoverBuilder.start();
+                    int exitCodeSilence = processSilence.waitFor();
+                    System.out.println(exitCodeConcat);
+                    System.out.println("Exit Code for Silencing: " + exitCodeSilence);
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(processSilence.getErrorStream()));
+                    String line = "";
+                    while ((line = stderr.readLine()) != null) {
+                        System.out.println(line + "\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
 
             @Override
-            public void run() {
-                _isMediaPlaying.set(true);
-                mediaLoaderAndPlayer(filePath);
+            protected void succeeded() {
+                Platform.runLater(() -> {
+                    _isMediaPlaying.set(true);
+                    mediaLoaderAndPlayer("./data/tempPlayback/playBackSilenced.wav");
+                });
             }
-        });
+        };
+        Thread thread = new Thread(task);
         thread.start();
     }
 
     public void nextButtonAction() {
-       listView.selectNext();
-       playButtonAction();
+        listView.selectNext();
+        playButtonAction();
     }
 
-    public void previousButtonAction(){
+    public void previousButtonAction() {
         listView.selectPrevious();
         playButtonAction();
     }
@@ -202,7 +230,7 @@ public class Controller implements Initializable {
             }
         });
         mediaPlayer.play();
-        mediaPlayer.setVolume(volumeSlider.getValue()/100);
+        mediaPlayer.setVolume(volumeSlider.getValue() / 100);
 
         //configuring the playback slider
         mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
@@ -214,6 +242,7 @@ public class Controller implements Initializable {
 
         mediaPlayer.setOnEndOfMedia(() -> {
             _isMediaPlaying.set(false);
+            playbackSlider.setValue(playbackSlider.getMax());
         });
 
         playbackSlider.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -273,23 +302,22 @@ public class Controller implements Initializable {
         return concatenatedName.toString();
     }
 
-    public void createFileNameForConcatenation() throws IOException{
-        ObservableList<Recording> selectedRecordings =listView.getSelectedRecordings();
-        List<String> concatData= new ArrayList<String>();
+    public void createFileNameForConcatenation() throws IOException {
+        ObservableList<Recording> selectedRecordings = listView.getSelectedRecordings();
+        List<String> concatData = new ArrayList<String>();
 
         for (Recording counter : selectedRecordings) {
-            concatData.add("file './"+counter.getPath()+"'");
+            concatData.add("file '../../" + counter.getPath() + "'");
         }
-        
-       Path path=Paths.get("/Data/tempCreation/concat.txt");
+
+        Path path = Paths.get("./data/tempCreations/concat.txt");
         try {
             Files.write(path, concatData,
-                StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+                StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO
         }
-
 
 
     }
