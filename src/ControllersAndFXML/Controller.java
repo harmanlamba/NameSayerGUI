@@ -95,16 +95,19 @@ public class Controller implements Initializable {
         playbackSlider.disableProperty().bind(isSelected.not());
         practiceButton.disableProperty().bind(isSelected.not());
         recordButton.disableProperty().bind(isSelected.not());
+        topLabel.visibleProperty().bind(isSelected);
+
 
         compareButton.setDisable(true);
         _selectedRecordings.addListener((Observable observable) -> {
+            bottomLabel.setText(getCombinedName());
             compareButton.setDisable(
                     _selectedRecordings.size() != 2 ||
                     _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
                     _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType());
         });
-    }
 
+    }
     public void recordButtonAction() throws IOException {
         openRecordingBox(getCombinedName());
     }
@@ -247,7 +250,7 @@ public class Controller implements Initializable {
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
         practiceRecordingsWindow.setTitle("Practice Tool");
-        practiceRecordingsWindow.setScene(new Scene(comparingScene, 716, 198));
+        practiceRecordingsWindow.setScene(new Scene(comparingScene, 794, 368));
         practiceRecordingsWindow.show();
         practiceRecordingsWindow.requestFocus();
         practiceRecordingsWindow.setOnHidden(e -> {

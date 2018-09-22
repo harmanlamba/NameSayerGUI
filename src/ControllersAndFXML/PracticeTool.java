@@ -10,6 +10,8 @@ import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -38,11 +40,17 @@ public class PracticeTool implements Initializable {
     private MediaView _userMediaView = new MediaView();
     private ObservableList<Recording> _databaseRecordings;
     private ObservableList<Recording> _attemptRecordings;
+    private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
+    private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
 
     @FXML
     public ComboBox<Recording> databaseComboBox;
     public ComboBox<Recording> userComboBox;
     public Button userPlayButton;
+    public Button databasePlayButton;
+    public Button databaseShuffleButton;
+    public Button userRecordButton;
+    public Label recordingLabel;
     public JFXSlider databaseVolumeSlider;
     public JFXSlider userVolumeSlider;
     public QualityStars databaseQualityStars;
@@ -69,6 +77,9 @@ public class PracticeTool implements Initializable {
             }
         });
         databaseComboBox.setButtonCell(databaseComboBox.getCellFactory().call(null));
+        databaseComboBox.valueProperty().addListener(e -> {
+            recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
+        });
 
         userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -78,6 +89,7 @@ public class PracticeTool implements Initializable {
                     setText(null);
                 } else {
                     setText(item.getDate().toString());
+
                 }
             }
         });
@@ -111,7 +123,11 @@ public class PracticeTool implements Initializable {
         });
 
         BooleanBinding isUserRecordingSelected = userComboBox.valueProperty().isNotNull();
-        userPlayButton.disableProperty().bind(isUserRecordingSelected.not());
+        userPlayButton.disableProperty().bind(isUserRecordingSelected.not().or(_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
+        databasePlayButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
+        userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
+        databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
+
     }
 
     public void recordButtonAction() throws IOException {
@@ -134,6 +150,11 @@ public class PracticeTool implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _userMediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
+        _isUserMediaPlaying.set(true);
+        mediaPlayer.setOnEndOfMedia(() -> {
+            _isUserMediaPlaying.set(false);
+        });
+
     }
 
     public void databasePlayButtonAction() {
@@ -142,6 +163,11 @@ public class PracticeTool implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _databaseMediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
+        _isDatabaseMediaPlaying.set(true);
+        mediaPlayer.setOnEndOfMedia(() -> {
+            _isDatabaseMediaPlaying.set(false);
+        });
+
     }
 
     private void refreshUserComboBox() {
