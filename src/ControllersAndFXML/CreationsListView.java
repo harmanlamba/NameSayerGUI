@@ -7,6 +7,8 @@ import com.jfoenix.controls.JFXButton;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -62,6 +64,7 @@ public class CreationsListView extends JFXListView<Creation> {
 
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
+        setPlaceholder(new Label("No recordings found.\nAdd them to the ./data/database folder."));
     }
 
     public void setCreationStore(CreationStore store) {
@@ -109,7 +112,7 @@ public class CreationsListView extends JFXListView<Creation> {
             setSelected(_selectedRecordings.contains(recording));
 
             _labelName.setText(recording.getCreation().getName());
-            _labelDate.setText(recording.getDate().toString());
+            _labelDate.setText(recording.getDateString());
             _qualityStars.setRecording(recording);
             _qualityStars.setRecording(recording);
 
@@ -129,8 +132,27 @@ public class CreationsListView extends JFXListView<Creation> {
             _btnDelete.getStyleClass().add("delete-btn");
             _btnDelete.setVisible(recording.getType() == Recording.Type.ATTEMPT);
 
-            getChildren().setAll(_checkBox, _labelNumber, _labelName,
-                    _labelDate, _qualityStars, _btnDelete);
+            _labelNumber.setPrefWidth(16);
+            Region spaceBetweenNumberName = new Region();
+            spaceBetweenNumberName.setMinWidth(20);
+            _labelName.setMaxWidth(Double.POSITIVE_INFINITY);
+            _labelName.setPrefWidth(0);
+            HBox.setHgrow(_labelName, Priority.ALWAYS);
+            _labelDate.setMaxWidth(Double.POSITIVE_INFINITY);
+            _labelDate.setPrefWidth(0);
+            HBox.setHgrow(_labelDate, Priority.ALWAYS);
+            Region spaceBetweenStarsDelete = new Region();
+            spaceBetweenStarsDelete.setMinWidth(20);
+
+            getChildren().setAll(
+                    _checkBox,
+                    _labelNumber,
+                    spaceBetweenNumberName,
+                    _labelName,
+                    _labelDate,
+                    _qualityStars,
+                    spaceBetweenStarsDelete,
+                    _btnDelete);
         }
 
         private void deleteRecording() {
@@ -190,14 +212,17 @@ public class CreationsListView extends JFXListView<Creation> {
         public MultiCellContents(Creation creation, ObservableList<Recording> selectedRecordings) {
             super();
             _labelName.setText(creation.getName());
-            _labelCount.setText(creation.getRecordingCount() + " versions");
+            _labelCount.setText(creation.getRecordingCount() + " recordings");
 
             _listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             _listView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
 
             _listView.getItems().setAll(creation.getAllRecordings());
 
-            getChildren().setAll(new HBox(_labelName, _labelCount), _listView);
+            Region spaceBetweenNameCount = new Region();
+            HBox.setHgrow(spaceBetweenNameCount, Priority.ALWAYS);
+            HBox heading = new HBox(_labelName, spaceBetweenNameCount, _labelCount);
+            getChildren().setAll(heading, _listView);
         }
 
     }
