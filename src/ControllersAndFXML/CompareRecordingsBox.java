@@ -130,7 +130,6 @@ public class CompareRecordingsBox implements Initializable {
 
     public void rightPlayButtonAction(){
         new ConcatAndSilence(recordings){
-
             @Override
             public void ready(String filePath) {
                 Media rightMedia= new Media(new File(filePath).toURI().toString());

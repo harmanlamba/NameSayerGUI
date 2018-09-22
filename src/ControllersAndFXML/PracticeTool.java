@@ -48,6 +48,7 @@ public class PracticeTool implements Initializable {
     private ObservableList<Recording> _databaseRecordings;
     private ObservableList<Recording> _databaseOptions;
     private ObservableList<Recording> _attemptRecordings;
+    private List<Recording> _recordings;
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
 
@@ -67,14 +68,15 @@ public class PracticeTool implements Initializable {
     public PracticeTool(Controller controller, CreationStore creationStore, List<Recording> recordings) {
         _controller = controller;
         _creationStore = creationStore;
+        _recordings=recordings;
 
         // Clone. Don't break the recording box if the selection changes in the main scene.
-        _databaseRecordings = FXCollections.observableArrayList(recordings);
         _databaseOptions = FXCollections.observableArrayList();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        filterDatabaseRecordings();
         populateDatabaseRecordings();
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -225,6 +227,19 @@ public class PracticeTool implements Initializable {
             userComboBox.getItems().setAll(attempts);
             if (attempts.size() > 0) {
                 userComboBox.getSelectionModel().selectLast();
+            }
+        }
+    }
+
+    public void filterDatabaseRecordings(){
+        _databaseRecordings= FXCollections.observableArrayList();
+        for (Recording counter: _recordings){
+            System.out.println(counter.getCreation().getName());
+            switch (counter.getType()){
+                case VERSION:
+                    _databaseRecordings.add(counter);
+                case ATTEMPT:
+                    //Do nothing
             }
         }
     }
