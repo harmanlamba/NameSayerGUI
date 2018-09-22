@@ -10,6 +10,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -48,6 +50,7 @@ public class Controller implements Initializable {
     private CreationStore _creationStore;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
+    private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
 
     @FXML
     public Button playButton;
@@ -56,6 +59,7 @@ public class Controller implements Initializable {
     public Button recordButton;
     public Button compareButton;
     public Button practiceButton;
+    public Button shuffleButton;
     public ComboBox comboBox;
     public Label topLabel;
     public Label bottomLabel;
@@ -92,20 +96,25 @@ public class Controller implements Initializable {
 
         _selectedRecordings = listView.getSelectedRecordings();
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
+        BooleanBinding isMultipleSelections= Bindings.size(_selectedRecordings).greaterThan(1);
         playbackSlider.disableProperty().bind(isSelected.not());
-        practiceButton.disableProperty().bind(isSelected.not());
-        recordButton.disableProperty().bind(isSelected.not());
+        practiceButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
+        recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
+        shuffleButton.disableProperty().bind(isMultipleSelections.not().or(_isMediaPlaying));
         topLabel.visibleProperty().bind(isSelected);
+
+        InvalidationListener compareButtonDisabler = (Observable observable) -> {
+            bottomLabel.setText(getCombinedName());
+            compareButton.setDisable(
+                _selectedRecordings.size() != 2 ||
+                    _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
+                    _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType() || _isMediaPlaying.get());
+        };
 
 
         compareButton.setDisable(true);
-        _selectedRecordings.addListener((Observable observable) -> {
-            bottomLabel.setText(getCombinedName());
-            compareButton.setDisable(
-                    _selectedRecordings.size() != 2 ||
-                    _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
-                    _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType());
-        });
+        _selectedRecordings.addListener(compareButtonDisabler);
+        _isMediaPlaying.addListener(compareButtonDisabler);
 
     }
     public void recordButtonAction() throws IOException {
@@ -163,7 +172,8 @@ public class Controller implements Initializable {
 
             @Override
             public void run() {
-                mediaLoaderAndPlayer("./data/attempts/audio.wav");
+                _isMediaPlaying.set(true);
+                mediaLoaderAndPlayer(filePath);
             }
         });
         thread.start();
@@ -182,7 +192,6 @@ public class Controller implements Initializable {
 
     public void mediaLoaderAndPlayer(String filePath) {
 
-        PauseTransition delay= new PauseTransition(Duration.seconds(5));
         Media media = new Media(new File(filePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _mediaView.setMediaPlayer(mediaPlayer);
@@ -193,19 +202,6 @@ public class Controller implements Initializable {
             }
         });
         mediaPlayer.play();
-        delay.play();
-        recordButton.setDisable(true);
-        previousButton.setDisable(true);
-        playButton.setDisable(true);
-        nextButton.setDisable(true);
-
-        delay.setOnFinished(e -> {
-            recordButton.setDisable(false);
-            previousButton.setDisable(false);
-            playButton.setDisable(false);
-            nextButton.setDisable(false);
-        });
-
         mediaPlayer.setVolume(volumeSlider.getValue()/100);
 
         //configuring the playback slider
@@ -214,6 +210,10 @@ public class Controller implements Initializable {
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
                 playbackSlider.setValue(newValue.toSeconds());
             }
+        });
+
+        mediaPlayer.setOnEndOfMedia(() -> {
+            _isMediaPlaying.set(false);
         });
 
         playbackSlider.setOnMouseClicked(new EventHandler<MouseEvent>() {
