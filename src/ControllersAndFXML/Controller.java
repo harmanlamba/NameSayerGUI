@@ -117,6 +117,7 @@ public class Controller implements Initializable {
         practiceButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         shuffleButton.disableProperty().bind(isMultipleSelections.not().or(_isMediaPlaying));
+        playButton.disableProperty().bind(isSelected.not());
         topLabel.visibleProperty().bind(isSelected);
 
         InvalidationListener compareButtonDisabler = (Observable observable) -> {
