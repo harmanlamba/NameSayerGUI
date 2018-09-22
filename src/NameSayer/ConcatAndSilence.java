@@ -16,9 +16,28 @@ import java.util.ArrayList;
 import NameSayer.backend.Recording;
 
 public abstract class ConcatAndSilence {
+    private static final String DEFAULT_TEMP_FOLDER = "tempPlayback";
+
     public abstract void ready(String filePath);
 
     public ConcatAndSilence(List<Recording> recordings) {
+        this(recordings, DEFAULT_TEMP_FOLDER);
+    }
+
+    public ConcatAndSilence(List<Recording> recordings, String folder) {
+        Path _path = Paths.get("./data/" + folder);
+        try {
+            if (Files.notExists(_path)) {
+                Files.createDirectories(_path);
+            }
+            if (!Files.isDirectory(_path)) {
+                Files.delete(_path);
+                Files.createDirectories(_path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         Task<Void> task = new Task<Void>() {
             private final List<Recording> _recordings = new ArrayList<>(recordings);
@@ -31,7 +50,7 @@ public abstract class ConcatAndSilence {
                     concatData.add("file '../../" + counter.getPath() + "'");
                 }
 
-                Path path = Paths.get("./data/tempCreations/concat.txt");
+                Path path = Paths.get("./data/" + folder + "/concat.txt");
                 try {
                     Files.write(path, concatData,
                         StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -40,9 +59,16 @@ public abstract class ConcatAndSilence {
                     // TODO
                 }
 
-                ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -f concat -safe 0 -y -i ./data/tempCreations/concat.txt -c copy ./data/tempPlayback/playBack.wav");
-                ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c", "ffmpeg -hide_banner -y -i ./data/tempPlayback/playBack.wav -af " +
-                    "silenceremove=1:0:-50dB:1:5:-50dB:0:peak ./data/tempPlayback/playBackSilenced.wav");
+                ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c",
+                        "ffmpeg -f concat -safe 0 -y " +
+                        "-i ./data/" + folder + "/concat.txt " +
+                        "-c copy ./data/" + folder + "/playBack.wav");
+
+                ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c",
+                        "ffmpeg -hide_banner -y " +
+                        "-i ./data/" + folder + "/playBack.wav -af " +
+                        "silenceremove=1:0:-50dB:1:5:-50dB:0:peak " +
+                        "./data/" + folder + "/playBackSilenced.wav");
                 try {
                     Process process = concatBuilder.start();
                     int exitCodeConcat = process.waitFor();
@@ -66,7 +92,7 @@ public abstract class ConcatAndSilence {
             @Override
             protected void succeeded() {
                 Platform.runLater(() -> {
-                    ready("./data/tempPlayback/playBackSilenced.wav");
+                    ready("./data/" + folder + "/playBackSilenced.wav");
                 });
             }
         };

@@ -4,12 +4,34 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
 public class Recording {
+
+    public static Recording representConcatenated(List<Recording> recordings, Path audioPath) {
+        Creation creation = new Creation(Recording.getCombinedName(recordings));
+        Recording recording = new Recording(creation, new Date(), audioPath, Recording.Type.VERSION);
+        return recording;
+    }
+
+
+    public static String getCombinedName(List<Recording> recordings) {
+        StringBuilder concatenatedName = new StringBuilder();
+
+        if (recordings.size() == 0) return "";
+
+        for (Recording recording : recordings) {
+            concatenatedName.append(recording.getCreation().getName());
+            concatenatedName.append(" ");
+        }
+        concatenatedName.deleteCharAt(concatenatedName.length() - 1);
+
+        return concatenatedName.toString();
+    }
 
     public enum Quality {
         QUALITY_UNRATED(0),

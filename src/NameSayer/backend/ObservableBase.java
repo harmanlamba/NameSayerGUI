@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javafx.beans.Observable;
 import javafx.beans.InvalidationListener;
+import javafx.application.Platform;
 
 public class ObservableBase implements Observable {
 
@@ -20,7 +21,7 @@ public class ObservableBase implements Observable {
 
     protected void invalidate() {
         for (InvalidationListener listener : _listeners) {
-            listener.invalidated(this);
+            Platform.runLater(() -> listener.invalidated(this));
         }
     }
 

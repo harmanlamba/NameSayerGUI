@@ -287,8 +287,13 @@ public class CreationsListView extends JFXListView<Creation> {
                     Recording recording;
                     if (versions.size() > 0) {
                         recording = versions.get(0);
-                    } else {
+                    } else if (attempts.size() > 0) {
                         recording = attempts.get(0);
+                    } else {
+                        // BUG: this should not be possible.
+                        // To reproduce: record in the practice tool.
+                        setCellContents(null);
+                        return;
                     }
                     setCellContents(new SingleCellContents(recording, this, _selectedRecordings));
                 }
