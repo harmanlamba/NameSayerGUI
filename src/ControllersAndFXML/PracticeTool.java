@@ -67,6 +67,7 @@ public class PracticeTool implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        populateDatabaseRecordings();
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
             protected void updateItem(Recording item, boolean empty) {
@@ -81,7 +82,11 @@ public class PracticeTool implements Initializable {
         databaseComboBox.setButtonCell(databaseComboBox.getCellFactory().call(null));
         databaseComboBox.valueProperty().addListener(e -> {
             recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
+            databaseQualityStars.setRecording(databaseComboBox.getValue());
+            refreshUserComboBox();
         });
+        refreshUserComboBox();
+        databaseQualityStars.setRecording(databaseComboBox.getValue());
 
         userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -98,14 +103,6 @@ public class PracticeTool implements Initializable {
         userComboBox.setButtonCell(userComboBox.getCellFactory().call(null));
         userComboBox.setPlaceholder(new Label("No attempts yet. Make one below"));
 
-        populateDatabaseRecordings();
-
-        refreshUserComboBox();
-        databaseQualityStars.setRecording(databaseComboBox.getValue());
-        databaseComboBox.getSelectionModel().selectedItemProperty().addListener(e -> {
-            databaseQualityStars.setRecording(databaseComboBox.getValue());
-            refreshUserComboBox();
-        });
 
         userVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
