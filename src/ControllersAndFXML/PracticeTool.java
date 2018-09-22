@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -159,16 +160,22 @@ public class PracticeTool implements Initializable {
     }
 
     public void databasePlayButtonAction() {
-        Recording recordingToPlay = databaseComboBox.getValue();
-        Media media = new Media(new File(recordingToPlay.getPath().toString()).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        _databaseMediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.play();
-        _isDatabaseMediaPlaying.set(true);
-        mediaPlayer.setOnEndOfMedia(() -> {
-            _isDatabaseMediaPlaying.set(false);
-        });
-
+        List<Recording> recordings = new ArrayList();
+        recordings.add(databaseComboBox.getValue());
+        new ConcatAndSilence(recordings) {
+            @Override
+            public void ready(String filePath) {
+                Recording recordingToPlay = databaseComboBox.getValue();
+                Media media = new Media(new File(filePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                _databaseMediaView.setMediaPlayer(mediaPlayer);
+                mediaPlayer.play();
+                _isDatabaseMediaPlaying.set(true);
+                mediaPlayer.setOnEndOfMedia(() -> {
+                    _isDatabaseMediaPlaying.set(false);
+                });
+            }
+        };
     }
 
     private void refreshUserComboBox() {
