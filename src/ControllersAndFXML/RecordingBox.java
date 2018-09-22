@@ -90,6 +90,10 @@ public class RecordingBox implements Initializable {
 
                 String recordingCmd ="ffmpeg -nostdin -y -f alsa -ac 2 -i default -t 5  ./data/tempCreations/tempAudio.wav";
                 Platform.runLater(() -> {
+                    saveButton.setDisable(true);
+                    recordButton.setDisable(true);
+                    playButton.setDisable(true);
+                    recordingLabel.requestFocus();
                     recordingTimer();
                 });
 
@@ -113,6 +117,8 @@ public class RecordingBox implements Initializable {
             @Override
             protected void succeeded() {
                 playButton.setDisable(false);
+                saveButton.setDisable(false);
+                recordButton.setDisable(false);
                 recordingLabel.setOpacity(0);
                 recordingSpinner.setDisable(true);
                 recordingSpinner.setOpacity(0);

@@ -59,7 +59,7 @@
                   </HBox>
                   <HBox id="bottomLabelHbox" fx:id="bottomLabelHBox" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label id="bottomLabel" fx:id="bottomLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="981.0" text="Label" HBox.hgrow="ALWAYS" />
+                        <Label id="bottomLabel" fx:id="bottomLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="981.0"  HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                 </VBox>
