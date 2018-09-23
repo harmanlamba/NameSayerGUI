@@ -220,7 +220,7 @@ public class CreationsListView extends JFXListView<Creation> {
             _labelName.setText(creation.getName());
             _labelCount.setText(creation.getRecordingCount() + " recordings");
 
-            _listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            _listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             _listView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
 
             _listView.getItems().setAll(creation.getAllRecordings());

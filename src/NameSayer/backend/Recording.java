@@ -3,10 +3,8 @@ package NameSayer.backend;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -31,8 +29,7 @@ public class Recording {
             concatenatedName.append(" ");
         }
         concatenatedName.deleteCharAt(concatenatedName.length() - 1);
-        String combinedNameNoRepetitions=Arrays.stream(concatenatedName.toString().split(" ")).distinct().collect(Collectors.joining(" "));
-        return combinedNameNoRepetitions;
+        return concatenatedName.toString();
     }
 
     public enum Quality {
