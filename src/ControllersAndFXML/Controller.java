@@ -160,6 +160,7 @@ public class Controller implements Initializable {
         });
     }
 
+    //Setting up the action handlers for the buttons
     public void clearButtonAction() {
         textField.setText("");
         _selectedRecordings.clear();

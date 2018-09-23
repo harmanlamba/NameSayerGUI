@@ -1,6 +1,6 @@
 package NameSayer;
 
-import ControllersAndFXML.CreationsListView;
+
 import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
@@ -15,11 +15,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class CreationFilter {
-
+     /*
+     Setting up an enum for the only two possible sorting strategies being by NAME and by DATE, which are presented to
+     the user in the comboBox next to the filter.
+      */
     public enum SortStrategy {
         SORT_BY_NAME("Sort by name"),
         SORT_BY_DATE("Most recent first");
@@ -45,6 +47,8 @@ public class CreationFilter {
     public CreationFilter(StringProperty textProperty, CreationStore creationStore){
         _textProperty=textProperty;
         _creationStore=creationStore;
+        //Adding listeners to ensure that whenever the text in the filter changes or the creation it self changes,
+        //the filter is upadated.
         textProperty.addListener(o -> updateFilter());
         creationStore.addListener(o -> updateFilter());
         _sortStrategy.addListener(o -> updateFilter());
@@ -62,11 +66,14 @@ public class CreationFilter {
         _intermediateList.clear();
         List<Creation> creationList= _creationStore.getCreations();
         String filterText= _textProperty.getValue().toLowerCase();
+        //Searching for a match in the filter text and the creation name, if the creation name starts with the filter
+        //text input add the creation to a separate list.
         for(Creation counter: creationList){
             if(counter.getName().toLowerCase().startsWith(filterText)){
                 _intermediateList.add(counter);
             }
         }
+        //After having the list, based on the sorting strategy modify the list and then publish the results
         switch(_sortStrategy.getValue()) {
             case SORT_BY_NAME:
                 sortByName();
@@ -87,6 +94,7 @@ public class CreationFilter {
         });
     }
 
+    //This method implementation sorts creations by the date of the latest recording
     private void sortByDate(){
         Collections.sort(_intermediateList, new Comparator<Creation>() {
             @Override
@@ -95,6 +103,7 @@ public class CreationFilter {
                 List<Recording> recordings2 = o2.getAllRecordings();
                 Date latest1 = recordings1.get(0).getDate();
                 Date latest2 = recordings2.get(0).getDate();
+                //Iterating through and finding the latest recording which then gets returned
                 for (Recording recording : recordings1) {
                     if (recording.getDate().compareTo(latest1) > 0) {
                         latest1 = recording.getDate();

@@ -9,6 +9,7 @@ import NameSayer.backend.Recording;
 
 public class QualityStars extends HBox {
 
+    //Setting up the constants for the icons of the filled and unfilled stars
     private static final String STAR_FILLED_CHAR = "\uf2fc";
     private static final String STAR_UNFILLED_CHAR = "\uf3ae";
 
@@ -23,12 +24,16 @@ public class QualityStars extends HBox {
     };
 
     public QualityStars() {
+        //Setting the stars into the HBox, it is important to note that quality stars is a custom component that extends
+        //an HBox
         getChildren().setAll(_stars);
+        //Iterating through all the stars and adding a mouseClicked event and the adequate style class.
         for (int i = 0; i < _stars.length; i++) {
             final int qualityIndex = i + 1;
             _stars[i].setOnMouseClicked(event -> selectQuality(qualityIndex));
             _stars[i].getStyleClass().add("quality-star");
         }
+        //Ensuring that the quality stars get updated when a new quality is assigned.
         _recording.addListener(o1 -> {
             renderQuality();
             _recording.getValue().qualityProperty().addListener(o2 -> renderQuality());

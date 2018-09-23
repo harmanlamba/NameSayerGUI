@@ -47,6 +47,7 @@ public class PracticeTool implements Initializable {
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
 
+    //Setting up the FXML injections so they can be referenced directly through the code
     @FXML
     public ComboBox<Recording> databaseComboBox;
     public ComboBox<Recording> userComboBox;
@@ -63,7 +64,7 @@ public class PracticeTool implements Initializable {
     public PracticeTool(Controller controller, CreationStore creationStore, List<Recording> recordings) {
         _controller = controller;
         _creationStore = creationStore;
-        _recordings=recordings;
+        _recordings = recordings;
 
         // Clone. Don't break the recording box if the selection changes in the main scene.
         _databaseOptions = FXCollections.observableArrayList();
@@ -71,8 +72,11 @@ public class PracticeTool implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Filtering the recording so the database comboBox does not double up on database recordings and user recordings
         _databaseRecordings = filterSelectedRecordings(_recordings);
         populateDatabaseRecordings();
+        //Setting up the rendering for the comboBox, as the comboBox contains type Recording and not type String,
+        //So we have to tell the comboBox what to display in the cell.
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
             protected void updateItem(Recording item, boolean empty) {
@@ -84,10 +88,14 @@ public class PracticeTool implements Initializable {
                 }
             }
         });
+        //Setting the same cell factory as the one previously defined for the button cell
         databaseComboBox.setButtonCell(databaseComboBox.getCellFactory().call(null));
-        if(databaseComboBox.getValue() != null){
+        //For the first time the practice tool is open so the label displays the Recording name, and overides the
+        //default text of "Label"
+        if (databaseComboBox.getValue() != null) {
             recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
         }
+        //Listener to update the recording label whenever the recording changes in the database comboBox
         databaseComboBox.valueProperty().addListener(e -> {
             System.out.println("run");
             recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
@@ -97,7 +105,7 @@ public class PracticeTool implements Initializable {
         refreshUserComboBox();
         _creationStore.addListener(o -> refreshUserComboBox());
         databaseQualityStars.setRecording(databaseComboBox.getValue());
-
+        //Defining how the cells for the user comboBox should be rendered
         userComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
             protected void updateItem(Recording item, boolean empty) {
@@ -113,7 +121,7 @@ public class PracticeTool implements Initializable {
         userComboBox.setButtonCell(userComboBox.getCellFactory().call(null));
         userComboBox.setPlaceholder(new Label("No attempts yet. Make one below"));
 
-
+        //Setting up the volume sliders for both database recording mediaplayer and the user attempts mediaplayer
         userVolumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -131,12 +139,18 @@ public class PracticeTool implements Initializable {
             }
         });
 
+        /*
+        Using boolean bindings to automatically bind the buttons disableProperty on the state of the user media playing
+        and the database media playing. i.e: If a media is playing the buttons become disabled as the boolean property
+        changes.
+         */
         BooleanBinding isUserRecordingSelected = userComboBox.valueProperty().isNotNull();
         userPlayButton.disableProperty().bind(isUserRecordingSelected.not().or(_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
         databasePlayButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
         userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
         databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
 
+        //Ensuring that once we exit the PracticeTool the mediaplayers stop their respective playback.
         databaseComboBox.sceneProperty().addListener(o -> {
             databaseComboBox.getScene().windowProperty().addListener(o1 -> {
                 databaseComboBox.getScene().getWindow().setOnHiding(event -> {
@@ -152,13 +166,14 @@ public class PracticeTool implements Initializable {
 
 
     }
-
+    //Re-using the code from RecordBox
     public void recordButtonAction() throws IOException {
         _controller.openRecordingBox(databaseComboBox.getValue().getCreation().getName());
     }
 
     public void populateDatabaseRecordings() {
-        if(_databaseRecordings.size() > 1) {
+        if (_databaseRecordings.size() > 1) {
+            //Adding the concatenating recording as index 0, in the database comboBox
             new ConcatAndSilence(_databaseRecordings, PRACTICE_TEMP_FOLDER) {
                 @Override
                 public void ready(String filePathString) {
@@ -177,16 +192,19 @@ public class PracticeTool implements Initializable {
     }
 
     public void shuffleDatabaseRecordings() {
+        //Using java's built in shuffle feature to randomize the selected recordings and then populate the database
         Collections.shuffle(_databaseRecordings);
         populateDatabaseRecordings();
     }
 
+    //Setting up the action handlers for the userPlay button to playback the media when the play button is pressed.
     public void userPlayButtonAction() {
         Recording userRecordingToPlay = userComboBox.getValue();
         Media media = new Media(new File(userRecordingToPlay.getPath().toString()).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         _userMediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
+        //Defining the boolean properties
         _isUserMediaPlaying.set(true);
         mediaPlayer.setOnEndOfMedia(() -> {
             _isUserMediaPlaying.set(false);
@@ -194,9 +212,12 @@ public class PracticeTool implements Initializable {
 
     }
 
+    //Setting up action handler for the databasePlayButton so that the media is loaded and played.
     public void databasePlayButtonAction() {
         List<Recording> recordings = new ArrayList();
+        //Identifying which recording is selected
         recordings.add(databaseComboBox.getValue());
+        //Passing it through the ConcatAndSilence to play the file adequately
         new ConcatAndSilence(recordings) {
             @Override
             public void ready(String filePath) {
@@ -205,6 +226,7 @@ public class PracticeTool implements Initializable {
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 _databaseMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
+                //Defining the boolean properties
                 _isDatabaseMediaPlaying.set(true);
                 mediaPlayer.setOnEndOfMedia(() -> {
                     _isDatabaseMediaPlaying.set(false);
@@ -214,7 +236,7 @@ public class PracticeTool implements Initializable {
     }
 
     private void refreshUserComboBox() {
-        if(databaseComboBox.getValue() == null) {
+        if (databaseComboBox.getValue() == null) {
             userComboBox.getItems().clear();
         } else {
             // Note: using this indirect method to handle phantom recordings of concatenated names.
@@ -232,10 +254,15 @@ public class PracticeTool implements Initializable {
         }
     }
 
-    public static ObservableList<Recording> filterSelectedRecordings(List<Recording> recordings){
+    /*
+    This method makes sure that only database recordings get added to the database comboBox by filtering thorough the
+    recordings and adding the database recordings to the ObeservableList called databaseOnly. It is a static method since
+    this method is a utility method.
+     */
+    public static ObservableList<Recording> filterSelectedRecordings(List<Recording> recordings) {
         ObservableList<Recording> databaseOnly = FXCollections.observableArrayList();
-        for (Recording counter: recordings){
-            switch (counter.getType()){
+        for (Recording counter : recordings) {
+            switch (counter.getType()) {
                 case VERSION:
                     databaseOnly.add(counter);
                 case ATTEMPT:

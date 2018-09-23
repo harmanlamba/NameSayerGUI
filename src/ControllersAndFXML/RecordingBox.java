@@ -5,7 +5,6 @@ import NameSayer.backend.RecordingStore;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -13,7 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,7 +23,7 @@ import javafx.util.Duration;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import javax.sound.sampled.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -47,13 +45,15 @@ public class RecordingBox implements Initializable {
         _recordingWindow = recordingWindow;
         _creationName = creationName;
 
+        //Setting it so having an instance of a RecordingBox automatically starts the mic level progress bar, and on
+        //closing the window the mic level progress bar stops its data collection.
         _microphoneLevel = new MicrophoneLevel();
-
         _recordingWindow.setOnHiding(e -> {
             _microphoneLevel.close();
         });
     }
 
+    //Setting up the FXML injections so that the components can be referenced directly by the code.
     @FXML
     public Label upperLabel;
     public Label recordingLabel;
@@ -75,6 +75,7 @@ public class RecordingBox implements Initializable {
 
             @Override
             protected Void call() throws Exception {
+                //Checking if the tempCreations folder exist, and in the case that it doesn't the folder is created
                 Path _path = Paths.get("./data/tempCreations");
                 try {
                     if (Files.notExists(_path)) {
@@ -88,12 +89,15 @@ public class RecordingBox implements Initializable {
                     e.printStackTrace();
                 }
 
-                String recordingCmd ="ffmpeg -nostdin -y -f alsa -ac 1 -i default -t 5  ./data/tempCreations/tempAudio.wav";
+                //Setting up the recording command for ffmpeg
+                String recordingCmd = "ffmpeg -nostdin -y -f alsa -ac 1 -i default -t 5  ./data/tempCreations/tempAudio.wav";
+                //Ensuring that the correct buttons are disabled during the recording to not corrupt the recording by mistake
                 Platform.runLater(() -> {
                     saveButton.setDisable(true);
                     recordButton.setDisable(true);
                     playButton.setDisable(true);
                     recordingLabel.requestFocus();
+                    //Starting the recording animation, which tells the user the amount of time they have remaining
                     recordingTimer();
                 });
 
@@ -114,6 +118,7 @@ public class RecordingBox implements Initializable {
                 return null;
             }
 
+            //After recording is completed, re-enable all the buttons for the user
             @Override
             protected void succeeded() {
                 playButton.setDisable(false);
@@ -158,7 +163,12 @@ public class RecordingBox implements Initializable {
         _recordingWindow.close();
     }
 
+   /*
+   This method, when the user clicks saves, moves the temporary recording that was created and moves it to the ./data/attempts
+   folder, which then gets picked up by the listeners and gets added to the main scene
+    */
     public void saveRecording() {
+        //Correctly naming the file in addition to having the move command
         String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" +
             "\"" + "se206_" + RecordingStore.getDateStringNow() + "_" + _creationName + "\"" + ".wav";
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
@@ -177,7 +187,11 @@ public class RecordingBox implements Initializable {
         _recordingWindow.close();
     }
 
+    /*
+    This method handles the countdown for the timer.
+     */
     private void recordingTimer() {
+        //Retrieve the constant value that has been set, currently it is at 5
         final int[] seconds2 = {seconds};
         Timeline time = new Timeline();
         time.setCycleCount(Timeline.INDEFINITE);
@@ -188,7 +202,9 @@ public class RecordingBox implements Initializable {
         recordingSpinner.setDisable(false);
         recordingSpinner.setOpacity(1);
         recordingLabel.setWrapText(true);
+        //Changing the color to RED, to clearly tell the user recording has begun.
         recordingLabel.setTextFill(Color.web("ab4642"));
+        //Counting down every second, having and EventHandler ensure that every second the value is reduced by one.
         KeyFrame frame = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
