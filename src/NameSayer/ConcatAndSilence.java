@@ -67,7 +67,7 @@ public abstract class ConcatAndSilence {
                 ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c",
                         "ffmpeg -hide_banner -y " +
                         "-i ./data/" + folder + "/playBack.wav -af " +
-                        "silenceremove=1:0:-50dB:1:5:-50dB:0:peak " +
+                        "silenceremove=1:0:-50dB:1:5:-50dB:0 " +
                         "./data/" + folder + "/playBackSilenced.wav");
                 try {
                     Process process = concatBuilder.start();
@@ -79,7 +79,7 @@ public abstract class ConcatAndSilence {
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(processSilence.getErrorStream()));
                     String line = "";
                     while ((line = stderr.readLine()) != null) {
-                        //System.out.println(line + "\n");
+                        System.out.println(line + "\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
