@@ -47,11 +47,7 @@ public class CreationsListView extends JFXListView<Creation> {
             refreshList();
 
             // Prune selected recordings.
-            for (Recording recording : _selectedRecordings) {
-                if (!recording.getCreation().has(recording)) {
-                    _selectedRecordings.remove(recording);
-                }
-            }
+            _selectedRecordings.removeIf(recording -> !recording.getCreation().has(recording));
         };
 
         _creationsList.addListener((Observable observer2) -> {
@@ -149,6 +145,11 @@ public class CreationsListView extends JFXListView<Creation> {
             _checkBox.visibleProperty().bind(isHovered.or(_checkBox.selectedProperty()));
             _checkBox.selectedProperty().addListener(o -> {
                 setSelected(_checkBox.isSelected());
+            });
+            _checkBox.focusedProperty().addListener(o -> {
+                // Do not allow focus onto checkbox as this breaks JavaFX's focus cleanup routine
+                // when the nested list view goes off-screen.
+                _cell.getListView().requestFocus();
             });
 
             _btnDelete.setText("\uf252");

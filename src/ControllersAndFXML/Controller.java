@@ -125,6 +125,7 @@ public class Controller implements Initializable {
 
         _selectedRecordings.addListener(practiceButtonDisabler);
         _isMediaPlaying.addListener(practiceButtonDisabler);
+        practiceButtonDisabler.invalidated(null);
 
         InvalidationListener compareButtonDisabler = (Observable observable) -> {
             bottomLabel.setText(getCombinedName());
