@@ -91,11 +91,8 @@ public class Controller implements Initializable {
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                System.out.println("new volume value: " + (volumeSlider.getValue() / 100));
                 if (_mediaView.getMediaPlayer() != null) {
-                    System.out.println("media player not null");
                     _mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100);
-                    System.out.println("media player volume: " + _mediaView.getMediaPlayer().getVolume());
                 }
             }
         });

@@ -118,6 +118,7 @@ public class CompareRecordingsBox implements Initializable {
     public void leftPlayButtonAction(){
         Media leftMedia= new Media(new File(_paths[0].toString()).toURI().toString());
         _leftPlayer= new MediaPlayer(leftMedia);
+        _leftPlayer.setVolume(leftVolumeSlider.getValue() / 100);
         _leftPlayer.play();
         leftPlayButton.setDisable(true);
         rightPlayButton.setDisable(true);
@@ -134,6 +135,7 @@ public class CompareRecordingsBox implements Initializable {
             public void ready(String filePath) {
                 Media rightMedia= new Media(new File(filePath).toURI().toString());
                 _rightPlayer=new MediaPlayer(rightMedia);
+                _rightPlayer.setVolume(rightVolumeSlider.getValue() / 100);
                 _rightPlayer.play();
                 leftPlayButton.setDisable(true);
                 rightPlayButton.setDisable(true);
