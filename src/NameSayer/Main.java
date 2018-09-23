@@ -42,8 +42,6 @@ public class Main extends Application {
         _creationStore = new CreationStore();
         new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
         new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
-
-        _creationStore.debugDump();
     }
 
 }
