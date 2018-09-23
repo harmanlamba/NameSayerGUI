@@ -92,6 +92,10 @@ public class MicrophoneLevel {
         return level;
     }
 
+    /**
+     * The inspiration for this code came from the following link, where we used the same code to calculated the RMS value
+     * for the Microphone input levels. The link is as follows: https://stackoverflow.com/questions/3899585/microphone-level-in-java
+     */
     private int calculateAudioLevel(byte[] audioData) {
         long lSum = 0;
         for (int i = 0; i < audioData.length; i++) {

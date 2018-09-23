@@ -85,8 +85,11 @@ public class PracticeTool implements Initializable {
             }
         });
         databaseComboBox.setButtonCell(databaseComboBox.getCellFactory().call(null));
-        recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
+        if(databaseComboBox.getValue() != null){
+            recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
+        }
         databaseComboBox.valueProperty().addListener(e -> {
+            System.out.println("run");
             recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
             databaseQualityStars.setRecording(databaseComboBox.getValue());
             refreshUserComboBox();
