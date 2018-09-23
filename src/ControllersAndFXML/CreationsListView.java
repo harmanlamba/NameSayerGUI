@@ -150,6 +150,11 @@ public class CreationsListView extends JFXListView<Creation> {
             _checkBox.selectedProperty().addListener(o -> {
                 setSelected(_checkBox.isSelected());
             });
+            _checkBox.focusedProperty().addListener(o -> {
+                // Do not allow focus onto checkbox as this breaks JavaFX's focus cleanup routine
+                // when the nested list view goes off-screen.
+                _cell.getListView().requestFocus();
+            });
 
             _btnDelete.setText("\uf252");
             _btnDelete.getStyleClass().add("delete-btn");
