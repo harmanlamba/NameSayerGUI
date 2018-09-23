@@ -47,11 +47,7 @@ public class CreationsListView extends JFXListView<Creation> {
             refreshList();
 
             // Prune selected recordings.
-            for (Recording recording : _selectedRecordings) {
-                if (!recording.getCreation().has(recording)) {
-                    _selectedRecordings.remove(recording);
-                }
-            }
+            _selectedRecordings.removeIf(recording -> !recording.getCreation().has(recording));
         };
 
         _creationsList.addListener((Observable observer2) -> {
