@@ -45,10 +45,13 @@
          <children>
             <BorderPane>
               <left>
-                <Region prefWidth="220" HBox.hgrow="NEVER">
+                <HBox>
                   <BorderPane.margin>
-                    <Insets bottom="0.0" left="10.0" right="10.0" top="0.0" />
-                  </BorderPane.margin></Region>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </BorderPane.margin>
+                  <JFXButton id="clearButton" fx:id="clearButton" text="Clear" prefWidth="90" onAction="#clearButtonAction" HBox.hgrow="NEVER" />
+                  <Region prefWidth="140" HBox.hgrow="NEVER"></Region>
+                </HBox>
               </left>
               <center>
                 <VBox>

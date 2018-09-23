@@ -68,6 +68,7 @@ public class Controller implements Initializable {
     public Button compareButton;
     public Button practiceButton;
     public Button shuffleButton;
+    public Button clearButton;
     public ComboBox<CreationFilter.SortStrategy> comboBox;
     public Label topLabel;
     public Label bottomLabel;
@@ -151,6 +152,11 @@ public class Controller implements Initializable {
                 playButton.setText("\uf478"); // pause
             }
         });
+    }
+
+    public void clearButtonAction() {
+        textField.setText("");
+        _selectedRecordings.clear();
     }
 
     public void recordButtonAction() throws IOException {
