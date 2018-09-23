@@ -71,7 +71,7 @@ public class PracticeTool implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        filterSelectedRecordings();
+        _databaseRecordings = filterSelectedRecordings(_recordings);
         populateDatabaseRecordings();
         databaseComboBox.setCellFactory((listView) -> new JFXListCell<Recording>() {
             @Override
@@ -232,17 +232,17 @@ public class PracticeTool implements Initializable {
         }
     }
 
-    public void filterSelectedRecordings(){
-        _databaseRecordings= FXCollections.observableArrayList();
-        for (Recording counter: _recordings){
-            System.out.println(counter.getCreation().getName());
+    public static ObservableList<Recording> filterSelectedRecordings(List<Recording> recordings){
+        ObservableList<Recording> databaseOnly = FXCollections.observableArrayList();
+        for (Recording counter: recordings){
             switch (counter.getType()){
                 case VERSION:
-                    _databaseRecordings.add(counter);
+                    databaseOnly.add(counter);
                 case ATTEMPT:
                     //Do nothing
             }
         }
+        return databaseOnly;
     }
 
 }

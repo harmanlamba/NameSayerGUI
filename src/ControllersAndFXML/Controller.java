@@ -115,11 +115,19 @@ public class Controller implements Initializable {
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
         BooleanBinding isMultipleSelections = Bindings.size(_selectedRecordings).greaterThan(1);
         playbackSlider.disableProperty().bind(isSelected.not());
-        practiceButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         shuffleButton.disableProperty().bind(isMultipleSelections.not().or(_isMediaPlaying));
         playButton.disableProperty().bind(isSelected.not());
         topLabel.visibleProperty().bind(isSelected);
+
+        InvalidationListener practiceButtonDisabler = (Observable observable) -> {
+            practiceButton.setDisable(
+                    _isMediaPlaying.get() ||
+                        PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
+        };
+
+        _selectedRecordings.addListener(practiceButtonDisabler);
+        _isMediaPlaying.addListener(practiceButtonDisabler);
 
         InvalidationListener compareButtonDisabler = (Observable observable) -> {
             bottomLabel.setText(getCombinedName());
