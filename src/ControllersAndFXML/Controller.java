@@ -111,6 +111,7 @@ public class Controller implements Initializable {
 
         // Disable and hide components appropriately:
         _selectedRecordings = listView.getSelectedRecordings();
+        BooleanBinding isListEmpty = Bindings.isEmpty(_creationFilter.getFilterResults());
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
         BooleanBinding isMultipleSelections = Bindings.size(_selectedRecordings).greaterThan(1);
         playbackSlider.disableProperty().bind(isSelected.not());
@@ -118,6 +119,8 @@ public class Controller implements Initializable {
         shuffleButton.disableProperty().bind(isMultipleSelections.not().or(_isMediaPlaying));
         playButton.disableProperty().bind(isSelected.not());
         topLabel.visibleProperty().bind(isSelected);
+        nextButton.disableProperty().bind(isListEmpty);
+        previousButton.disableProperty().bind(isListEmpty);
 
         // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
