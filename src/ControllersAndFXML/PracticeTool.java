@@ -81,7 +81,7 @@ public class PracticeTool implements Initializable {
             @Override
             protected void updateItem(Recording item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || item == null) {
                     setText(null);
                 } else {
                     setText(item.getCreation().getName());
@@ -109,7 +109,7 @@ public class PracticeTool implements Initializable {
             @Override
             protected void updateItem(Recording item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || item == null) {
                     setText(null);
                 } else {
                     setText(item.getDate().toString());
@@ -237,11 +237,14 @@ public class PracticeTool implements Initializable {
     private void refreshUserComboBox() {
         if (databaseComboBox.getValue() == null) {
             userComboBox.getItems().clear();
+            userComboBox.setValue(null);
         } else {
             // Note: using this indirect method to handle phantom recordings of concatenated names.
             String name = databaseComboBox.getValue().getCreation().getName();
             Creation creation = _creationStore.get(name);
             if (creation == null) {
+                userComboBox.getItems().clear();
+                userComboBox.setValue(null);
                 return;
             }
             creation.addListener(o -> refreshUserComboBox());
