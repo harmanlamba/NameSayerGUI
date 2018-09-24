@@ -33,11 +33,18 @@ Playing individual recordings:
 3)To pause the recording, hit on the pause button which replaces the play button once the recording starts to play
 4)To go to the next track press the ">" button in the bottom bar, to the right of play/pause button conversely press "<" to go back one recording
 
+*) NOTE: After selecting the Recording if nothing seems to play, this is because the file is empty or the recording is too silent, as a result being filtered
+by the Software. Do not panic, this is normal. Simply, give it a poor quality rating to indicate the issue.
+
 
 Playing a list of recordings:
 -----------------------------
 1) To play a concatenated string, choose the recordings avalible by either using the checkbox or clicking on them. A number should appear next to the checkbox this indicates the order in which the recordings will be concatenated.
 2) You may shuffle the list of recordings by clicking on the shuffle icon on the bottom left side of the media bar
+
+*) NOTE: After selecting the Recording if nothing seems to play, this is because the file is empty or the recording is too silent, as a result being filtered
+by the Software. Do not panic, this is normal. Simply, give it a poor quality rating to indicate the issue.
+
 
 Recording an attempt:
 ---------------------
