@@ -43,6 +43,9 @@ public class CreationsListView extends JFXListView<Creation> {
         _creationsList = creationsList;
         refreshList();
 
+        // Ensure our list is updated when creations are added/removed,
+        // and when recordings are added/removed...
+
         InvalidationListener creationListener = observer -> {
             refreshList();
 
@@ -53,19 +56,25 @@ public class CreationsListView extends JFXListView<Creation> {
         _creationsList.addListener((Observable observer2) -> {
             refreshList();
 
-            // Linear pass through is okay here
+            // Linear pass through is okay here.
             for (Creation creation : _creationsList) {
+                // Ensure any of our previous listeners are removed - don't accumulate.
                 creation.removeListener(creationListener);
                 creation.addListener(creationListener);
             }
         });
     }
 
+    /**
+     * Note: this is automatically synced with the current selection.
+     */
     public ObservableList<Recording> getSelectedRecordings() {
         return _selectedRecordings;
     }
 
     public void selectNext() {
+
+        // Pick very last recording selected in the list.
         int indexToSelect = -1;
         for (Recording recording : _selectedRecordings) {
             int candidateIndex = _creationsList.indexOf(recording.getCreation());
@@ -73,10 +82,14 @@ public class CreationsListView extends JFXListView<Creation> {
                 indexToSelect = candidateIndex;
             }
         }
+
+        // Advance.
         indexToSelect++;
+
+        // Positive modulo to wrap around.
         indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
-        System.out.println(indexToSelect);
+
         Creation creationToSelect = _creationsList.get(indexToSelect);
         Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
         _selectedRecordings.setAll(recordingToSelect);
@@ -84,6 +97,8 @@ public class CreationsListView extends JFXListView<Creation> {
     }
 
     public void selectPrevious() {
+
+        // Pick very first recording selected in the list.
         int indexToSelect = _creationsList.size();
         for (Recording recording : _selectedRecordings) {
             int candidateIndex = _creationsList.indexOf(recording.getCreation());
@@ -91,9 +106,14 @@ public class CreationsListView extends JFXListView<Creation> {
                 indexToSelect = candidateIndex;
             }
         }
+
+        // Advance backwards.
         indexToSelect--;
+
+        // Positive modulo to wrap around.
         indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
+
         Creation creationToSelect = _creationsList.get(indexToSelect);
         Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
         _selectedRecordings.setAll(recordingToSelect);
@@ -103,9 +123,15 @@ public class CreationsListView extends JFXListView<Creation> {
     private void refreshList() {
         List<Recording> wasSelected = new ArrayList<>(_selectedRecordings);
         getItems().setAll(_creationsList);
+
+        // Updating our listview deselects some recordings. Reselect them even when they are
+        // no longer visible on the list through the current list filter.
         _selectedRecordings.setAll(wasSelected);
     }
 
+    /**
+     * Displayed entry for a recording, or a creation with a single recording.
+     */
     private class SingleCellContents extends HBox {
 
         private JFXCheckBox _checkBox = new JFXCheckBox();
@@ -132,7 +158,6 @@ public class CreationsListView extends JFXListView<Creation> {
 
             _labelName.setText(recording.getCreation().getName());
             _labelDate.setText(recording.getDateString());
-            _qualityStars.setRecording(recording);
             _qualityStars.setRecording(recording);
 
             BooleanProperty isHovered = new SimpleBooleanProperty(false);
@@ -210,6 +235,9 @@ public class CreationsListView extends JFXListView<Creation> {
 
     }
 
+    /**
+     * Displayed entry for creations with multiple recordings.
+     */
     private class MultiCellContents extends VBox {
 
         private Label _labelName = new Label();
@@ -239,6 +267,8 @@ public class CreationsListView extends JFXListView<Creation> {
         private SingleCellContents _currentSingleCellContents = null;
         private Recording _recording = null;
         private InvalidationListener cellSelectedListener = o -> {
+            // Do not delesct when the cell goes off screen, or when the item is
+            // transitioning to a different recording.
             if (_currentSingleCellContents == null) return;
             if (!isVisible()) return;
             if (_recording != _currentSingleCellContents.getRecording()) return;

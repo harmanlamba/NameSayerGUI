@@ -9,6 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.beans.InvalidationListener;
 
+/**
+ * Represents a centralised collection of all creations.
+ * Invalidates whenever creations are created/removed.
+ */
 public class CreationStore extends ObservableBase {
 
     private final ObservableMap<String,Creation> _creations = FXCollections.observableHashMap();
@@ -25,16 +29,21 @@ public class CreationStore extends ObservableBase {
     public Creation add(String name) {
         assert !_creations.containsKey(name);
         Creation creation = new Creation(name);
+
+        // Auto-cleanup of creations that no longer have any recordings associated.
         creation.addListener(o -> {
             if (creation.getRecordingCount() == 0) {
                 _creations.remove(name);
             }
         });
+
         _creations.put(name, creation);
         return creation;
     }
 
     public List<Creation> getCreations() {
+        // Note: this is a clone of the list, and is therefore not synchronised with the
+        // creation store after returning. Refetch list upon invalidation.
         return new ArrayList<Creation>(_creations.values());
     }
 

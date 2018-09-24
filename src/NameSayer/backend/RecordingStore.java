@@ -49,6 +49,7 @@ public class RecordingStore {
         _type = type;
         _creationStore = creationStore;
 
+        // Ensure directory exists.
         try {
             if (Files.notExists(_path)) {
                 Files.createDirectories(_path);
@@ -59,7 +60,6 @@ public class RecordingStore {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO
         }
 
         populateFromFilesystem();
@@ -70,6 +70,10 @@ public class RecordingStore {
         return DATE_FORMAT.format(new Date());
     }
 
+    /**
+     * Rewrite the quality data into the file now that some of the recording's qualities
+     * have changed.
+     */
     private void invalidateQualities() {
         assert Platform.isFxApplicationThread();
 
@@ -89,6 +93,9 @@ public class RecordingStore {
         th.start();
     }
 
+    /**
+     * Initialize our store with the files on the directory.
+     */
     private void populateFromFilesystem() {
         assert Platform.isFxApplicationThread();
 
@@ -137,6 +144,10 @@ public class RecordingStore {
         th.start();
     }
 
+    /**
+     * All metadata for the recording are found in the filename.
+     * Parse it to initialize our recording objects.
+     */
     private void addByFilename(String filename) {
         assert Platform.isFxApplicationThread();
 
@@ -145,6 +156,7 @@ public class RecordingStore {
         // Ignore invalid files.
         if (!matcher.find()) return;
 
+        // Try parsing date.
         Date date;
         try {
             date = DATE_FORMAT.parse(matcher.group("date"));
@@ -154,17 +166,27 @@ public class RecordingStore {
             return;
         }
 
+        // Create.
+
         String name = matcher.group("name");
         Creation creation = _creationStore.get(name);
         if (creation == null) {
             creation = _creationStore.add(name);
         }
         Path path = _path.resolve(filename);
+
         Recording recording = new Recording(creation, date, path, _type);
+
+        // We want our recordings to report back to the RecordingStore whenever their quality
+        // changes, so we can save that change into our designated file.
         recording.qualityProperty().addListener(o -> invalidateQualities());
+
         _recordings.put(filename, recording);
     }
 
+    /**
+     * Remove recording object from our store. Note: does not remove from the filesystem.
+     */
     private void removeByFilename(String filename) {
         assert Platform.isFxApplicationThread();
 
@@ -189,7 +211,6 @@ public class RecordingStore {
                     StandardOpenOption.WRITE, StandardOpenOption.CREATE);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO
         }
     }
 
@@ -205,32 +226,41 @@ public class RecordingStore {
             Files.lines(qualityPath)
                     .map(line -> line.split("\t"))
                     .forEach(entry -> {
+
+                        // Ignore invalid lines
                         if (entry.length < 2) return;
 
                         String filename = entry[0];
                         String qualityStr = entry[1];
 
+                        // Ignore data associated with non-existent recordings.
                         if (!_recordings.containsKey(filename)) return;
 
+                        // Apply.
                         final Recording.Quality quality;
                         try {
                             quality = Recording.Quality.valueOf(entry[1]);
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                             // Ignore invalid quality entries.
-                            // TODO log.
                             return;
                         }
                         Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
+
                     });
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO
         }
     }
 
+    /**
+     * Synchronise our store with the directory.
+     */
     private void watchDirectory() {
         assert Platform.isFxApplicationThread();
+
+        // Note: Our data flow goes:
+        //   View --> Controller --> Filesystem --> RecordingStore --> Recording.
 
         try {
             _taskWatcher = new Task<Void>() {
@@ -267,7 +297,6 @@ public class RecordingStore {
 
                 @Override
                 protected void failed() {
-                    // TODO
                     getException().printStackTrace();
                 }
 
@@ -311,7 +340,6 @@ public class RecordingStore {
             th.start();
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO
         }
     }
 

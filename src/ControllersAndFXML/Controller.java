@@ -85,9 +85,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        bottomLabelHBox.setMouseTransparent(false);
-        mediaControlHBox.setMouseTransparent(false);
-        bottomLabel.setMouseTransparent(false);
+
+        // Bind volume slider to media player.
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -96,18 +95,21 @@ public class Controller implements Initializable {
                 }
             }
         });
+
+        // Bind the list view and the sort type combo box.
+        _creationFilter = new CreationFilter(textField.textProperty(), _creationStore);
+        listView.setCreationsList(_creationFilter.getFilterResults());
         comboBox.getItems().addAll(CreationFilter.SortStrategy.SORT_BY_NAME,
                 CreationFilter.SortStrategy.SORT_BY_DATE);
         comboBox.getSelectionModel().selectFirst();
-
-        _creationFilter = new CreationFilter(textField.textProperty(), _creationStore);
-        listView.setCreationsList(_creationFilter.getFilterResults());
         comboBox.valueProperty().bindBidirectional(_creationFilter.sortStrategyProperty());
 
+        // Do not show thumb on playback slider when nothing is selected to play.
         playbackSlider.setDisable(true);
         playbackSlider.setMax(-1);
         playbackSlider.setMin(0);
 
+        // Disable and hide components appropriately:
         _selectedRecordings = listView.getSelectedRecordings();
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
         BooleanBinding isMultipleSelections = Bindings.size(_selectedRecordings).greaterThan(1);
@@ -117,16 +119,17 @@ public class Controller implements Initializable {
         playButton.disableProperty().bind(isSelected.not());
         topLabel.visibleProperty().bind(isSelected);
 
+        // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
             practiceButton.setDisable(
                     _isMediaPlaying.get() ||
                         PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
         };
-
         _selectedRecordings.addListener(practiceButtonDisabler);
         _isMediaPlaying.addListener(practiceButtonDisabler);
         practiceButtonDisabler.invalidated(null);
 
+        // Disable compare button appropriately:
         InvalidationListener compareButtonDisabler = (Observable observable) -> {
             bottomLabel.setText(getCombinedName());
             compareButton.setDisable(
@@ -134,28 +137,27 @@ public class Controller implements Initializable {
                     _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
                     _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType() || _isMediaPlaying.get());
         };
-
-
         compareButton.setDisable(true);
         _selectedRecordings.addListener(compareButtonDisabler);
         _isMediaPlaying.addListener(compareButtonDisabler);
 
+        // Play button icon sync.
+        _isMediaPaused.addListener(o -> {
+            if (_isMediaPaused.get()) {
+                playButton.setText("\uf215"); // play icon when paused
+            } else {
+                playButton.setText("\uf478"); // pause icon when playing
+            }
+        });
+
+        // Reset player whenever we change selections.
         _selectedRecordings.addListener((Observable o) -> {
-            // Reset player whenever we change selections.
             playbackSlider.setValue(0);
             _isMediaPlaying.set(false);
             _isMediaPaused.set(true);
             if (_mediaView.getMediaPlayer() != null) {
                 _mediaView.getMediaPlayer().stop();
                 _mediaView.setMediaPlayer(null);
-            }
-        });
-
-        _isMediaPaused.addListener(o -> {
-            if (_isMediaPaused.get()) {
-                playButton.setText("\uf215"); // play
-            } else {
-                playButton.setText("\uf478"); // pause
             }
         });
     }
@@ -170,43 +172,30 @@ public class Controller implements Initializable {
         openRecordingBox(getCombinedName());
     }
 
-    public void openRecordingBox(String creationName) throws IOException {
-        //Parent recordingScene = FXMLLoader.load(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
-        Stage recordingWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
-        //Important to note that we have a place-holder for the creationName...
-        loader.setController(new RecordingBox(recordingWindow, creationName));
-        Parent recordingScene = loader.load();
-        recordingWindow.initModality(Modality.APPLICATION_MODAL);
-        recordingWindow.setResizable(false);
-        recordingWindow.setTitle("Recording Tool - " + creationName);
-        recordingWindow.setScene(new Scene(recordingScene, 600, 168));
-        recordingWindow.show();
-        recordingScene.requestFocus();
-        recordingWindow.setOnHidden(e -> {
-            topLabel.requestFocus();
-        });
-    }
-
     public void shuffleButtonAction() {
         Collections.shuffle(_selectedRecordings);
     }
 
+    /**
+     * The play button has 3 roles.
+     * 1. starting the media player.
+     * 2. Pausing the media player if it's playing.
+     * 3. Resuming the media player if it's paused.
+     */
     public void playButtonAction() {
-        if(!_isMediaPlaying.get()){
+        if (!_isMediaPlaying.get()) {
             ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
                 @Override
                 public void ready(String filePath) {
                     mediaLoaderAndPlayer(filePath);
                 }
             };
-        }else if(_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
+        } else if (_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
             _mediaView.getMediaPlayer().pause();
             _isMediaPaused.set(true);
-        }else if(_isMediaPlaying.getValue() && _isMediaPaused.get()){
+        } else if (_isMediaPlaying.getValue() && _isMediaPaused.get()){
             _mediaView.getMediaPlayer().play();
             _isMediaPaused.set(false);
-
         }
     }
 
@@ -219,7 +208,6 @@ public class Controller implements Initializable {
         listView.selectPrevious();
         playButtonAction();
     }
-
 
     public void mediaLoaderAndPlayer(String filePath) {
 
@@ -237,7 +225,7 @@ public class Controller implements Initializable {
         _isMediaPaused.set(false);
         mediaPlayer.setVolume(volumeSlider.getValue() / 100);
 
-        //configuring the playback slider
+        // Configuring the playback slider
         mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
@@ -260,6 +248,9 @@ public class Controller implements Initializable {
 
     }
 
+    // Note: The following window-opening routines are repeated in code to encourage customizability
+    // and tweaking of each window during our prototyping stage.
+
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/ComparingRecordingsBox.fxml"));
@@ -272,6 +263,7 @@ public class Controller implements Initializable {
         compareRecordingsWindow.show();
         compareRecordingsWindow.requestFocus();
         compareRecordingsWindow.setOnHidden(e -> {
+            // Deselect the compare button.
             topLabel.requestFocus();
         });
 
@@ -289,9 +281,27 @@ public class Controller implements Initializable {
         practiceRecordingsWindow.show();
         practiceRecordingsWindow.requestFocus();
         practiceRecordingsWindow.setOnHidden(e -> {
+            // Deselect the practice button.
             topLabel.requestFocus();
         });
 
+    }
+
+    public void openRecordingBox(String creationName) throws IOException {
+        Stage recordingWindow = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
+        loader.setController(new RecordingBox(recordingWindow, creationName));
+        Parent recordingScene = loader.load();
+        recordingWindow.initModality(Modality.APPLICATION_MODAL);
+        recordingWindow.setResizable(false);
+        recordingWindow.setTitle("Recording Tool - " + creationName);
+        recordingWindow.setScene(new Scene(recordingScene, 600, 168));
+        recordingWindow.show();
+        recordingScene.requestFocus();
+        recordingWindow.setOnHidden(e -> {
+            // Deselect the record button.
+            topLabel.requestFocus();
+        });
     }
 
     private String getCombinedName() {
