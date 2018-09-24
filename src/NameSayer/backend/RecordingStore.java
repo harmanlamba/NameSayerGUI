@@ -168,7 +168,7 @@ public class RecordingStore {
 
         // Create.
 
-        String name = matcher.group("name");
+        String name = matcher.group("name").toLowerCase();
         Creation creation = _creationStore.get(name);
         if (creation == null) {
             creation = _creationStore.add(name);
