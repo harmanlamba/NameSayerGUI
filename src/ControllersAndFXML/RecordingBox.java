@@ -67,6 +67,7 @@ public class RecordingBox implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         progressBar.progressProperty().bind(_microphoneLevel.levelProperty());
         playButton.setDisable(true);
+        saveButton.setDisable(true);
     }
 
     public void startRecord() {
