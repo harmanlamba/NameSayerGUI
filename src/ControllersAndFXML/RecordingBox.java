@@ -35,7 +35,6 @@ import java.util.ResourceBundle;
 
 public class RecordingBox implements Initializable {
     private Stage _recordingWindow;
-    private Scene _primaryScene;
     private String _creationName;
     private int seconds = 5;
     private MediaPlayer _mediaPlayer;
