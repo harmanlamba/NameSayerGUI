@@ -97,7 +97,6 @@ public class PracticeTool implements Initializable {
         }
         //Listener to update the recording label whenever the recording changes in the database comboBox
         databaseComboBox.valueProperty().addListener(e -> {
-            System.out.println("run");
             recordingLabel.setText(databaseComboBox.getValue().getCreation().getName());
             databaseQualityStars.setRecording(databaseComboBox.getValue());
             refreshUserComboBox();
