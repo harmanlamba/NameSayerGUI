@@ -10,14 +10,18 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
+/**
+ * Represents a recording file.
+ */
 public class Recording {
 
+    // Create phantom recording objects to represent temporary concatenated wave files used
+    // for playback, e.g. in the practice tool. These are not actually stored in the RecordingStore.
     public static Recording representConcatenated(List<Recording> recordings, Path audioPath) {
         Creation creation = new Creation(Recording.getCombinedName(recordings));
         Recording recording = new Recording(creation, new Date(), audioPath, Recording.Type.VERSION);
         return recording;
     }
-
 
     public static String getCombinedName(List<Recording> recordings) {
         StringBuilder concatenatedName = new StringBuilder();
@@ -29,6 +33,7 @@ public class Recording {
             concatenatedName.append(" ");
         }
         concatenatedName.deleteCharAt(concatenatedName.length() - 1);
+
         return concatenatedName.toString();
     }
 
@@ -83,6 +88,8 @@ public class Recording {
     private ObjectProperty<Quality> _quality =
         new SimpleObjectProperty<Quality>(Quality.QUALITY_UNRATED);
 
+    // Note: do not allow constructions outside of backend package - it should be
+    // done through RecordingStore.
     Recording(Creation creation, Date date, Path path, Type type) {
         _creation = creation;
         _date = date;

@@ -7,6 +7,9 @@ import javafx.beans.Observable;
 import javafx.beans.InvalidationListener;
 import javafx.application.Platform;
 
+/**
+ * Helper to implement listeners management and invalidation.
+ */
 public class ObservableBase implements Observable {
 
     private final List<InvalidationListener> _listeners = new ArrayList<>();

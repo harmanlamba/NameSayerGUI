@@ -8,16 +8,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.beans.InvalidationListener;
 
+/**
+ * Represents the collection of all recordings for the same name.
+ * Invalidates when recordings are added/removed from this creation.
+ */
 public class Creation extends ObservableBase {
 
     private String _name;
     private final ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
     private final ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
 
+    // Note: do not allow constructions outside of backend package - it should be
+    // done through CreationStore.
     Creation(String name) {
+        // Invalidate whenever recordings are added/removed.
         InvalidationListener listener = o -> invalidate();
         _versions.addListener(listener);
         _attempts.addListener(listener);
+
         _name = name;
     }
 
