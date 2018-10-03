@@ -2,8 +2,7 @@ package ControllersAndFXML;
 
 
 import NameSayer.ConcatAndSilence;
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.Recording;
+import NameSayer.backend.*;
 import NameSayer.CreationFilter;
 import com.jfoenix.controls.JFXSlider;
 import javafx.animation.PauseTransition;
@@ -16,6 +15,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -33,6 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -167,8 +168,11 @@ public class Controller implements Initializable {
 
     //Setting up the action handlers for the buttons
     public void clearButtonAction() {
-        textField.setText("");
-        _selectedRecordings.clear();
+        //UserTextFile temp= new UserTextFile();
+        //temp.readFile();
+        replaceDatabase();
+        //textField.setText("");
+        //_selectedRecordings.clear();
     }
 
     public void recordButtonAction() throws IOException {
@@ -305,6 +309,31 @@ public class Controller implements Initializable {
             // Deselect the record button.
             topLabel.requestFocus();
         });
+    }
+
+    public void appendDatabase(){
+        DirectoryChooser dc= new DirectoryChooser();
+        File selectedDirectory=dc.showDialog(null);
+        if(selectedDirectory != null){
+            //This should add the creations to the same CreationStore, just that we are watching a new directory,
+            //but from what I can tell this should just add the new files to the CreationStore and the CreationFilter
+            //Should take over as usual from there.
+            new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+        }
+
+    }
+
+    public void replaceDatabase(){
+        DirectoryChooser dc= new DirectoryChooser();
+        File selectedDirectory= dc.showDialog(null);
+        if(selectedDirectory !=  null){
+            //Clear the previous CreationStore and setup the new one
+            _creationStore.clear();
+            new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+            //The CreationFilter should now take over and see that the _creationStore has been replaced and the filtering
+            //should proceed as normal
+        }
+
     }
 
     private String getCombinedName() {
