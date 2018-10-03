@@ -47,6 +47,10 @@ public class CreationStore extends ObservableBase {
         return new ArrayList<Creation>(_creations.values());
     }
 
+    public void clear(){
+        _creations.clear();
+    }
+
     public void debugDump() {
         System.out.println("Creations Store Dump:");
         for (String name : _creations.keySet()) {
