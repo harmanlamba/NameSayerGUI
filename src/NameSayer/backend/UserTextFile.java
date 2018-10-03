@@ -21,9 +21,10 @@ public class UserTextFile {
                 BufferedReader br = new BufferedReader(new FileReader(selectedFile));
                 String line;
                 while ((line = br.readLine()) != null) {
+                    System.out.println("Line: "+line);
+                    line=line.replaceAll("[\\-]"," ");
                     for (String name : line.split(" ")) {
                         if (!name.equals("")) {
-                            name.replaceAll("[\\-]", "");
                             _finalListOfNames.add(name);
                         }
                     }
