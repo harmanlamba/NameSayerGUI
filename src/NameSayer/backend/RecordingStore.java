@@ -279,6 +279,9 @@ public class RecordingStore {
                 protected Void call() throws Exception {
                     WatchKey key;
                     while ((key = _watcher.take()) != null) {
+                        if (isCancelled()){
+                            break;
+                        }
                         for (WatchEvent<?> event : key.pollEvents()) {
                             handleEvent(event);
                         }
@@ -342,5 +345,9 @@ public class RecordingStore {
             e.printStackTrace();
         }
     }
+    public void stopWatcher(){
+        _taskWatcher.cancel();
+    }
+
 
 }
