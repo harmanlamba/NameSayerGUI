@@ -41,6 +41,12 @@ public class CreationStore extends ObservableBase {
         return creation;
     }
 
+    public List<String> getCreationNames() {
+        // Note: this is a clone of the list, and is therefore not synchronised with the
+        // creation store after returning. Refetch list upon invalidation.
+        return new ArrayList<String>(_creations.keySet());
+    }
+
     public List<Creation> getCreations() {
         // Note: this is a clone of the list, and is therefore not synchronised with the
         // creation store after returning. Refetch list upon invalidation.
