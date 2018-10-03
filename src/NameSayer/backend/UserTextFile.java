@@ -6,10 +6,11 @@ import javafx.stage.FileChooser;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserTextFile {
-    ArrayList<String> _finalListOfNames = new ArrayList<String>();
+    ArrayList<List<String>> _finalListOfNames = new ArrayList<List<String>>();
 
     public List readFile() {
         FileChooser fc = new FileChooser();
@@ -23,12 +24,7 @@ public class UserTextFile {
                 while ((line = br.readLine()) != null) {
                     System.out.println("Line: "+line);
                     line=line.replaceAll("[\\-]"," ");
-                    for (String name : line.split(" ")) {
-                        if (!name.equals("")) {
-                            _finalListOfNames.add(name);
-                        }
-                    }
-                    _finalListOfNames.add("\n");
+                    _finalListOfNames.add(Arrays.asList(line.split(" ")));
                     System.out.println("Debugging Dump: " + _finalListOfNames);
                 }
             } catch (FileNotFoundException e) {

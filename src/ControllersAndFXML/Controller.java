@@ -174,11 +174,7 @@ public class Controller implements Initializable {
 
     //Setting up the action handlers for the buttons
     public void clearButtonAction() {
-        //UserTextFile temp= new UserTextFile();
-        //temp.readFile();
-        replaceDatabase();
-        //textField.setText("");
-        //_selectedRecordings.clear();
+        _selectedRecordings.clear();
     }
 
     public void recordButtonAction() throws IOException {
