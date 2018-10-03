@@ -8,14 +8,22 @@
     -jfx-focus-color:#ba8baf;
 }
 
-#comboBox .cell{
+.cell{
     -fx-text-fill: #e8e8e8;
+}
+
+.jfx-chip > HBox {
     -fx-background-color: #383838;
 }
 
-#comboBox .cell:hover {
-    -fx-background-color: #585858;
+.jfx-chip > HBox > .button {
+    -fx-background-color: #282828;
 }
+
+.jfx-chip > HBox > .label {
+    -fx-text-fill: #e8e8e8;
+}
+
 #topLabel{
     -fx-text-fill: #e8e8e8;
     -fx-font-style: italic;
@@ -28,14 +36,13 @@
     -fx-font-weight: bold;
 }
 
-#textField {
+#tagInput .text-area {
     -fx-background-color: #282828;
     -fx-text-fill: #ba8baf;
     -fx-font-weight: bold;
     -fx-prompt-text-fill: #585858;
     -jfx-focus-color:#ba8baf;
     -fx-highlight-fill: #ba8baf;
-
 }
 
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
@@ -64,27 +71,27 @@
 .list-view .scroll-bar .thumb{
     -fx-background-color: #ab4642;
 }
- .list-cell:selected, #listView .list-cell:selected:hover, #listView .list-cell:hover:selected  {
+.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected  {
     -fx-background-color: #ab4642;
 }
 
 .list-cell .jfx-rippler{
     -jfx-rippler-fill: #f7ca88;
 }
-  .list-cell {
+.list-cell {
     -fx-background-color: #383838;
     -fx-opacity: 0.8;
 }
 
- .list-cell .label{
+.list-cell .label{
     -fx-text-fill:#e8e8e8;
 }
 
- .list-cell:filled:hover {
+.list-cell:filled:hover {
     -fx-opacity: 1;
 }
 
-#bottomVBox {
+#selectionTray {
     -fx-background-color: #181818;
 }
 
