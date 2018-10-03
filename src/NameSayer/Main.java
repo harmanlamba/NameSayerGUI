@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 public class Main extends Application {
 
     private CreationStore _creationStore;
+    private RecordingStore _versionsStore;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -26,7 +27,7 @@ public class Main extends Application {
         //Loading the font for the icons and the scene
         Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
-        loader.setController(new Controller(_creationStore));
+        loader.setController(new Controller(_creationStore, _versionsStore));
         Parent root = loader.load();
         primaryStage.setTitle("NameSayer");
         primaryStage.setScene(new Scene(root, 981, 553));
@@ -42,7 +43,7 @@ public class Main extends Application {
     //Being listening to the folders
     private void initStores() {
         _creationStore = new CreationStore();
-        new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
+        _versionsStore=new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
         new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
     }
 

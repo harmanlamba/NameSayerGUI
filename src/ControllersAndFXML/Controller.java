@@ -2,10 +2,10 @@ package ControllersAndFXML;
 
 
 import NameSayer.ConcatAndSilence;
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.Recording;
+import NameSayer.backend.*;
 import NameSayer.CreationFilter;
 import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -16,6 +16,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -27,12 +28,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -54,6 +55,7 @@ import java.util.Collections;
 public class Controller implements Initializable {
 
     private CreationStore _creationStore;
+    private RecordingStore _recordingStore;
     private CreationFilter _creationFilter;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
@@ -77,10 +79,16 @@ public class Controller implements Initializable {
     public CreationsListView listView;
     public JFXSlider playbackSlider;
     public JFXSlider volumeSlider;
-    public TextField textField;
+    public JFXCheckBox filterDisabler;
+    public TagInput tagInput;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
+    }
+
+    public Controller(CreationStore creationStore, RecordingStore recordingStore){
+        _creationStore=creationStore;
+        _recordingStore=recordingStore;
     }
 
     @Override
@@ -96,13 +104,18 @@ public class Controller implements Initializable {
             }
         });
 
-        // Bind the list view and the sort type combo box.
-        _creationFilter = new CreationFilter(textField.textProperty(), _creationStore);
+        // Bind list view, sort type combo, tag input, and filter disabler.
+        _creationFilter = new CreationFilter(tagInput.getChips(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
-        comboBox.getItems().addAll(CreationFilter.SortStrategy.SORT_BY_NAME,
-                CreationFilter.SortStrategy.SORT_BY_DATE);
+        comboBox.getItems().addAll(
+            CreationFilter.SortStrategy.DONT_SORT,
+            CreationFilter.SortStrategy.SORT_BY_NAME,
+            CreationFilter.SortStrategy.SORT_BY_DATE
+        );
         comboBox.getSelectionModel().selectFirst();
         comboBox.valueProperty().bindBidirectional(_creationFilter.sortStrategyProperty());
+        filterDisabler.selectedProperty().bindBidirectional(_creationFilter.filterDisableProperty());
+        tagInput.setCreationStore(_creationStore);
 
         // Do not show thumb on playback slider when nothing is selected to play.
         playbackSlider.setDisable(true);
@@ -167,7 +180,7 @@ public class Controller implements Initializable {
 
     //Setting up the action handlers for the buttons
     public void clearButtonAction() {
-        textField.setText("");
+        tagInput.getChips().clear();
         _selectedRecordings.clear();
     }
 
@@ -305,6 +318,26 @@ public class Controller implements Initializable {
             // Deselect the record button.
             topLabel.requestFocus();
         });
+    }
+
+    public void appendDatabase(){
+        DirectoryChooser dc= new DirectoryChooser();
+        File selectedDirectory=dc.showDialog(null);
+        if(selectedDirectory != null){
+            new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+        }
+
+    }
+
+    public void replaceDatabase(){
+        DirectoryChooser dc= new DirectoryChooser();
+        File selectedDirectory= dc.showDialog(null);
+        if(selectedDirectory !=  null){
+            _recordingStore.stopWatcher();
+            _creationStore.clear();
+            _recordingStore= new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+        }
+
     }
 
     private String getCombinedName() {
