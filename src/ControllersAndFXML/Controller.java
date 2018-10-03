@@ -55,6 +55,7 @@ import java.util.Collections;
 public class Controller implements Initializable {
 
     private CreationStore _creationStore;
+    private RecordingStore _recordingStore;
     private CreationFilter _creationFilter;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
@@ -82,6 +83,11 @@ public class Controller implements Initializable {
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
+    }
+
+    public Controller(CreationStore creationStore, RecordingStore recordingStore){
+        _creationStore=creationStore;
+        _recordingStore=recordingStore;
     }
 
     @Override
@@ -315,9 +321,6 @@ public class Controller implements Initializable {
         DirectoryChooser dc= new DirectoryChooser();
         File selectedDirectory=dc.showDialog(null);
         if(selectedDirectory != null){
-            //This should add the creations to the same CreationStore, just that we are watching a new directory,
-            //but from what I can tell this should just add the new files to the CreationStore and the CreationFilter
-            //Should take over as usual from there.
             new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
         }
 
@@ -327,11 +330,9 @@ public class Controller implements Initializable {
         DirectoryChooser dc= new DirectoryChooser();
         File selectedDirectory= dc.showDialog(null);
         if(selectedDirectory !=  null){
-            //Clear the previous CreationStore and setup the new one
+            _recordingStore.stopWatcher();
             _creationStore.clear();
-            new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
-            //The CreationFilter should now take over and see that the _creationStore has been replaced and the filtering
-            //should proceed as normal
+            _recordingStore= new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
         }
 
     }
