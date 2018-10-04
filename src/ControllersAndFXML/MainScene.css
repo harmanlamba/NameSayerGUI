@@ -52,11 +52,12 @@
 }
 
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
-#compareButton, #practiceButton, #clearButton {
+#compareButton, #practiceButton, #clearButton , #databaseButton , #appendButton
+,#replaceButton{
     -fx-background-color: #383838;
 }
 
-#compareButton, #practiceButton, #clearButton {
+#compareButton, #practiceButton, #clearButton ,#databaseButton, #appendButton, #replaceButton {
   -fx-text-fill: #e8e8e8;
 }
 
@@ -138,6 +139,11 @@
     -fx-stroke: #282828;
 }
 
+
 .quality-star {
   -fx-font-family: "Ionicons";
+}
+
+.scroll-bar{
+    -fx-background-color: transparent;
 }
