@@ -45,6 +45,13 @@
     -fx-highlight-fill: #ba8baf;
 }
 
+#scrollPane{
+    -fx-background-color: #282828;
+}
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #ab4642;
+}
+
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
     -fx-font-family: "Ionicons";
     -fx-font-size: 20px;
@@ -142,8 +149,4 @@
 
 .quality-star {
   -fx-font-family: "Ionicons";
-}
-
-.scroll-bar{
-    -fx-background-color: transparent;
 }

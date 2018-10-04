@@ -29,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -88,6 +89,7 @@ public class Controller implements Initializable {
     public Button appendButton;
     public Button replaceButton;
     public GridPane mainGridPane;
+    public ScrollPane scrollPane;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -100,7 +102,10 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Making node list animate upwards
         nodeList.setRotate(180);
+        scrollPane.setFitToWidth(true);
+        //Making sure that clicking anywhere in the scene makes it so the nodeLists collapses
         mainGridPane.setOnMouseClicked(e ->{
             if(e.getPickResult().getIntersectedNode() != nodeList){
                 nodeList.animateList(false);
