@@ -1,14 +1,14 @@
-.root{
+.root {
     -fx-background-color: #282828;
 }
 
-#comboBox{
+#comboBox {
     -fx-background-color: #383838;
     -fx-prompt-text-fill: #585858;
-    -jfx-focus-color:#ba8baf;
+    -jfx-focus-color: #ba8baf;
 }
 
-.cell{
+.cell {
     -fx-text-fill: #e8e8e8;
 }
 
@@ -24,12 +24,12 @@
     -fx-text-fill: #e8e8e8;
 }
 
-#topLabel{
+#topLabel {
     -fx-text-fill: #e8e8e8;
     -fx-font-style: italic;
 }
 
-#bottomLabel{
+#bottomLabel {
     -fx-font-family: "Ionicon";
     -fx-text-fill: #e8e8e8;
     -fx-font-size: 24px;
@@ -41,21 +41,21 @@
     -fx-text-fill: #ba8baf;
     -fx-font-weight: bold;
     -fx-prompt-text-fill: #585858;
-    -jfx-focus-color:#ba8baf;
+    -jfx-focus-color: #ba8baf;
     -fx-highlight-fill: #ba8baf;
 }
 
-#scrollPane{
+#scrollPane {
     -fx-background-color: #282828;
 }
 
-.scroll-pane > .viewport{
+.scroll-pane > .viewport {
 
     -fx-background-color: transparent;
 }
 
-.scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color:transparent;
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
 }
 
 .increment-button, .decrement-button {
@@ -64,16 +64,18 @@
 }
 
 .scroll-bar:horizontal .track,
-.scroll-bar:vertical .track{
+.scroll-bar:vertical .track {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-background-radius: 0em;
 }
 
-
-
 .scroll-bar:vertical .thumb {
     -fx-background-color: #ab4642;
+}
+
+.button:hover {
+    -fx-cursor: hand;
 }
 
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
@@ -83,40 +85,46 @@
 }
 
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
-#compareButton, #practiceButton, #clearButton , #databaseButton , #appendButton
-,#replaceButton{
+#compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton {
     -fx-background-color: #383838;
 }
 
-#compareButton, #practiceButton, #clearButton ,#databaseButton, #appendButton, #replaceButton {
-  -fx-text-fill: #e8e8e8;
+#compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton,
+#uploadListButton {
+    -fx-text-fill: #e8e8e8;
+}
+
+#uploadListButton {
+    -fx-font-family: "Ionicons";
 }
 
 .list-view {
     -fx-background-color: #181818;
 }
 
-.list-view .scroll-bar{
+.list-view .scroll-bar {
     -fx-background-color: #282828;
 }
 
-.list-view .scroll-bar .thumb{
-    -fx-background-color: #ab4642;
-}
-.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected  {
+.list-view .scroll-bar .thumb {
     -fx-background-color: #ab4642;
 }
 
-.list-cell .jfx-rippler{
+.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected {
+    -fx-background-color: #ab4642;
+}
+
+.list-cell .jfx-rippler {
     -jfx-rippler-fill: #f7ca88;
 }
+
 .list-cell {
     -fx-background-color: #383838;
     -fx-opacity: 0.8;
 }
 
-.list-cell .label{
-    -fx-text-fill:#e8e8e8;
+.list-cell .label {
+    -fx-text-fill: #e8e8e8;
 }
 
 .list-cell:filled:hover {
@@ -131,7 +139,7 @@
     -fx-background-color: #ab4642;
 }
 
-#volumeSlider > .track{
+#volumeSlider > .track {
     -fx-border-color: #181818;
 }
 
@@ -139,38 +147,36 @@
     -fx-background-color: #dc9656;
 }
 
-#volumeSlider > .animated-thumb{
+#volumeSlider > .animated-thumb {
     -fx-background-color: #dc9656;
 }
 
-#volumeSlider .slider-value{
+#volumeSlider .slider-value {
     -fx-fill: #282828;
     -fx-stroke: #282828;
 }
 
-#playbackSlider >.colored-track{
+#playbackSlider > .colored-track {
     -fx-background-color: #86c1b9;
 }
 
-#playbackSlider >.track{
+#playbackSlider > .track {
     -fx-background-color: #282828;
 }
 
-#playbackSlider >.thumb {
+#playbackSlider > .thumb {
     -fx-background-color: #dc9656;
 }
 
-#playbackSlider >.animated-thumb{
+#playbackSlider > .animated-thumb {
     -fx-background-color: #dc9656;
 }
 
-
-#playbackSlider .slider-value{
+#playbackSlider .slider-value {
     -fx-fill: #282828;
     -fx-stroke: #282828;
 }
 
-
 .quality-star {
-  -fx-font-family: "Ionicons";
+    -fx-font-family: "Ionicons";
 }

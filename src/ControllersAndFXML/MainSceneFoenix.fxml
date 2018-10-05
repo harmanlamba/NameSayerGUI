@@ -10,6 +10,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -38,6 +39,10 @@
                </content>
             </ScrollPane>
             <JFXCheckBox fx:id="filterDisabler" />
+            <JFXButton id="uploadListButton" fx:id="uploadListButton" onAction="#uploadUserList" text="">
+               <tooltip>
+                  <Tooltip autoHide="true" text="Upload a custom list of names in a .txt file" />
+               </tooltip></JFXButton>
             <JFXComboBox id="comboBox" fx:id="comboBox" prefHeight="25.0" prefWidth="180.0" promptText="Sort..." HBox.hgrow="NEVER" />
          </children>
       </HBox>
