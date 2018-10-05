@@ -90,6 +90,7 @@ public class Controller implements Initializable {
     public Button replaceButton;
     public GridPane mainGridPane;
     public ScrollPane scrollPane;
+    public Button uploadListButton;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -123,7 +124,6 @@ public class Controller implements Initializable {
                 }
             }
         });
-
         // Bind list view, sort type combo, tag input, and filter disabler.
         _creationFilter = new CreationFilter(tagInput.getChips(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
@@ -358,6 +358,11 @@ public class Controller implements Initializable {
             _creationStore.clear();
             _recordingStore= new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
         }
+    }
+
+    public void uploadUserList(){
+        List<List<String>> userNames= UserTextFile.readFile();
+        tagInput.getChips().addAll(userNames);
     }
 
     private String getCombinedName() {
