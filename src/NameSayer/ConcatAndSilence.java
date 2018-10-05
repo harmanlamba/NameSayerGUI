@@ -88,12 +88,17 @@ public abstract class ConcatAndSilence {
                 //Normalising the audio files before concatenating them
                 for(Path counter:creationsPaths){
                     //Setting up the process builder
-                    String cmd="ffmpeg -i "+"./"+counter.toString()+" -af_loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=-27.2:measured_TP=-14.4:measured_LRA=0.1:measured_thresh=-37.7:offset=-0.7:linear=true"+" ./data/tempCreations/"+counter.getFileName();
+                    String cmd="ffmpeg -i "+"./"+counter.toString()+" -af loudnorm=I=-24:tp=-2:LRA=7:measured_I=-30:measured_tp=-11:measured_LRA=1.1:measured_thresh=-40.21:offset=-0.47 -ar 48k -y"+" ./data/tempCreations/"+counter.getFileName();
                     System.out.println(cmd);
                     ProcessBuilder nomalizeBuilder= new ProcessBuilder("/bin/bash","-c", cmd);
                     try {
                         Process processNormalize = nomalizeBuilder.start();
                         processNormalize.waitFor();
+                        BufferedReader stderr = new BufferedReader(new InputStreamReader(processNormalize.getErrorStream()));
+                        String line = "";
+                        while ((line = stderr.readLine()) != null) {
+                            System.out.println(line + "\n");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
