@@ -13,6 +13,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.Accordion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.Observable;
@@ -27,42 +29,28 @@ import java.util.ArrayList;
 
 import NameSayer.backend.Recording;
 import NameSayer.backend.Creation;
+import NameSayer.backend.CreationsList;
+import NameSayer.backend.CreationsListEntry;
 
-public class CreationsListView extends JFXListView<Creation> {
+// TODO: Refactor out the private inner classes into a new package as individual files.
+
+public class CreationsListView extends JFXListView<CreationsListEntry> {
 
     private ObservableList<Recording> _selectedRecordings = FXCollections.observableArrayList();
-    private ObservableList<Creation> _creationsList;
+    private CreationsList _creationsList;
 
     public CreationsListView() {
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
+
+        // TODO: change this label when filter is enabled, so it says "Begin by entering a name above".
         setPlaceholder(new Label("No recordings found.\nAdd them to the ./data/database folder."));
     }
 
-    public void setCreationsList(ObservableList<Creation> creationsList) {
+    public void setCreationsList(CreationsList creationsList) {
         _creationsList = creationsList;
+        _creationsList.addListener((Observable o) -> refreshList());
         refreshList();
-
-        // Ensure our list is updated when creations are added/removed,
-        // and when recordings are added/removed...
-
-        InvalidationListener creationListener = observer -> {
-            refreshList();
-
-            // Prune selected recordings.
-            _selectedRecordings.removeIf(recording -> !recording.getCreation().has(recording));
-        };
-
-        _creationsList.addListener((Observable observer2) -> {
-            refreshList();
-
-            // Linear pass through is okay here.
-            for (Creation creation : _creationsList) {
-                // Ensure any of our previous listeners are removed - don't accumulate.
-                creation.removeListener(creationListener);
-                creation.addListener(creationListener);
-            }
-        });
     }
 
     /**
@@ -77,7 +65,7 @@ public class CreationsListView extends JFXListView<Creation> {
         // Pick very last recording selected in the list.
         int indexToSelect = -1;
         for (Recording recording : _selectedRecordings) {
-            int candidateIndex = _creationsList.indexOf(recording.getCreation());
+            int candidateIndex = _creationsList.indexOfCreation(recording.getCreation());
             if (candidateIndex > indexToSelect) {
                 indexToSelect = candidateIndex;
             }
@@ -90,10 +78,10 @@ public class CreationsListView extends JFXListView<Creation> {
         indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
 
-        Creation creationToSelect = _creationsList.get(indexToSelect);
-        Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
+        CreationsListEntry entryToSelect = _creationsList.get(indexToSelect);
+        Recording recordingToSelect = entryToSelect.getRepresentativeRecording();
         _selectedRecordings.setAll(recordingToSelect);
-        scrollTo(creationToSelect);
+        scrollTo(entryToSelect);
     }
 
     public void selectPrevious() {
@@ -101,7 +89,7 @@ public class CreationsListView extends JFXListView<Creation> {
         // Pick very first recording selected in the list.
         int indexToSelect = _creationsList.size();
         for (Recording recording : _selectedRecordings) {
-            int candidateIndex = _creationsList.indexOf(recording.getCreation());
+            int candidateIndex = _creationsList.indexOfCreation(recording.getCreation());
             if (candidateIndex < indexToSelect) {
                 indexToSelect = candidateIndex;
             }
@@ -114,10 +102,10 @@ public class CreationsListView extends JFXListView<Creation> {
         indexToSelect += _creationsList.size();
         indexToSelect %= _creationsList.size();
 
-        Creation creationToSelect = _creationsList.get(indexToSelect);
-        Recording recordingToSelect = creationToSelect.getAllRecordings().get(0);
+        CreationsListEntry entryToSelect = _creationsList.get(indexToSelect);
+        Recording recordingToSelect = entryToSelect.getRepresentativeRecording();
         _selectedRecordings.setAll(recordingToSelect);
-        scrollTo(creationToSelect);
+        scrollTo(entryToSelect);
     }
 
     private void refreshList() {
@@ -213,7 +201,7 @@ public class CreationsListView extends JFXListView<Creation> {
         }
 
         public void setSelected(boolean value) {
-            if (_cell.getItem() != _recording && _cell.getItem() != _recording.getCreation()) {
+            if (!isStillValid()) {
                 return;
             }
             SelectionModel<?> selectionModel = _cell.getListView().getSelectionModel();
@@ -233,6 +221,21 @@ public class CreationsListView extends JFXListView<Creation> {
             }
         }
 
+        private boolean isStillValid() {
+            Object item = _cell.getItem();
+            if (item == null) {
+                return false;
+            } else if (item instanceof Recording) {
+                return item == _recording;
+            } else if (item instanceof CreationsListEntry) {
+                CreationsListEntry entry = (CreationsListEntry)item;
+                return entry.getRepresentativeRecording() == _recording;
+            } else {
+                assert false;
+                return false;
+            }
+        }
+
     }
 
     /**
@@ -240,24 +243,31 @@ public class CreationsListView extends JFXListView<Creation> {
      */
     private class MultiCellContents extends VBox {
 
-        private Label _labelName = new Label();
-        private Label _labelCount = new Label();
-        private JFXListView<Recording> _listView = new JFXListView<>();
-
-        public MultiCellContents(Creation creation, ObservableList<Recording> selectedRecordings) {
+        public MultiCellContents(CreationsListEntry entry, ObservableList<Recording> selectedRecordings) {
             super();
-            _labelName.setText(creation.getName());
-            _labelCount.setText(creation.getRecordingCount() + " recordings");
 
-            _listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            _listView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
+            // TODO: checkboxes? Selection handler?
+            HBox heading = new HBox(new Label(entry.toString()));
 
-            _listView.getItems().setAll(creation.getAllRecordings());
+            Accordion accordion = new Accordion();
 
-            Region spaceBetweenNameCount = new Region();
-            HBox.setHgrow(spaceBetweenNameCount, Priority.ALWAYS);
-            HBox heading = new HBox(_labelName, spaceBetweenNameCount, _labelCount);
-            getChildren().setAll(heading, _listView);
+            for (String name : entry.getNames()) {
+
+                JFXListView<Recording> innerListView = new JFXListView<>();
+                innerListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                innerListView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
+
+                Creation creation = entry.getCreation(name);
+                if (creation != null) {
+                    innerListView.getItems().setAll(creation.getAllRecordings());
+                }
+
+                TitledPane pane = new TitledPane(name, innerListView);
+                accordion.getPanes().add(pane);
+
+            }
+
+            getChildren().setAll(heading, accordion);
         }
 
     }
@@ -322,7 +332,7 @@ public class CreationsListView extends JFXListView<Creation> {
 
     }
 
-    private class CreationsListOuterCell extends CreationsListCell<Creation> {
+    private class CreationsListOuterCell extends CreationsListCell<CreationsListEntry> {
 
         private ObservableList<Recording> _selectedRecordings;
 
@@ -331,32 +341,19 @@ public class CreationsListView extends JFXListView<Creation> {
         }
 
         @Override
-        public void updateItem(Creation creation, boolean empty) {
-            super.updateItem(creation, empty);
+        public void updateItem(CreationsListEntry entry, boolean empty) {
+            super.updateItem(entry, empty);
 
             if (empty) {
                 setCellContents(null);
             } else {
-                assert creation != null;
+                assert entry != null;
 
-                List<Recording> versions = creation.getVersions();
-                List<Recording> attempts = creation.getAttempts();
-
-                if (creation.getRecordingCount() > 1) {
-                    setCellContents(new MultiCellContents(creation, _selectedRecordings));
-                } else {
-                    Recording recording;
-                    if (versions.size() > 0) {
-                        recording = versions.get(0);
-                    } else if (attempts.size() > 0) {
-                        recording = attempts.get(0);
-                    } else {
-                        // BUG: this should not be possible.
-                        // To reproduce: record in the practice tool.
-                        setCellContents(null);
-                        return;
-                    }
+                if (entry.isSingleRecording()) {
+                    Recording recording = entry.getRepresentativeRecording();
                     setCellContents(new SingleCellContents(recording, this, _selectedRecordings));
+                } else {
+                    setCellContents(new MultiCellContents(entry, _selectedRecordings));
                 }
             }
         }

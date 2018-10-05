@@ -38,7 +38,7 @@ public class Recording {
     }
 
     public enum Quality {
-        QUALITY_UNRATED(0),
+        QUALITY_UNRATED(0,3),
         QUALITY_1_STAR(1),
         QUALITY_2_STAR(2),
         QUALITY_3_STAR(3),
@@ -46,13 +46,23 @@ public class Recording {
         QUALITY_5_STAR(5);
 
         private int _index;
+        private int _goodness;
 
         private Quality(int index) {
+            this(index, index);
+        }
+
+        private Quality(int index, int goodness) {
             _index = index;
+            _goodness = goodness;
         }
 
         public int getIndex() {
             return _index;
+        }
+
+        public int getGoodness() {
+            return _goodness;
         }
 
         public static Quality fromIndex(int index) {
