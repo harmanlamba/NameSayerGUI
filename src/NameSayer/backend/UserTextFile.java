@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UserTextFile {
-    ArrayList<List<String>> _finalListOfNames = new ArrayList<List<String>>();
 
-    public List readFile() {
+    public static List readFile() {
+        ArrayList<List<String>> _finalListOfNames = new ArrayList<List<String>>();
         FileChooser fc = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fc.getExtensionFilters().addAll(extensionFilter);
