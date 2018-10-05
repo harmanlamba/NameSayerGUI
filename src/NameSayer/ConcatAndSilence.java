@@ -54,6 +54,20 @@ public abstract class ConcatAndSilence {
                 List<String> concatData = new ArrayList<String>();
                 List<Path> creationsPaths=new ArrayList<>();
 
+                //Ensuring that the tempCreations folder exist
+                Path _path = Paths.get("./data/tempCreations");
+                try {
+                    if (Files.notExists(_path)) {
+                        Files.createDirectories(_path);
+                    }
+                    if (!Files.isDirectory(_path)) {
+                        Files.delete(_path);
+                        Files.createDirectories(_path);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 //Setting up the correct format for the file, and iterating through all the selected recordings, and adding
                 //them to the concatData arrayList to then have it be written into a file.
                 for (Recording counter : _recordings) {
@@ -109,8 +123,8 @@ public abstract class ConcatAndSilence {
                     process.waitFor(); //ensuring that concatenation happens before silencing
                     Process processSilence = silenceRemoverBuilder.start();
                     processSilence.waitFor();
-                    Process deleteTempCreationsProcess= deleteTempCreations.start();
-                    deleteTempCreationsProcess.waitFor();
+                    //Process deleteTempCreationsProcess= deleteTempCreations.start();
+                    //deleteTempCreationsProcess.waitFor();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
