@@ -4,9 +4,12 @@ import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
 import NameSayer.backend.Recording;
 import NameSayer.backend.RecordingStore;
+
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,9 +25,7 @@ public class StreaksAndTiers {
     private static final Path _path = Paths.get("./data");
 
     private CreationStore _creationStore;
-    private InvalidationListener changesInStreakIntegerProperty = o -> {
-        saveStreaks();
-    };
+    private InvalidationListener changesInStreakIntegerProperty = o -> invalidateStreaks();
 
     public StreaksAndTiers(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -34,7 +35,28 @@ public class StreaksAndTiers {
         });
     }
 
+    private void invalidateStreaks() {
+        assert Platform.isFxApplicationThread();
+
+        Task<Void> streaksWriter = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                saveStreaks();
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        Thread th = new Thread(streaksWriter);
+        th.start();
+    }
+
     private synchronized void saveStreaks() {
+        assert !Platform.isFxApplicationThread();
+
         List<String> streakData = new ArrayList<String>();
         List<Creation> creationList = _creationStore.getCreations();
         for (Creation creation: creationList) {
