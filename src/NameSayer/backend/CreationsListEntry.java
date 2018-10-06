@@ -2,8 +2,6 @@ package NameSayer.backend;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.Date;
 import java.util.List;
@@ -19,8 +17,6 @@ public class CreationsListEntry extends ObservableBase {
     private List<String> _names;
     private Map<String, Creation> _creations = new HashMap<>();
     private CreationStore _creationStore;
-
-    private ObjectProperty<Recording> _representativeRecording = new SimpleObjectProperty<Recording>();
 
     CreationsListEntry(String name, CreationStore creationStore) {
         this(Collections.singletonList(name), creationStore);
@@ -60,12 +56,16 @@ public class CreationsListEntry extends ObservableBase {
         return _creations.get(name);
     }
 
-    public ObjectProperty<Recording> representativeRecordingProperty() {
-        return _representativeRecording;
-    }
-
-    public Recording getRepresentativeRecording() {
-        return _representativeRecording.getValue();
+    public List<Recording> getRecordings() {
+        List<Recording> recordings = new ArrayList<>();
+        for (String name : _names) {
+            Creation creation = _creations.get(name);
+            if (creation == null) continue;
+            Recording recording = creation.getBestRecording();
+            if (recording == null) continue;
+            recordings.add(recording);
+        }
+        return recordings;
     }
 
     public Date lastModified() {
@@ -80,14 +80,24 @@ public class CreationsListEntry extends ObservableBase {
     }
 
     public boolean has(Creation creation) {
-        if (_representativeRecording.getValue().getCreation() == creation) {
-            return true;
-        }
         return getCreations().contains(creation);
     }
 
     public String toString() {
         return String.join(" ", _names);
+    }
+
+    public boolean matchesRecordings(List<Recording> recordings) {
+        List<Recording> ourRecordings = getRecordings();
+        if (ourRecordings.size() != recordings.size()) {
+            return false;
+        }
+        for (int i = 0; i < ourRecordings.size(); i++) {
+            if (recordings.get(i).getCreation() != ourRecordings.get(i).getCreation()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void refresh() {
@@ -106,13 +116,6 @@ public class CreationsListEntry extends ObservableBase {
             if (recording != null) {
                 bestRecordings.add(recording);
             }
-        }
-
-        if (bestRecordings.size() == 1) {
-            _representativeRecording.setValue(bestRecordings.get(0));
-        } else {
-            Recording recording = Recording.representConcatenated(bestRecordings, null); // TODO PATH!!
-            _representativeRecording.setValue(recording);
         }
     }
 

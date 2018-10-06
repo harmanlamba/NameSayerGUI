@@ -49,10 +49,21 @@ public class CreationsList extends SimpleListProperty<CreationsListEntry> {
         }
     }
 
-    public int indexOfCreation(Creation creation) {
-        for (CreationsListEntry entry : this) {
-            if (entry.has(creation)) {
-                return indexOf(entry);
+    public int firstIndexInSelection(List<Recording> selectedRecordings) {
+        for (int i = 0; i < size(); i++) {
+            CreationsListEntry entry = get(i);
+            if (entry.matchesRecordings(selectedRecordings)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int lastIndexInSelection(List<Recording> selectedRecordings) {
+        for (int i = size() - 1; i >= 0; i--) {
+            CreationsListEntry entry = get(i);
+            if (entry.matchesRecordings(selectedRecordings)) {
+                return i;
             }
         }
         return -1;

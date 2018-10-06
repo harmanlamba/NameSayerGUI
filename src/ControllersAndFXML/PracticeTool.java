@@ -267,8 +267,10 @@ public class PracticeTool implements Initializable {
             switch (counter.getType()) {
                 case VERSION:
                     databaseOnly.add(counter);
+                    break;
                 case ATTEMPT:
                     //Do nothing
+                    break;
             }
         }
         return databaseOnly;

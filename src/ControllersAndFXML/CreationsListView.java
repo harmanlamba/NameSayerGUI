@@ -61,51 +61,20 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
     }
 
     public void selectNext() {
-
-        // Pick very last recording selected in the list.
-        int indexToSelect = -1;
-        for (Recording recording : _selectedRecordings) {
-            int candidateIndex = _creationsList.indexOfCreation(recording.getCreation());
-            if (candidateIndex > indexToSelect) {
-                indexToSelect = candidateIndex;
-            }
-        }
-
-        // Advance.
-        indexToSelect++;
-
-        // Positive modulo to wrap around.
-        indexToSelect += _creationsList.size();
-        indexToSelect %= _creationsList.size();
-
-        CreationsListEntry entryToSelect = _creationsList.get(indexToSelect);
-        Recording recordingToSelect = entryToSelect.getRepresentativeRecording();
-        _selectedRecordings.setAll(recordingToSelect);
-        scrollTo(entryToSelect);
+        selectIndex(_creationsList.lastIndexInSelection(_selectedRecordings) + 1);
     }
 
     public void selectPrevious() {
+        selectIndex(_creationsList.firstIndexInSelection(_selectedRecordings) - 1);
+    }
 
-        // Pick very first recording selected in the list.
-        int indexToSelect = _creationsList.size();
-        for (Recording recording : _selectedRecordings) {
-            int candidateIndex = _creationsList.indexOfCreation(recording.getCreation());
-            if (candidateIndex < indexToSelect) {
-                indexToSelect = candidateIndex;
-            }
-        }
+    private void selectIndex(int index) {
+        assert index >= -1;
+        index += _creationsList.size();
+        index %= _creationsList.size();
 
-        // Advance backwards.
-        indexToSelect--;
-
-        // Positive modulo to wrap around.
-        indexToSelect += _creationsList.size();
-        indexToSelect %= _creationsList.size();
-
-        CreationsListEntry entryToSelect = _creationsList.get(indexToSelect);
-        Recording recordingToSelect = entryToSelect.getRepresentativeRecording();
-        _selectedRecordings.setAll(recordingToSelect);
-        scrollTo(entryToSelect);
+        _selectedRecordings.setAll(_creationsList.get(index).getRecordings());
+        scrollTo(index);
     }
 
     private void refreshList() {
@@ -117,10 +86,15 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         _selectedRecordings.setAll(wasSelected);
     }
 
+    private interface CellContents {
+        public void setSelected(boolean value);
+        public Object getItem();
+    }
+
     /**
      * Displayed entry for a recording, or a creation with a single recording.
      */
-    private class SingleCellContents extends HBox {
+    private class SingleCellContents extends HBox implements CellContents {
 
         private JFXCheckBox _checkBox = new JFXCheckBox();
         private Label _labelNumber = new Label();
@@ -141,8 +115,10 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             super();
             _recording = recording;
             _cell = cell;
+
             _selectedRecordings = selectedRecordings;
-            setSelected(_selectedRecordings.contains(recording));
+            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
+            updateFromSelectedRecordings();
 
             _labelName.setText(recording.getCreation().getName());
             _labelDate.setText(recording.getDateString());
@@ -153,7 +129,6 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             setOnMouseExited(event -> isHovered.setValue(false));
 
             _labelNumber.visibleProperty().bind(_checkBox.selectedProperty());
-            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
 
             _checkBox.visibleProperty().bind(isHovered.or(_checkBox.selectedProperty()));
             _checkBox.selectedProperty().addListener(o -> {
@@ -196,7 +171,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             setSelected(_selectedRecordings.contains(_recording));
         }
 
-        public Recording getRecording() {
+        public Object getItem() {
             return _recording;
         }
 
@@ -229,7 +204,8 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                 return item == _recording;
             } else if (item instanceof CreationsListEntry) {
                 CreationsListEntry entry = (CreationsListEntry)item;
-                return entry.getRepresentativeRecording() == _recording;
+                List<Recording> recordings = entry.getRecordings();
+                return recordings.size() == 1 && recordings.get(0) == _recording;
             } else {
                 assert false;
                 return false;
@@ -241,13 +217,35 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
     /**
      * Displayed entry for creations with multiple recordings.
      */
-    private class MultiCellContents extends VBox {
+    private class MultiCellContents extends VBox implements CellContents {
 
-        public MultiCellContents(CreationsListEntry entry, ObservableList<Recording> selectedRecordings) {
+        private JFXCheckBox _checkBox = new JFXCheckBox();
+        private CreationsListEntry _entry;
+        private JFXListCell<CreationsListEntry> _cell;
+        private ObservableList<Recording> _selectedRecordings;
+
+        public MultiCellContents(CreationsListEntry entry, JFXListCell<CreationsListEntry> cell, ObservableList<Recording> selectedRecordings) {
             super();
+            _entry = entry;
+            _cell = cell;
+            _selectedRecordings = selectedRecordings;
+            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
+            updateFromSelectedRecordings();
 
-            // TODO: checkboxes? Selection handler?
-            HBox heading = new HBox(new Label(entry.toString()));
+            BooleanProperty isHovered = new SimpleBooleanProperty(false);
+            setOnMouseEntered(event -> isHovered.setValue(true));
+            setOnMouseExited(event -> isHovered.setValue(false));
+
+            _checkBox.visibleProperty().bind(isHovered.or(_checkBox.selectedProperty()));
+            _checkBox.selectedProperty().addListener(o -> {
+                setSelected(_checkBox.isSelected());
+            });
+            _checkBox.focusedProperty().addListener(o -> {
+                // Do not allow focus onto checkbox
+                _cell.getListView().requestFocus();
+            });
+
+            HBox heading = new HBox(_checkBox, new Label(entry.toString()));
 
             Accordion accordion = new Accordion();
 
@@ -259,7 +257,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
                 Creation creation = entry.getCreation(name);
                 if (creation != null) {
-                    innerListView.getItems().setAll(creation.getAllRecordings());
+                    for (Recording recording : creation.getAllRecordings()) {
+                        innerListView.getItems().add(recording);
+                    }
                 }
 
                 TitledPane pane = new TitledPane(name, innerListView);
@@ -270,20 +270,52 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             getChildren().setAll(heading, accordion);
         }
 
+        private void updateFromSelectedRecordings() {
+            setSelected(_entry.matchesRecordings(_selectedRecordings));
+        }
+
+        public void setSelected(boolean value) {
+            if (!isStillValid()) {
+                return;
+            }
+
+            SelectionModel<CreationsListEntry> selectionModel = _cell.getListView().getSelectionModel();
+            _checkBox.setSelected(value);
+            if (value) {
+                selectionModel.select(_cell.getIndex());
+                if (!_entry.matchesRecordings(_selectedRecordings)) {
+                    _selectedRecordings.setAll(_entry.getRecordings());
+                }
+            } else {
+                selectionModel.clearSelection(_cell.getIndex());
+                if (_entry.matchesRecordings(_selectedRecordings)) {
+                    _selectedRecordings.clear();
+                }
+            }
+        }
+
+        public Object getItem() {
+            return _entry;
+        }
+
+        private boolean isStillValid() {
+            return _entry == _cell.getItem();
+        }
+
     }
 
     private abstract class CreationsListCell<T> extends JFXListCell<T> {
 
-        private SingleCellContents _currentSingleCellContents = null;
-        private Recording _recording = null;
+        private CellContents _currentCellContents = null;
+        private Object _item = null;
         private InvalidationListener cellSelectedListener = o -> {
             // Do not delesct when the cell goes off screen, or when the item is
             // transitioning to a different recording.
-            if (_currentSingleCellContents == null) return;
+            if (_currentCellContents == null) return;
             if (!isVisible()) return;
-            if (_recording != _currentSingleCellContents.getRecording()) return;
+            if (_item != _currentCellContents.getItem()) return;
 
-            _currentSingleCellContents.setSelected(isSelected());
+            _currentCellContents.setSelected(isSelected());
         };
 
         @Override
@@ -298,12 +330,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         }
 
         protected void setCellContents(Node node) {
-            if (node instanceof SingleCellContents) {
-                _currentSingleCellContents = (SingleCellContents)node;
-                _recording = _currentSingleCellContents.getRecording();
-            } else {
-                _currentSingleCellContents = null;
-                _recording = null;
+            if (node != null) {
+                _currentCellContents = (CellContents)node;
+                _item = _currentCellContents.getItem();
             }
             setGraphic(node);
         }
@@ -319,14 +348,14 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         }
 
         @Override
-        public void updateItem(Recording recording, boolean empty) {
-            super.updateItem(recording, empty);
+        public void updateItem(Recording item, boolean empty) {
+            super.updateItem(item, empty);
 
             if (empty) {
                 setCellContents(null);
             } else {
-                assert recording != null;
-                setCellContents(new SingleCellContents(recording, this, _selectedRecordings));
+                assert item != null;
+                setCellContents(new SingleCellContents(item, this, _selectedRecordings));
             }
         }
 
@@ -350,10 +379,10 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                 assert entry != null;
 
                 if (entry.isSingleRecording()) {
-                    Recording recording = entry.getRepresentativeRecording();
+                    Recording recording = entry.getRecordings().get(0);
                     setCellContents(new SingleCellContents(recording, this, _selectedRecordings));
                 } else {
-                    setCellContents(new MultiCellContents(entry, _selectedRecordings));
+                    setCellContents(new MultiCellContents(entry, this, _selectedRecordings));
                 }
             }
         }
