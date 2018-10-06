@@ -255,10 +255,8 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
             updateFromSelectedRecordings();
 
-            entry.addListener(o -> {
-                _cell.setDisable(entry.getRecordings().size() == 0);
-            });
-            _cell.setDisable(entry.getRecordings().size() == 0);
+            entry.addListener(o -> updateDisabled());
+            updateDisabled();
 
             BooleanProperty isHovered = new SimpleBooleanProperty(false);
             setOnMouseEntered(event -> isHovered.setValue(true));
@@ -338,6 +336,13 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
         public Object getItem() {
             return _entry;
+        }
+
+        private void updateDisabled() {
+            if (!isStillValid()) {
+                return;
+            }
+            _cell.setDisable(_entry.getRecordings().isEmpty());
         }
 
         private boolean isStillValid() {
