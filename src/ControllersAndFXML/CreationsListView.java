@@ -252,8 +252,12 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
             HBox names = new HBox();
             names.setSpacing(8);
+            names.setMaxWidth(Double.POSITIVE_INFINITY);
+            HBox.setHgrow(names, Priority.ALWAYS);
 
-            HBox heading = new HBox(_checkBox, names);
+            Streaks streaks = new Streaks();
+            streaks.bindStreaks(entry.streaksProperty());
+            HBox heading = new HBox(_checkBox, names, streaks);
 
             VBox accordion = new VBox();
 

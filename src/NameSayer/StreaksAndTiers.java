@@ -124,8 +124,8 @@ public class StreaksAndTiers {
 
     private void updateListeners() {
         for (Creation creation: _creationStore.getCreations()) {
-            creation.getStreaksProperty().removeListener(changesInStreakIntegerProperty);
-            creation.getStreaksProperty().addListener(changesInStreakIntegerProperty);
+            creation.streaksProperty().removeListener(changesInStreakIntegerProperty);
+            creation.streaksProperty().addListener(changesInStreakIntegerProperty);
         }
     }
 
