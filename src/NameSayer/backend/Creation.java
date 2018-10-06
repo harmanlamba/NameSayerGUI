@@ -102,10 +102,15 @@ public class Creation extends ObservableBase {
             }
 
             // Then sort by quality.
-            int value = r1.getQuality().getGoodness() - r2.getQuality().getGoodness();
+            int value = r2.getQuality().getGoodness() - r1.getQuality().getGoodness();
+            if (value != 0) {
+                return value;
+            }
 
             // Use randomness as tie-breaker.
-            return value == 0 ? (int)(Math.random() * 3 - 1) : value;
+            int random = (int)(Math.random() * 3) - 1;
+            return random;
+
         });
 
         return candidates.get(0);
