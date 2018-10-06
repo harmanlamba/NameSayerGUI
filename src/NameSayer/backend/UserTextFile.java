@@ -24,7 +24,7 @@ public class UserTextFile {
                 while ((line = br.readLine()) != null) {
                     System.out.println("Line: "+line);
                     line=line.replaceAll("[\\-]"," ");
-                    _finalListOfNames.add(Arrays.asList(line.split(" ")));
+                    _finalListOfNames.add(Arrays.asList(line.toLowerCase().split(" ")));
                     System.out.println("Debugging Dump: " + _finalListOfNames);
                 }
             } catch (FileNotFoundException e) {

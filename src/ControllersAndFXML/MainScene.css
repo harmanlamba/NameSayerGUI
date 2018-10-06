@@ -8,6 +8,10 @@
     -jfx-focus-color: #ba8baf;
 }
 
+.jfx-chip .invalid-name{
+    -fx-border-color: transparent transparent #ab4642 transparent;
+}
+
 .cell {
     -fx-text-fill: #e8e8e8;
 }
@@ -20,7 +24,7 @@
     -fx-background-color: #282828;
 }
 
-.jfx-chip > HBox > .label {
+.jfx-chip .label  {
     -fx-text-fill: #e8e8e8;
 }
 
@@ -84,6 +88,9 @@
     -fx-text-fill: #ab4642;
 }
 
+.list-cell:selected .delete-btn{
+    -fx-text-fill: #e8e8e8;
+}
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
 #compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton {
     -fx-background-color: #383838;

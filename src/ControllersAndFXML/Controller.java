@@ -2,6 +2,7 @@ package ControllersAndFXML;
 
 
 import NameSayer.ConcatAndSilence;
+import NameSayer.StreaksAndTiers;
 import NameSayer.backend.*;
 import NameSayer.CreationFilter;
 import com.jfoenix.controls.JFXNodesList;
