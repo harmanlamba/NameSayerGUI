@@ -29,10 +29,63 @@ public class StreaksAndTiers {
 
     public StreaksAndTiers(CreationStore creationStore) {
         _creationStore = creationStore;
+
         updateListeners();
+        reloadStreaks();
         _creationStore.addListener(e -> {
             updateListeners();
+            reloadStreaks();
         });
+    }
+
+    private void reloadStreaks() {
+        assert Platform.isFxApplicationThread();
+
+        Path streaksPath = _path.resolve(STREAKS_FILENAME);
+        if (Files.notExists(streaksPath)) {
+            return;
+        }
+
+        Task<Void> streaksReloader = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Files.lines(streaksPath)
+                    .map(line -> line.split("\t"))
+                    .forEach(entry -> {
+
+                        // Ignore invalid lines.
+                        if (entry.length < 2) return;
+
+                        String name = entry[0];
+                        String streaksString = entry[1];
+                        final Creation creation = _creationStore.get(name);
+
+                        // Ignore data associated with non-existent creations.
+                        if (creation == null) return;
+
+                        final int streaks;
+                        try {
+                            streaks = Integer.parseInt(streaksString);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            // Ignore invalid streak entries.
+                            return;
+                        }
+
+                        Platform.runLater(() -> creation.setStreaks(streaks));
+
+                    });
+
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        Thread th = new Thread(streaksReloader);
+        th.start();
     }
 
     private void invalidateStreaks() {
