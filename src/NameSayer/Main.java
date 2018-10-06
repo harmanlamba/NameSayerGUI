@@ -24,6 +24,7 @@ public class Main extends Application {
         //Reading  and initializing data from database
         initStores();
 
+
         //Loading the font for the icons and the scene
         Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
@@ -45,6 +46,7 @@ public class Main extends Application {
         _creationStore = new CreationStore();
         _versionsStore=new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
         new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
+        new StreaksAndTiers(_creationStore);
     }
 
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.beans.InvalidationListener;
@@ -15,6 +17,7 @@ import javafx.beans.InvalidationListener;
 public class Creation extends ObservableBase {
 
     private String _name;
+    private IntegerProperty _streaks= new SimpleIntegerProperty(0);
     private final ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
     private final ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
 
@@ -97,4 +100,15 @@ public class Creation extends ObservableBase {
         }
     }
 
+    public int getStreaks() {
+        return _streaks.get();
+    }
+
+    public IntegerProperty getStreaksProperty() {
+        return _streaks;
+    }
+
+    public void setStreaks(int streaks) {
+        _streaks.set(streaks);
+    }
 }
