@@ -2,6 +2,8 @@ package NameSayer.backend;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.InvalidationListener;
 
 import java.util.Date;
@@ -18,8 +20,10 @@ public class CreationsListEntry extends ObservableBase {
     private List<String> _names;
     private Map<String, Creation> _creations = new HashMap<>();
     private CreationStore _creationStore;
-
-    private InvalidationListener _refresher = o -> refresh();
+    private IntegerProperty _streaks = new SimpleIntegerProperty();
+    private InvalidationListener _storeChangeHandler = o -> refresh();
+    private InvalidationListener _creationChangeHandler = o -> invalidate();
+    private InvalidationListener _streakChangeHandler = o -> updateStreaks();
 
     CreationsListEntry(String name, CreationStore creationStore) {
         this(Collections.singletonList(name), creationStore);
@@ -98,6 +102,10 @@ public class CreationsListEntry extends ObservableBase {
         return String.join(" ", _names);
     }
 
+    public IntegerProperty streaksProperty() {
+        return _streaks;
+    }
+
     public boolean matchesRecordings(List<Recording> recordings) {
         List<Recording> ourRecordings = getRecordings();
         if (ourRecordings.size() == 0) {
@@ -117,14 +125,20 @@ public class CreationsListEntry extends ObservableBase {
     private void refresh() {
         List<Recording> bestRecordings = new ArrayList<>();
 
-        _creationStore.removeListener(_refresher);
-        _creationStore.addListener(_refresher);
+        _creationStore.removeListener(_storeChangeHandler);
+        _creationStore.addListener(_storeChangeHandler);
         _creations.clear();
 
         for (String name : _names) {
             Creation creation = _creationStore.get(name);
             if (creation == null) continue;
-            creation.addListener(o -> invalidate());
+
+            creation.removeListener(_creationChangeHandler);
+            creation.addListener(_creationChangeHandler);
+
+            creation.streaksProperty().removeListener(_streakChangeHandler);
+            creation.streaksProperty().addListener(_streakChangeHandler);
+
             _creations.put(name, creation);
 
             Recording recording = creation.getBestRecording();
@@ -132,6 +146,21 @@ public class CreationsListEntry extends ObservableBase {
                 bestRecordings.add(recording);
             }
         }
+
+        updateStreaks();
+    }
+
+    private void updateStreaks() {
+        int streakValue = -1;
+
+        // Use the minimum streak value.
+        for (Creation creation : _creations.values()) {
+            if (streakValue == -1 || creation.getStreaks() < streakValue) {
+                streakValue = creation.getStreaks();
+            }
+        }
+
+        _streaks.setValue(streakValue);
     }
 
 }

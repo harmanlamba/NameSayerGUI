@@ -148,7 +148,7 @@ public class Creation extends ObservableBase {
         return _streaks.get();
     }
 
-    public IntegerProperty getStreaksProperty() {
+    public IntegerProperty streaksProperty() {
         return _streaks;
     }
 
