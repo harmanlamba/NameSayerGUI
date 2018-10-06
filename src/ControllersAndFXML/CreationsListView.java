@@ -222,6 +222,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         private JFXCheckBox _checkBox = new JFXCheckBox();
         private CreationsListEntry _entry;
         private JFXListCell<CreationsListEntry> _cell;
+        private VBox _innerLists = new VBox();
         private ObservableList<Recording> _selectedRecordings;
 
         public MultiCellContents(CreationsListEntry entry, JFXListCell<CreationsListEntry> cell, ObservableList<Recording> selectedRecordings) {
@@ -259,33 +260,39 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             streaks.bindStreaks(entry.streaksProperty());
             HBox heading = new HBox(_checkBox, names, streaks);
 
-            VBox accordion = new VBox();
+            Creation overallAttempts = entry.getOverallAttemptsCreation();
+            if (overallAttempts != null) {
+                addInnerList("Your Attempts", overallAttempts);
+            }
 
             for (String name : entry.getNames()) {
-
                 Label nameLabel = new Label(name);
                 names.getChildren().add(nameLabel);
                 if (entry.getCreation(name) == null) {
                     nameLabel.getStyleClass().add("invalid-name");
                 }
 
-                JFXListView<Recording> innerListView = new JFXListView<>();
-                innerListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                innerListView.setCellFactory(listView -> new CreationsListInnerCell(selectedRecordings));
-
                 Creation creation = entry.getCreation(name);
                 if (creation != null) {
-                    for (Recording recording : creation.getAllRecordings()) {
-                        innerListView.getItems().add(recording);
-                    }
-                    TitledPane pane = new TitledPane(name, innerListView);
-                    pane.setExpanded(false);
-                    accordion.getChildren().add(pane);
+                    addInnerList(name, creation);
                 }
-
             }
 
-            getChildren().setAll(heading, accordion);
+            getChildren().setAll(heading, _innerLists);
+        }
+
+        private void addInnerList(String title, Creation creation) {
+            JFXListView<Recording> innerListView = new JFXListView<>();
+            innerListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            innerListView.setCellFactory(listView -> new CreationsListInnerCell(_selectedRecordings));
+
+            for (Recording recording : creation.getAllRecordings()) {
+                innerListView.getItems().add(recording);
+            }
+
+            TitledPane pane = new TitledPane(title, innerListView);
+            pane.setExpanded(false);
+            _innerLists.getChildren().add(pane);
         }
 
         private void updateFromSelectedRecordings() {
