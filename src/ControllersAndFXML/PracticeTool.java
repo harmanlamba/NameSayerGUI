@@ -66,6 +66,12 @@ public class PracticeTool implements Initializable {
         _creationStore = creationStore;
         _recordings = recordings;
 
+        // Streaks.
+        for (Recording recording : recordings) {
+            Creation creation = recording.getCreation();
+            creation.setStreaks(creation.getStreaks() + 1);
+        }
+
         // Clone. Don't break the recording box if the selection changes in the main scene.
         _databaseOptions = FXCollections.observableArrayList();
     }
