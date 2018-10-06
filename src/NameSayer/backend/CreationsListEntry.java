@@ -2,6 +2,7 @@ package NameSayer.backend;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.beans.InvalidationListener;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,8 @@ public class CreationsListEntry extends ObservableBase {
     private List<String> _names;
     private Map<String, Creation> _creations = new HashMap<>();
     private CreationStore _creationStore;
+
+    private InvalidationListener _refresher = o -> refresh();
 
     CreationsListEntry(String name, CreationStore creationStore) {
         this(Collections.singletonList(name), creationStore);
@@ -114,7 +117,8 @@ public class CreationsListEntry extends ObservableBase {
     private void refresh() {
         List<Recording> bestRecordings = new ArrayList<>();
 
-        _creationStore.addListener(o -> refresh());
+        _creationStore.removeListener(_refresher);
+        _creationStore.addListener(_refresher);
         _creations.clear();
 
         for (String name : _names) {
