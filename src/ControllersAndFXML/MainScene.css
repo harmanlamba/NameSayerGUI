@@ -28,6 +28,20 @@
     -fx-text-fill: #e8e8e8;
 }
 
+.titled-pane{
+    -fx-background-color: #282828;
+    -fx-text-fill: #e8e8e8;
+}
+
+.titled-pane > .title{
+    -fx-background-color: #282828;
+    -fx-text-fill: #e8e8e8;
+}
+
+.titled-pane > *.content{
+    -fx-background-color: #e8e8e8;
+}
+
 #topLabel {
     -fx-text-fill: #e8e8e8;
     -fx-font-style: italic;
