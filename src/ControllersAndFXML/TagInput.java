@@ -31,6 +31,7 @@ public class TagInput extends JFXChipView<List<String>> {
             public String toString(List<String> names) {
                 return String.join(" ", names);
             }
+
             @Override
             public List<String> fromString(String string) {
                 return Arrays.asList(string.toLowerCase().split("[ -]+")); // TODO filter out bad values and other whitespace characters
@@ -57,7 +58,7 @@ public class TagInput extends JFXChipView<List<String>> {
             getSuggestions().clear();
             List<String> names = _creationStore.getValue().getCreationNames();
             Collections.sort(names);
-            for(String name : names) {
+            for (String name : names) {
                 getSuggestions().add(Collections.singletonList(name));
             }
         };
@@ -65,15 +66,15 @@ public class TagInput extends JFXChipView<List<String>> {
             suggestionsUpdater.invalidated(null);
             _creationStore.getValue().addListener(suggestionsUpdater);
         });
-        setChipFactory((chipView,chip) -> {
-            return new JFXDefaultChip<List<String>>(chipView,chip){{
-                List<String> listOfNames=getItem();
-                HBox labelAndCross= new HBox();
+        setChipFactory((chipView, chip) -> {
+            return new JFXDefaultChip<List<String>>(chipView, chip) {{
+                List<String> listOfNames = getItem();
+                HBox labelAndCross = new HBox();
                 labelAndCross.setSpacing(8);
-                root.getChildren().set(0,labelAndCross);
-                for(String name: listOfNames){
-                    Label label= new Label(name);
-                    if(_creationStore.get().get(name) == null){
+                root.getChildren().set(0, labelAndCross);
+                for (String name : listOfNames) {
+                    Label label = new Label(name);
+                    if (_creationStore.get().get(name) == null) {
                         //Creation Name does not exist
                         label.getStyleClass().add("invalid-name");
                     }
