@@ -43,7 +43,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
 
-        // TODO: change this label when filter is enabled, so it says "Begin by entering a name above".
+        
         setPlaceholder(new Label("Begin by entering a name.\nAll name tags will appear\nin the ordered typed"));
     }
 
