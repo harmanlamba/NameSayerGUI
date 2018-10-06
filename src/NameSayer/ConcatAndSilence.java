@@ -155,8 +155,8 @@ public abstract class ConcatAndSilence {
                     process.waitFor(); //ensuring that concatenation happens before silencing
                     Process processSilence = silenceRemoverBuilder.start();
                     processSilence.waitFor();
-                    //Process deleteTempCreationsProcess= deleteTempCreations.start();
-                    //deleteTempCreationsProcess.waitFor();
+                    Process deleteTempCreationsProcess= deleteTempCreations.start();
+                    deleteTempCreationsProcess.waitFor();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
