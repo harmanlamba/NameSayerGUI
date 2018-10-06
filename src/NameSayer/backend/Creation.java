@@ -3,6 +3,7 @@ package NameSayer.backend;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -82,6 +83,44 @@ public class Creation extends ObservableBase {
         List<Recording> recordings = getVersions();
         recordings.addAll(getAttempts());
         return recordings;
+    }
+
+    public Recording getBestRecording() {
+        assert getRecordingCount() > 0;
+        List<Recording> candidates = getAllRecordings();
+
+        Collections.sort(candidates, (r1, r2) -> {
+
+            // Prioritise database versions before user attempts.
+            if (r1.getType() != r2.getType()) {
+                switch (r1.getType()) {
+                    case VERSION:
+                        return -1;
+                    case ATTEMPT:
+                        return 1;
+                }
+            }
+
+            // Then sort by quality.
+            int value = r1.getQuality().getGoodness() - r2.getQuality().getGoodness();
+
+            // Use randomness as tie-breaker.
+            return value == 0 ? (int)(Math.random() * 3 - 1) : value;
+        });
+
+        return candidates.get(0);
+    }
+
+    public Recording getLatestRecording() {
+        Date latestDate = new Date(0);
+        Recording latestRecording = null;
+        for (Recording recording : _versions.values()) {
+            if (recording.getDate().compareTo(latestDate) >= 0) {
+                latestDate = recording.getDate();
+                latestRecording = recording;
+            }
+        }
+        return latestRecording;
     }
 
     public int getRecordingCount() {

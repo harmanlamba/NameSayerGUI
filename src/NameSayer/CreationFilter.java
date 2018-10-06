@@ -3,6 +3,7 @@ package NameSayer;
 
 import NameSayer.backend.Creation;
 import NameSayer.backend.CreationStore;
+import NameSayer.backend.CreationsList;
 import NameSayer.backend.Recording;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,8 +41,9 @@ public class CreationFilter {
         }
     };
 
-    private ObservableList<Creation> _filterResults= FXCollections.observableArrayList();
-    private List<Creation> _intermediateList = new ArrayList<>();
+    private CreationsList _filterResults;
+    private CreationsList _intermediateList;
+
     private ObservableList<List<String>> _requestedNames;
     private CreationStore _creationStore;
     private ObjectProperty<SortStrategy> _sortStrategy =
@@ -51,6 +53,8 @@ public class CreationFilter {
     public CreationFilter(ObservableList<List<String>> requestedNames, CreationStore creationStore) {
         _requestedNames = requestedNames;
         _creationStore = creationStore;
+        _filterResults = new CreationsList(creationStore);
+        _intermediateList = new CreationsList(creationStore);
         //Adding listeners to ensure that whenever the text in the filter changes or the creation it self changes,
         //the filter is upadated.
         InvalidationListener filterUpdater = o -> updateFilter();
@@ -68,7 +72,7 @@ public class CreationFilter {
         return _filterDisable;
     }
 
-    public ObservableList<Creation> getFilterResults() {
+    public CreationsList getFilterResults() {
         return _filterResults;
     }
 
@@ -76,26 +80,12 @@ public class CreationFilter {
         _intermediateList.clear();
 
         if (_filterDisable.get()) {
-            _intermediateList.addAll(_creationStore.getCreations());
+            _intermediateList.addAllCreations();
         } else {
             for (List<String> names : _requestedNames) {
-                Creation creation = _creationStore.get(names.get(0));
-                if (creation != null) {
-                    _intermediateList.add(creation);
-                }
+                _intermediateList.addWithNames(names);
             }
         }
-
-        /*
-         * Old behaviour:
-        //Searching for a match in the filter text and the creation name, if the creation name starts with the filter
-        //text input add the creation to a separate list.
-        for(Creation counter: creationList) {
-            if(counter.getName().toLowerCase().startsWith(filterText)) {
-                _intermediateList.add(counter);
-            }
-        }
-        */
 
         //After having the list, based on the sorting strategy modify the list and then publish the results
         switch(_sortStrategy.getValue()) {
@@ -112,36 +102,14 @@ public class CreationFilter {
     }
 
     private void sortByName(){
-        Collections.sort(_intermediateList, new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
+        Collections.sort(_intermediateList, (entry1, entry2) -> {
+            return entry1.toString().compareTo(entry2.toString());
         });
     }
 
-    //This method implementation sorts creations by the date of the latest recording
     private void sortByDate(){
-        Collections.sort(_intermediateList, new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                List<Recording> recordings1 = o1.getAllRecordings();
-                List<Recording> recordings2 = o2.getAllRecordings();
-                Date latest1 = recordings1.get(0).getDate();
-                Date latest2 = recordings2.get(0).getDate();
-                //Iterating through and finding the latest recording which then gets returned
-                for (Recording recording : recordings1) {
-                    if (recording.getDate().compareTo(latest1) > 0) {
-                        latest1 = recording.getDate();
-                    }
-                }
-                for (Recording recording : recordings2) {
-                    if (recording.getDate().compareTo(latest2) > 0) {
-                        latest2 = recording.getDate();
-                    }
-                }
-                return latest2.compareTo(latest1);
-            }
+        Collections.sort(_intermediateList, (entry1, entry2) -> {
+            return entry2.lastModified().compareTo(entry1.lastModified());
         });
     }
 
