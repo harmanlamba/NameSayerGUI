@@ -61,20 +61,42 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
     }
 
     public void selectNext() {
-        selectIndex(_creationsList.lastIndexInSelection(_selectedRecordings) + 1);
+        int originalIndex = _creationsList.lastIndexInSelection(_selectedRecordings);
+
+        for (int i = 1; i <= _creationsList.size(); i++) {
+            if (trySelectIndex(originalIndex + i)) {
+                return;
+            }
+        }
     }
 
     public void selectPrevious() {
-        selectIndex(_creationsList.firstIndexInSelection(_selectedRecordings) - 1);
+        int originalIndex = _creationsList.firstIndexInSelection(_selectedRecordings);
+
+        if (originalIndex == -1) {
+            originalIndex = _creationsList.size();
+        }
+
+        for (int i = 1; i <= _creationsList.size(); i++) {
+            if (trySelectIndex(originalIndex - i)) {
+                return;
+            }
+        }
     }
 
-    private void selectIndex(int index) {
-        assert index >= -1;
+    private boolean trySelectIndex(int index) {
+        assert index >= -_creationsList.size();
         index += _creationsList.size();
         index %= _creationsList.size();
 
-        _selectedRecordings.setAll(_creationsList.get(index).getRecordings());
-        scrollTo(index);
+        List<Recording> recordings = _creationsList.get(index).getRecordings();
+        if (recordings.isEmpty()) {
+            return false;
+        } else {
+            _selectedRecordings.setAll(recordings);
+            scrollTo(index);
+            return true;
+        }
     }
 
     private void refreshList() {
