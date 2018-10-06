@@ -56,6 +56,14 @@ public class CreationsListEntry extends ObservableBase {
         return _creations.get(name);
     }
 
+    public Creation getOverallAttemptsCreation() {
+        if (_names.size() == 1) {
+            return null;
+        } else {
+            return _creationStore.get(toString());
+        }
+    }
+
     public List<Recording> getRecordings() {
         List<Recording> recordings = new ArrayList<>();
         for (String name : _names) {
