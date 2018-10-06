@@ -44,7 +44,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
 
         // TODO: change this label when filter is enabled, so it says "Begin by entering a name above".
-        setPlaceholder(new Label("No recordings found.\nAdd them to the ./data/database folder."));
+        setPlaceholder(new Label("Begin by entering a name.\nAll name tags will appear\nin the ordered typed"));
     }
 
     public void setCreationsList(CreationsList creationsList) {
