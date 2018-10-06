@@ -255,7 +255,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
             HBox heading = new HBox(_checkBox, names);
 
-            Accordion accordion = new Accordion();
+            VBox accordion = new VBox();
 
             for (String name : entry.getNames()) {
 
@@ -275,7 +275,8 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                         innerListView.getItems().add(recording);
                     }
                     TitledPane pane = new TitledPane(name, innerListView);
-                    accordion.getPanes().add(pane);
+                    pane.setExpanded(false);
+                    accordion.getChildren().add(pane);
                 }
 
             }
