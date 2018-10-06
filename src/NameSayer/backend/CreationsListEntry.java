@@ -89,6 +89,9 @@ public class CreationsListEntry extends ObservableBase {
 
     public boolean matchesRecordings(List<Recording> recordings) {
         List<Recording> ourRecordings = getRecordings();
+        if (ourRecordings.size() == 0) {
+            return false;
+        };
         if (ourRecordings.size() != recordings.size()) {
             return false;
         }

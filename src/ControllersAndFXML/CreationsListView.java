@@ -232,6 +232,11 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
             updateFromSelectedRecordings();
 
+            entry.addListener(o -> {
+                _cell.setDisable(entry.getRecordings().size() == 0);
+            });
+            _cell.setDisable(entry.getRecordings().size() == 0);
+
             BooleanProperty isHovered = new SimpleBooleanProperty(false);
             setOnMouseEntered(event -> isHovered.setValue(true));
             setOnMouseExited(event -> isHovered.setValue(false));
@@ -245,11 +250,20 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                 _cell.getListView().requestFocus();
             });
 
-            HBox heading = new HBox(_checkBox, new Label(entry.toString()));
+            HBox names = new HBox();
+            names.setSpacing(8);
+
+            HBox heading = new HBox(_checkBox, names);
 
             Accordion accordion = new Accordion();
 
             for (String name : entry.getNames()) {
+
+                Label nameLabel = new Label(name);
+                names.getChildren().add(nameLabel);
+                if (entry.getCreation(name) == null) {
+                    nameLabel.getStyleClass().add("invalid-name");
+                }
 
                 JFXListView<Recording> innerListView = new JFXListView<>();
                 innerListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -260,10 +274,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                     for (Recording recording : creation.getAllRecordings()) {
                         innerListView.getItems().add(recording);
                     }
+                    TitledPane pane = new TitledPane(name, innerListView);
+                    accordion.getPanes().add(pane);
                 }
-
-                TitledPane pane = new TitledPane(name, innerListView);
-                accordion.getPanes().add(pane);
 
             }
 
