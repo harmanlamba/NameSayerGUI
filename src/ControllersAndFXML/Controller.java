@@ -4,6 +4,7 @@ package ControllersAndFXML;
 import NameSayer.ConcatAndSilence;
 import NameSayer.backend.*;
 import NameSayer.CreationFilter;
+import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXCheckBox;
 import javafx.animation.PauseTransition;
@@ -28,7 +29,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -81,6 +84,13 @@ public class Controller implements Initializable {
     public JFXSlider volumeSlider;
     public JFXCheckBox filterDisabler;
     public TagInput tagInput;
+    public JFXNodesList nodeList;
+    public Button datbaseButton;
+    public Button appendButton;
+    public Button replaceButton;
+    public GridPane mainGridPane;
+    public ScrollPane scrollPane;
+    public Button uploadListButton;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -93,7 +103,18 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        //Making node list animate upwards
+        nodeList.setRotate(180);
+        scrollPane.setFitToWidth(true);
+        //Making sure that clicking anywhere in the scene makes it so the nodeLists collapses
+        mainGridPane.setOnMouseClicked(e ->{
+            if(e.getPickResult().getIntersectedNode() != nodeList){
+                nodeList.animateList(false);
+            }
+        });
+        listView.setOnMouseClicked(e -> {
+            nodeList.animateList(false);
+        });
         // Bind volume slider to media player.
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
@@ -103,7 +124,6 @@ public class Controller implements Initializable {
                 }
             }
         });
-
         // Bind list view, sort type combo, tag input, and filter disabler.
         _creationFilter = new CreationFilter(tagInput.getChips(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
@@ -321,15 +341,16 @@ public class Controller implements Initializable {
     }
 
     public void appendDatabase(){
+        tagInput.requestFocus();
         DirectoryChooser dc= new DirectoryChooser();
         File selectedDirectory=dc.showDialog(null);
         if(selectedDirectory != null){
             new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
         }
-
     }
 
     public void replaceDatabase(){
+        tagInput.requestFocus();
         DirectoryChooser dc= new DirectoryChooser();
         File selectedDirectory= dc.showDialog(null);
         if(selectedDirectory !=  null){
@@ -337,7 +358,11 @@ public class Controller implements Initializable {
             _creationStore.clear();
             _recordingStore= new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
         }
+    }
 
+    public void uploadUserList(){
+        List<List<String>> userNames= UserTextFile.readFile();
+        tagInput.getChips().addAll(userNames);
     }
 
     private String getCombinedName() {
