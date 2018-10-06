@@ -33,7 +33,7 @@ public class TagInput extends JFXChipView<List<String>> {
             }
             @Override
             public List<String> fromString(String string) {
-                return Arrays.asList(string.split("[ -]+")); // TODO filter out bad values and other whitespace characters
+                return Arrays.asList(string.toLowerCase().split("[ -]+")); // TODO filter out bad values and other whitespace characters
             }
         });
         setPredicate((item, text) -> {
@@ -72,7 +72,12 @@ public class TagInput extends JFXChipView<List<String>> {
                 labelAndCross.setSpacing(8);
                 root.getChildren().set(0,labelAndCross);
                 for(String name: listOfNames){
-                    labelAndCross.getChildren().add(new Label(name));
+                    Label label= new Label(name);
+                    if(_creationStore.get().get(name) == null){
+                        //Creation Name does not exist
+                        label.getStyleClass().add("invalid-name");
+                    }
+                    labelAndCross.getChildren().add(label);
                 }
             }};
         });
