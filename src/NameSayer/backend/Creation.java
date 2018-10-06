@@ -108,7 +108,7 @@ public class Creation extends ObservableBase {
             }
 
             // Use randomness as tie-breaker.
-            int random = (int)(Math.random() * 3) - 1;
+            int random = (int)(Math.random() * 2) * 2 - 1;
             return random;
 
         });
