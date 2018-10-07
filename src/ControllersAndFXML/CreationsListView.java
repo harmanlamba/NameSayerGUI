@@ -166,6 +166,11 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             _btnDelete.getStyleClass().add("delete-btn");
             _btnDelete.setVisible(recording.getType() == Recording.Type.ATTEMPT);
 
+            Streaks streaks = new Streaks();
+            streaks.bindStreaks(recording.getCreation().streaksProperty());
+
+            boolean showStreaks = recording.getCreation().getRecordingCount() == 1;
+
             _labelNumber.setPrefWidth(16);
             Region spaceBetweenNumberName = new Region();
             spaceBetweenNumberName.setMinWidth(20);
@@ -186,7 +191,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                     _labelDate,
                     _qualityStars,
                     spaceBetweenStarsDelete,
-                    _btnDelete);
+                    showStreaks ? streaks : _btnDelete);
         }
 
         private void updateFromSelectedRecordings() {
@@ -271,6 +276,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
                 _cell.getListView().requestFocus();
             });
 
+            Region checkboxSpacer = new Region();
+            checkboxSpacer.setPrefWidth(36);
+
             HBox names = new HBox();
             names.setSpacing(8);
             names.setMaxWidth(Double.POSITIVE_INFINITY);
@@ -278,7 +286,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
             Streaks streaks = new Streaks();
             streaks.bindStreaks(entry.streaksProperty());
-            HBox heading = new HBox(_checkBox, names, streaks);
+            HBox heading = new HBox(_checkBox, checkboxSpacer, names, streaks);
 
             Creation overallAttempts = entry.getOverallAttemptsCreation();
             if (overallAttempts != null) {
