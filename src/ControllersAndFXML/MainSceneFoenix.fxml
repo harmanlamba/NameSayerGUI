@@ -38,7 +38,7 @@
                   <TagInput id="tagInput" fx:id="tagInput" maxWidth="1.7976931348623157E308" prefWidth="660.0" HBox.hgrow="ALWAYS" />
                </content>
             </ScrollPane>
-            <JFXCheckBox fx:id="filterDisabler">
+            <JFXCheckBox fx:id="filterDisabler" checkedColor="#ab4642">
                <tooltip>
                   <Tooltip text="View the full database" />
                </tooltip></JFXCheckBox>

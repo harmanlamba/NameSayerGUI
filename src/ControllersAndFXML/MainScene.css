@@ -8,6 +8,7 @@
     -jfx-focus-color: #ba8baf;
 }
 
+
 .invalid-name{
     -fx-border-color: transparent transparent #ab4642 transparent;
 }
