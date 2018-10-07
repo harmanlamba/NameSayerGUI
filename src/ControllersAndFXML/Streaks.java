@@ -2,6 +2,7 @@ package ControllersAndFXML;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.geometry.Pos;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -15,6 +16,8 @@ public class Streaks extends HBox {
         super();
 
         Label count = new Label();
+        count.setPrefWidth(30);
+        count.setAlignment(Pos.CENTER_RIGHT);
 
         Label fire = new Label(FIRE_CHAR);
         fire.getStyleClass().add("streaks-fire");

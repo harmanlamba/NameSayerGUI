@@ -7,6 +7,8 @@ import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,9 +38,15 @@ import java.util.ResourceBundle;
 public class RecordingBox implements Initializable {
     private Stage _recordingWindow;
     private String _creationName;
-    private int seconds = 5;
+    private int seconds;
+    private Timeline _recordingTimeline;
     private MediaPlayer _mediaPlayer;
     private MicrophoneLevel _microphoneLevel;
+    private BooleanProperty _hasRecorded = new SimpleBooleanProperty();
+    private BooleanProperty _isRecording = new SimpleBooleanProperty();
+    private BooleanProperty _isPlaying = new SimpleBooleanProperty();
+
+    private Task<Void> _recordingTask;
 
     public RecordingBox(Stage recordingWindow, String creationName) {
         _recordingWindow = recordingWindow;
@@ -68,10 +76,36 @@ public class RecordingBox implements Initializable {
         progressBar.progressProperty().bind(_microphoneLevel.levelProperty());
         playButton.setDisable(true);
         saveButton.setDisable(true);
+
+        _isRecording.addListener(o -> {
+            if (_isRecording.get()) {
+                recordButton.setText("Stop");
+
+                // Starting the recording animation, which tells the user the amount of time they have remaining
+                recordingTimerStart();
+            } else {
+                _hasRecorded.set(true);
+                recordButton.setText("Record");
+                recordingTimerStop();
+            }
+        });
+
+        recordButton.disableProperty().bind(_isPlaying);
+        playButton.disableProperty().bind(_hasRecorded.not().or(_isRecording).or(_isPlaying));
+        saveButton.disableProperty().bind(_hasRecorded.not().or(_isRecording).or(_isPlaying));
+        cancelButton.disableProperty().bind(_isPlaying);
     }
 
-    public void startRecord() {
-        Task task = new Task<Void>() {
+    public void recordButtonClicked() {
+        if (_isRecording.get()) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    }
+
+    private void startRecording() {
+        _recordingTask = new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
@@ -93,23 +127,22 @@ public class RecordingBox implements Initializable {
                 String recordingCmd = "ffmpeg -nostdin -y -f alsa -ac 1 -i default -t 5  ./data/tempCreations/tempAudio.wav";
                 //Ensuring that the correct buttons are disabled during the recording to not corrupt the recording by mistake
                 Platform.runLater(() -> {
-                    saveButton.setDisable(true);
-                    recordButton.setDisable(true);
-                    playButton.setDisable(true);
+                    _isRecording.set(true);
                     recordingLabel.requestFocus();
-                    //Starting the recording animation, which tells the user the amount of time they have remaining
-                    recordingTimer();
                 });
 
                 ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
                 try {
                     Process process = recordingAudio.start();
-                    try {
-                        if (process.waitFor() != 0) {
-                            System.out.println("Error in recording audio");
+                    while (process.isAlive()) {
+                        if (isCancelled()) {
+                            Thread.sleep(10);
+                            process.destroy();
+                            return null;
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Thread.sleep(10);
+                    }
+                    if (process.exitValue() != 0) {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -121,24 +154,37 @@ public class RecordingBox implements Initializable {
             //After recording is completed, re-enable all the buttons for the user
             @Override
             protected void succeeded() {
-                playButton.setDisable(false);
-                saveButton.setDisable(false);
-                recordButton.setDisable(false);
-                recordingLabel.setOpacity(0);
-                recordingSpinner.setDisable(true);
-                recordingSpinner.setOpacity(0);
+                _hasRecorded.set(true);
+                cleanup();
             }
 
             @Override
             protected void failed() {
-                recordingLabel.setOpacity(0);
-                recordingSpinner.setDisable(true);
-                recordingSpinner.setOpacity(0);
+                getException().printStackTrace();
+                cleanup();
+            }
+
+            @Override
+            protected void cancelled() {
+                _hasRecorded.set(true);
+                cleanup();
+            }
+
+            private void cleanup() {
+                _isRecording.set(false);
+                _recordingTask = null;
             }
         };
-        Thread thread = new Thread(task);
+        Thread thread = new Thread(_recordingTask);
         thread.start();
 
+    }
+
+    private void stopRecording() {
+        if (_recordingTask == null) {
+            return;
+        }
+        _recordingTask.cancel(false);
     }
 
     public void playRecording() {
@@ -146,20 +192,16 @@ public class RecordingBox implements Initializable {
         Media media = new Media(new File(creationPathTemp).toURI().toString());
         _mediaPlayer = new MediaPlayer(media);
         _mediaPlayer.play();
-        recordButton.setDisable(true);
-        playButton.setDisable(true);
-        cancelButton.setDisable(true);
-        saveButton.setDisable(true);
+        _isPlaying.set(true);
         _mediaPlayer.setOnEndOfMedia(() -> {
-            recordButton.setDisable(false);
-            playButton.setDisable(false);
-            cancelButton.setDisable(false);
-            saveButton.setDisable(false);
-            upperLabel.requestFocus();
+            _isPlaying.set(false);
         });
     }
 
     public void cancelRecordingBox() {
+        if (_isRecording.get()) {
+            stopRecording();
+        }
         _recordingWindow.close();
     }
 
@@ -190,14 +232,12 @@ public class RecordingBox implements Initializable {
     /*
     This method handles the countdown for the timer.
      */
-    private void recordingTimer() {
+    private void recordingTimerStart() {
         //Retrieve the constant value that has been set, currently it is at 5
+        seconds = 5;
         final int[] seconds2 = {seconds};
-        Timeline time = new Timeline();
-        time.setCycleCount(Timeline.INDEFINITE);
-        if (time != null) {
-            time.stop();
-        }
+        _recordingTimeline = new Timeline();
+        _recordingTimeline.setCycleCount(Timeline.INDEFINITE);
         recordingLabel.setOpacity(1);
         recordingSpinner.setDisable(false);
         recordingSpinner.setOpacity(1);
@@ -210,12 +250,19 @@ public class RecordingBox implements Initializable {
             public void handle(ActionEvent event) {
                 recordingLabel.setText("Recording NOW: You have " + seconds2[0] + " seconds remaining");
                 if (seconds2[0] <= 0) {
-                    time.stop();
+                    _recordingTimeline.stop();
                 }
                 seconds2[0]--;
             }
         });
-        time.getKeyFrames().add(frame);
-        time.playFrom(Duration.seconds(0.999));
+        _recordingTimeline.getKeyFrames().add(frame);
+        _recordingTimeline.playFrom(Duration.seconds(0.999));
+    }
+
+    private void recordingTimerStop() {
+        recordingLabel.setOpacity(0);
+        recordingSpinner.setDisable(true);
+        recordingSpinner.setOpacity(0);
+        _recordingTimeline.stop();
     }
 }
