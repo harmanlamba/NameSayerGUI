@@ -5,6 +5,8 @@ import NameSayer.backend.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,6 +31,9 @@ public class CompareRecordingsBox implements Initializable {
     private Path[] _paths = new Path[2];
     private CreationsListView _listView;
     private List<Recording> recordings = new ArrayList<Recording>();
+    private BooleanProperty _isLooping = new SimpleBooleanProperty();
+    private BooleanProperty _isRightPlayerPLaying = new SimpleBooleanProperty();
+    private BooleanProperty _isLeftPlayerPlaying = new SimpleBooleanProperty();
 
     public CompareRecordingsBox(CreationsListView listView) {
         _listView = listView;
@@ -41,6 +46,7 @@ public class CompareRecordingsBox implements Initializable {
     public Button leftPlayButton;
     public Label rightTitleLabel;
     public Button rightPlayButton;
+    public Button loopingButton;
     public JFXSlider leftVolumeSlider;
     public JFXSlider rightVolumeSlider;
 
@@ -82,6 +88,22 @@ public class CompareRecordingsBox implements Initializable {
                 });
             });
         });
+
+        //Setting up boolean properties
+        leftPlayButton.disableProperty().bind(_isLeftPlayerPlaying.or(_isRightPlayerPLaying));
+        rightPlayButton.disableProperty().bind(_isLeftPlayerPlaying.or(_isRightPlayerPLaying));
+        _isLeftPlayerPlaying.addListener(e -> {
+            if (_isLooping.get() && !_isLeftPlayerPlaying.get()) {
+                rightPlayButtonAction();
+            }
+        });
+
+        _isRightPlayerPLaying.addListener(e -> {
+            if (_isLooping.get() && !_isRightPlayerPLaying.get()) {
+                leftPlayButtonAction();
+            }
+        });
+
 
     }
 
@@ -131,11 +153,12 @@ public class CompareRecordingsBox implements Initializable {
         //Setting the volume of the mediaplayer to the current value of the volume slider
         _leftPlayer.setVolume(leftVolumeSlider.getValue() / 100);
         _leftPlayer.play();
-        leftPlayButton.setDisable(true);
-        rightPlayButton.setDisable(true);
+        _isLeftPlayerPlaying.set(true);
         _leftPlayer.setOnEndOfMedia(() -> {
-            leftPlayButton.setDisable(false);
-            rightPlayButton.setDisable(false);
+            _isLeftPlayerPlaying.set(false);
+        });
+        _leftPlayer.setOnStopped(() -> {
+            _isLeftPlayerPlaying.set(false);
         });
 
     }
@@ -153,14 +176,30 @@ public class CompareRecordingsBox implements Initializable {
                 //Setting the volume of the mediaplayer to the current value of the volume slider
                 _rightPlayer.setVolume(rightVolumeSlider.getValue() / 100);
                 _rightPlayer.play();
-                leftPlayButton.setDisable(true);
-                rightPlayButton.setDisable(true);
+                _isRightPlayerPLaying.set(true);
                 _rightPlayer.setOnEndOfMedia(() -> {
-                    leftPlayButton.setDisable(false);
-                    rightPlayButton.setDisable(false);
+                    _isRightPlayerPLaying.set(false);
+                });
+                _rightPlayer.setOnStopped(() -> {
+                    _isRightPlayerPLaying.set(false);
                 });
             }
         };
+    }
+
+    public void loopingButtonAction() {
+        _isLooping.set(!_isLooping.get());
+        if (_isLooping.get()) {
+            loopingButton.setText("\uf24f");
+            recordingLabel.requestFocus();
+            leftPlayButtonAction();
+        } else {
+            loopingButton.setText("\uf201");
+            recordingLabel.requestFocus();
+            _leftPlayer.stop();
+            _rightPlayer.stop();
+        }
+
     }
 
 

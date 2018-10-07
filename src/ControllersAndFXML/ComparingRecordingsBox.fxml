@@ -37,16 +37,19 @@
             </Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="559.0" spacing="190.0" GridPane.rowIndex="1">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="559.0" spacing="35.0" GridPane.rowIndex="1">
          <children>
-            <VBox id="leftVBox" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="55.0" prefWidth="230.0">
+            <VBox id="leftVBox" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="55.0" prefWidth="215.0">
                <children>
-                  <Label id="leftTitleLabel" fx:id="leftTitleLabel" text="Label" />
+                  <Label id="leftTitleLabel" fx:id="leftTitleLabel" text="Label">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin></Label>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label id="leftVolumeLabel" text="&#xf259;">
+                        <Label id="leftVolumeLabel" text="">
                            <HBox.margin>
-                              <Insets top="3.0" />
+                              <Insets left="3.0" top="3.0" />
                            </HBox.margin>
                         </Label>
                         <JFXSlider id="leftVolumeSlider" fx:id="leftVolumeSlider">
@@ -57,22 +60,29 @@
                               <Insets left="3.0" />
                            </padding>
                         </JFXSlider>
-                        <JFXButton id="leftPlayButton" fx:id="leftPlayButton" onAction="#leftPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="&#xf215;">
+                        <JFXButton id="leftPlayButton" fx:id="leftPlayButton" onAction="#leftPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="">
                            <HBox.margin>
-                              <Insets left="5.0" />
+                              <Insets left="5.0" right="5.0" />
                            </HBox.margin></JFXButton>
                      </children>
                   </HBox>
                </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
             </VBox>
-            <VBox id="rightVBox" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="55.0" prefWidth="230.0">
+            <JFXButton id="loopingButton" fx:id="loopingButton" onAction="#loopingButtonAction" prefHeight="26.0" prefWidth="109.0" text="&#xf201;" />
+            <VBox id="rightVBox" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="55.0" prefWidth="215.0">
                <children>
-                  <Label id="rightTitleLabel" fx:id="rightTitleLabel" text="Label" />
+                  <Label id="rightTitleLabel" fx:id="rightTitleLabel" text="Label">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin></Label>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label id="rightVolumeLabel" text="&#xf259;">
+                        <Label id="rightVolumeLabel" text="">
                            <HBox.margin>
-                              <Insets top="3.0" />
+                              <Insets left="3.0" top="3.0" />
                            </HBox.margin>
                         </Label>
                         <JFXSlider id="rightVolumeSlider" fx:id="rightVolumeSlider">
@@ -83,13 +93,16 @@
                               <Insets left="3.0" />
                            </padding>
                         </JFXSlider>
-                        <JFXButton id="rightPlayButton" fx:id="rightPlayButton" onAction="#rightPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="&#xf215;">
+                        <JFXButton id="rightPlayButton" fx:id="rightPlayButton" onAction="#rightPlayButtonAction" prefHeight="25.0" prefWidth="52.0" text="">
                            <HBox.margin>
-                              <Insets left="5.0" />
+                              <Insets left="5.0" right="5.0" />
                            </HBox.margin></JFXButton>
                      </children>
                   </HBox>
                </children>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
             </VBox>
          </children>
       </HBox>
