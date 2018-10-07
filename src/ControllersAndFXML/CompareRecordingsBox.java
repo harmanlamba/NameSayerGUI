@@ -196,8 +196,8 @@ public class CompareRecordingsBox implements Initializable {
         } else {
             loopingButton.setText("\uf201");
             recordingLabel.requestFocus();
-            _leftPlayer.stop();
-            _rightPlayer.stop();
+            if (_leftPlayer != null) _leftPlayer.stop();
+            if (_rightPlayer != null) _rightPlayer.stop();
         }
 
     }
