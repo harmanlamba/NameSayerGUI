@@ -37,15 +37,12 @@ public class CompareRecordingsBox implements Initializable {
     private BooleanProperty _isRightPlayerPLaying = new SimpleBooleanProperty();
     private BooleanProperty _isLeftPlayerPlaying = new SimpleBooleanProperty();
 
-    //Fairly certain we can remove this constructor... upto you though...
-    public CompareRecordingsBox(CreationsListView listView) {
+
+    public CompareRecordingsBox(CreationsListView listView, Stage compareRecordingStage) {
         _listView = listView;
+        _compareRecordingStage = compareRecordingStage;
     }
 
-    public CompareRecordingsBox(CreationsListView listView, Stage compareRecordingStage){
-        _listView=listView;
-        _compareRecordingStage=compareRecordingStage;
-    }
     //Setting up the FXML injections to be able to reference the components in the code
     @FXML
     public Label recordingLabel;
@@ -81,20 +78,7 @@ public class CompareRecordingsBox implements Initializable {
                 }
             }
         });
-        //Ensuring that once the window is closed the recording playback stops
-        leftPlayButton.sceneProperty().addListener(o -> {
-            leftPlayButton.getScene().windowProperty().addListener(o1 -> {
-                leftPlayButton.getScene().getWindow().setOnHiding(e -> {
-                    if (_leftPlayer != null) {
-                        _leftPlayer.stop();
-                    }
-                    if (_rightPlayer != null) {
-                        _rightPlayer.stop();
-                    }
 
-                });
-            });
-        });
 
         //Setting up boolean properties
         leftPlayButton.disableProperty().bind(_isLeftPlayerPlaying.or(_isRightPlayerPLaying));
@@ -111,12 +95,15 @@ public class CompareRecordingsBox implements Initializable {
             }
         });
 
+        //Ensuring that once the window is closed the recording playback stops
         _compareRecordingStage.setOnHiding(e -> {
-            if(_leftPlayer != null && _rightPlayer != null){
+            if (_leftPlayer != null) {
                 _leftPlayer.stop();
+                _isLeftPlayerPlaying.set(false);
+            }
+            if (_rightPlayer != null) {
                 _rightPlayer.stop();
                 _isRightPlayerPLaying.set(false);
-                _isLeftPlayerPlaying.set(false);
             }
         });
 
