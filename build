@@ -17,11 +17,11 @@ popd
 
 chmod +x ./namesayer.jar
 
-rm -rf ./dist
-mkdir -p ./dist
-cp -r ./src ./dist/src
-cp ./run-dist.sh ./dist/run
-cp ./namesayer.jar ./dist/namesayer.jar
-cp ./README ./dist/README
-
-tar -C ./dist -cvf submission.tar ./
+# rm -rf ./dist
+# mkdir -p ./dist
+# cp -r ./src ./dist/src
+# cp ./run-dist.sh ./dist/run
+# cp ./namesayer.jar ./dist/namesayer.jar
+# cp ./README ./dist/README
+# 
+# tar -C ./dist -cvf submission.tar ./
