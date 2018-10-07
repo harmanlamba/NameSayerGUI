@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 
 
 import java.io.File;
@@ -26,6 +27,7 @@ import java.util.ResourceBundle;
 
 public class CompareRecordingsBox implements Initializable {
 
+    private Stage _compareRecordingStage;
     private MediaPlayer _leftPlayer;
     private MediaPlayer _rightPlayer;
     private Path[] _paths = new Path[2];
@@ -35,8 +37,10 @@ public class CompareRecordingsBox implements Initializable {
     private BooleanProperty _isRightPlayerPLaying = new SimpleBooleanProperty();
     private BooleanProperty _isLeftPlayerPlaying = new SimpleBooleanProperty();
 
-    public CompareRecordingsBox(CreationsListView listView) {
+
+    public CompareRecordingsBox(CreationsListView listView, Stage compareRecordingStage) {
         _listView = listView;
+        _compareRecordingStage = compareRecordingStage;
     }
 
     //Setting up the FXML injections to be able to reference the components in the code
@@ -74,20 +78,7 @@ public class CompareRecordingsBox implements Initializable {
                 }
             }
         });
-        //Ensuring that once the window is closed the recording playback stops
-        leftPlayButton.sceneProperty().addListener(o -> {
-            leftPlayButton.getScene().windowProperty().addListener(o1 -> {
-                leftPlayButton.getScene().getWindow().setOnHiding(e -> {
-                    if (_leftPlayer != null) {
-                        _leftPlayer.stop();
-                    }
-                    if (_rightPlayer != null) {
-                        _rightPlayer.stop();
-                    }
 
-                });
-            });
-        });
 
         //Setting up boolean properties
         leftPlayButton.disableProperty().bind(_isLeftPlayerPlaying.or(_isRightPlayerPLaying));
@@ -104,6 +95,17 @@ public class CompareRecordingsBox implements Initializable {
             }
         });
 
+        //Ensuring that once the window is closed the recording playback stops
+        _compareRecordingStage.setOnHiding(e -> {
+            if (_leftPlayer != null) {
+                _leftPlayer.stop();
+                _isLeftPlayerPlaying.set(false);
+            }
+            if (_rightPlayer != null) {
+                _rightPlayer.stop();
+                _isRightPlayerPLaying.set(false);
+            }
+        });
 
     }
 

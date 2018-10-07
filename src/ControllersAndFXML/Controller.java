@@ -291,7 +291,7 @@ public class Controller implements Initializable {
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/ComparingRecordingsBox.fxml"));
-        loader.setController(new CompareRecordingsBox(listView));
+        loader.setController(new CompareRecordingsBox(listView, compareRecordingsWindow));
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         compareRecordingsWindow.setResizable(false);
