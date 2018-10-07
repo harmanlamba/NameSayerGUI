@@ -2,6 +2,7 @@
                         Name Sayer User Guide
 =======================================================================
 
+Target User: University Student
 
 Requirements for the program:
 -----------------------------
@@ -24,15 +25,19 @@ Running the program:
 What is being displayed at start up:
 ------------------------------------
 
-1) After starting the application, the application will make folders that it uses. Please insert your databse recordings into the ./data/database folder for them to get populated into the application. NOTE: The application does not have to be closed for this process, it can be left open.
+1) After starting the application, the application will make folders that it uses.
 2) Once the database recordings are populated you should see them.
 
+*) Note that the Program comes with a pre-installed database of recordings. Please read about uploading list/database
+if you would like to replace/append the pre-loaded database
 
 
 Playing individual recordings:
 ------------------------------
 
-1) Select the single recording you wish to play by either checking the checkbox or clicking on the name which will automatically check the checkbox for you and hit play in the bottom bar.
+1) Please type in the name in the TagField in the top, if the name is present you will be able to click it and
+hit play. In the case that the name does not exist it will be underlined in red, and you will not be able to select the
+recording to play.
 2) A media time slider will appear and start to move relative to the recording. You may adjust the volume using the volume slider located at the bottom right.
 3) To pause the recording, hit on the pause button which replaces the play button once the recording starts to play
 4) To go to the next track press the ">" button in the bottom bar, to the right of play/pause button conversely press "<" to go back one recording
@@ -45,7 +50,14 @@ by the Software. Do not panic, this is normal. Simply, give it a poor quality ra
 Playing a list of recordings:
 -----------------------------
 
-1) To play a concatenated string, choose the recordings avalible by either using the checkbox or clicking on them. A number should appear next to the checkbox this indicates the order in which the recordings will be concatenated.
+1) To play a concatenated string, you can manually type the 'Tags' in the input field in the top, and this will start
+to populate the MediaPlayer with the names. Note, that the names will appear in the same order they are typed.
+1.1) You may upload a .txt file with the names where each new line is a new name. To upload the file click on the plus on
+the top right corner, this will populate the tags automatically. (Red underline means that the database does not have
+the desired name)
+1.2) You may change the quality of recording being used in the concatenation by expanding the name 'bar' and checking the
+checkbox to choose a different version. (NOTE: The checkbox order is the order in which the names will be concatenated, this is
+also shown in the bottom play bar.)
 2) You may shuffle the list of recordings by clicking on the shuffle icon on the bottom left side of the media bar
 
 *) NOTE: After selecting the Recording if nothing seems to play, this is because the file is empty or the recording is too silent, as a result being filtered
@@ -107,6 +119,18 @@ Using the practice tool:
 7) You may rate the database recordings directly in the practice tool by chosing the stars, for more information on quality rating please refer to the quality rating section of this README.
 8) Once done practicing, to exit click on the x in the top right corner
 
+
+Uploading a New Database:
+-------------------------
+1) Click on the "Database..." button in the left side of the MediaPlayer
+2) This will prompt 2 possible options, "Append" or "Replace"
+3) Once you choose of the options, a directory viewer will pop up which will allow you to select a new database folder
+3.1) Replace will override the pre-packaged recordings. Please refer the NOTE below
+3.2) Append will add the new recordings to the existing database
+
+*) Note: 3.1 and 3.2 are only applicable until the program is exited. Once restarting, the application will start up
+with the defaul directory. If you wish to permanently add new recordings to the database please add them to the
+./data/database folder manually.
 
 
 Quitting NameSayer:
