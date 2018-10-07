@@ -30,6 +30,7 @@ public class StreaksAndTiers {
     public StreaksAndTiers(CreationStore creationStore) {
         _creationStore = creationStore;
 
+        // Listen to when the streaks counters change for any creation and any new creation.
         updateListeners();
         reloadStreaks();
         _creationStore.addListener(e -> {
@@ -38,11 +39,15 @@ public class StreaksAndTiers {
         });
     }
 
+    /**
+     * Pull streaks data from the file, and load it into the creation objects.
+     */
     private void reloadStreaks() {
         assert Platform.isFxApplicationThread();
 
         Path streaksPath = _path.resolve(STREAKS_FILENAME);
         if (Files.notExists(streaksPath)) {
+            // No data to read from - just ignore.
             return;
         }
 
@@ -88,6 +93,9 @@ public class StreaksAndTiers {
         th.start();
     }
 
+    /**
+     * Called when any of the streaks counters change, so it saves them to the file.
+     */
     private void invalidateStreaks() {
         assert Platform.isFxApplicationThread();
 
@@ -107,6 +115,9 @@ public class StreaksAndTiers {
         th.start();
     }
 
+    /**
+     * Save streaks data to the file.
+     */
     private synchronized void saveStreaks() {
         assert !Platform.isFxApplicationThread();
 
@@ -122,6 +133,9 @@ public class StreaksAndTiers {
         }
     }
 
+    /**
+     * Listen to whenever the streaks counter changes for any creation.
+     */
     private void updateListeners() {
         for (Creation creation: _creationStore.getCreations()) {
             creation.streaksProperty().removeListener(changesInStreakIntegerProperty);
