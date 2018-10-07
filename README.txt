@@ -26,7 +26,7 @@ What is being displayed at start up:
 ------------------------------------
 
 1) After starting the application, the application will make folders that it uses.
-2) Once the database recordings are populated you should see them.
+
 
 *) Note that the Program comes with a pre-installed database of recordings. Please read about uploading list/database
 if you would like to replace/append the pre-loaded database
@@ -128,8 +128,8 @@ Uploading a New Database:
 3.1) Replace will override the pre-packaged recordings. Please refer the NOTE below
 3.2) Append will add the new recordings to the existing database
 
-*) Note: 3.1 and 3.2 are only applicable until the program is exited. Once restarting, the application will start up
-with the defaul directory. If you wish to permanently add new recordings to the database please add them to the
+*) NOTE: 3.1 and 3.2 are only applicable until the program is exited. Once restarting, the application will start up
+with the default directory. If you wish to permanently add new recordings to the database please add them to the
 ./data/database folder manually.
 
 
