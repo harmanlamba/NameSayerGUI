@@ -38,9 +38,8 @@
     -fx-background-color: #282828;
     -fx-text-fill: #e8e8e8;
 }
-
-.titled-pane > *.content{
-    -fx-background-color: #e8e8e8;
+.titled-pane *.content{
+    -fx-border-color: #282828;
 }
 
 #topLabel {
@@ -143,6 +142,10 @@
 .list-cell {
     -fx-background-color: #383838;
     -fx-opacity: 0.8;
+}
+
+.list-cell > * {
+    -fx-opacity: 1;
 }
 
 .list-cell .label {
