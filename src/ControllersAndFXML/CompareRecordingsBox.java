@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 
 
 import java.io.File;
@@ -26,6 +27,7 @@ import java.util.ResourceBundle;
 
 public class CompareRecordingsBox implements Initializable {
 
+    private Stage _compareRecordingStage;
     private MediaPlayer _leftPlayer;
     private MediaPlayer _rightPlayer;
     private Path[] _paths = new Path[2];
@@ -35,10 +37,15 @@ public class CompareRecordingsBox implements Initializable {
     private BooleanProperty _isRightPlayerPLaying = new SimpleBooleanProperty();
     private BooleanProperty _isLeftPlayerPlaying = new SimpleBooleanProperty();
 
+    //Fairly certain we can remove this constructor... upto you though...
     public CompareRecordingsBox(CreationsListView listView) {
         _listView = listView;
     }
 
+    public CompareRecordingsBox(CreationsListView listView, Stage compareRecordingStage){
+        _listView=listView;
+        _compareRecordingStage=compareRecordingStage;
+    }
     //Setting up the FXML injections to be able to reference the components in the code
     @FXML
     public Label recordingLabel;
@@ -104,6 +111,14 @@ public class CompareRecordingsBox implements Initializable {
             }
         });
 
+        _compareRecordingStage.setOnHiding(e -> {
+            if(_leftPlayer != null && _rightPlayer != null){
+                _leftPlayer.stop();
+                _rightPlayer.stop();
+                _isRightPlayerPLaying.set(false);
+                _isLeftPlayerPlaying.set(false);
+            }
+        });
 
     }
 
