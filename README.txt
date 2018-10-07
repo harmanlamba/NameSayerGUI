@@ -137,3 +137,16 @@ Quitting NameSayer:
 -------------------
 
 1) Click on the x on the top right corner, which will safely close the program.
+
+Special Features:
+------------------
+1) Streaks
+1.1) Streaks follow the same streaks concept as Snapchat, once you Practice (NOTE: Entering the practice tool with the
+creation) more than 3 times, will enable the streaks in the MediaPlayer which show next to a fire Icon.
+2) Show Entire Database
+2.2) By clicking the checkbox on the top right corner you are able to view the whole database.
+3) Sorting
+3.3) On the top right corner there is a comboBox which allows for the user to sort the creations by Name, Most Recent
+Attempt, and no order at all.
+4) Uploading database within app
+4.4) Please refer to the section title "Uploading a New Database"
