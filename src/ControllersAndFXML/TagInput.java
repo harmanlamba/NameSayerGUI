@@ -27,6 +27,7 @@ public class TagInput extends JFXChipView<List<String>> {
 
 
     public TagInput() {
+
         //Utility to convert strings into the 'Tags'/'Chips'
         setConverter(new StringConverter<List<String>>() {
             @Override
@@ -39,10 +40,12 @@ public class TagInput extends JFXChipView<List<String>> {
                 return Arrays.asList(string.toLowerCase().split("[ -]+")); // TODO filter out bad values and other whitespace characters
             }
         });
+
         //Tells the chipView which creations to consider as suggestions, (Filters the suggestions)
         setPredicate((item, text) -> {
             return String.join(" ", item).startsWith(text);
         });
+
         //Defining displaying the suggestions will be represented in the cells
         setSuggestionsCellFactory(listview -> {
             return new ListCell<List<String>>() {
@@ -58,6 +61,7 @@ public class TagInput extends JFXChipView<List<String>> {
                 }
             };
         });
+
         //Listener for real time suggestions update
         InvalidationListener suggestionsUpdater = o -> {
             getSuggestions().clear();
@@ -69,10 +73,12 @@ public class TagInput extends JFXChipView<List<String>> {
                 }
             }
         };
+
         _creationStore.addListener(o -> {
             suggestionsUpdater.invalidated(null);
             _creationStore.getValue().addListener(suggestionsUpdater);
         });
+
         //Making it so that if a creation is not present it is underlined in red
         setChipFactory((chipView, chip) -> {
             return new JFXDefaultChip<List<String>>(chipView, chip) {{
@@ -90,6 +96,7 @@ public class TagInput extends JFXChipView<List<String>> {
                 }
             }};
         });
+
     }
 
     public void setCreationStore(CreationStore creationStore) {
