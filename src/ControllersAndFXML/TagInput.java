@@ -25,6 +25,7 @@ public class TagInput extends JFXChipView<List<String>> {
 
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
 
+    private String _lastUpdatedText;
 
     public TagInput() {
 
@@ -42,9 +43,9 @@ public class TagInput extends JFXChipView<List<String>> {
         });
 
         //Tells the chipView which creations to consider as suggestions, (Filters the suggestions)
-        setPredicate((item, text) -> {
-            return String.join(" ", item).startsWith(text);
-        });
+        setPredicate((item, text) -> shouldSuggest(item, text));
+
+        setSelectionHandler(autoCompletedBit -> autoCompleteSelectionHandler(autoCompletedBit));
 
         //Defining displaying the suggestions will be represented in the cells
         setSuggestionsCellFactory(listview -> {
@@ -103,5 +104,30 @@ public class TagInput extends JFXChipView<List<String>> {
         _creationStore.setValue(creationStore);
     }
 
+    private boolean shouldSuggest(List<String> suggestion, String text) {
+        // This is the only place we get to know what text is being typed-in.
+        _lastUpdatedText = text;
+
+        List<String> nameBits = CreationsListEntry.parseNamesIntoList(text);
+        if (nameBits.isEmpty()) {
+            return true;
+        }
+
+        String lastBit = nameBits.get(nameBits.size() - 1);
+        return String.join(" ", suggestion).startsWith(lastBit);
+    }
+
+    private List<String> autoCompleteSelectionHandler(List<String> autoCompletedBit) {
+        List<String> bits = CreationsListEntry.parseNamesIntoList(_lastUpdatedText);
+
+        // Can't work on abstract list directly, so clone it.
+        bits = new ArrayList<>(bits);
+
+        // Replace last bit with the autocompleted bit.
+        bits.remove(bits.size() - 1);
+        bits.addAll(autoCompletedBit);
+
+        return bits;
+    }
 
 }
