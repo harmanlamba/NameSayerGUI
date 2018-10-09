@@ -7,7 +7,7 @@ Target User: University Student
 Requirements for the program:
 -----------------------------
 1) Ensure that you have ffmpeg installed on your local machine
-2) Ensure that you have java installed on your local machine
+2) Ensure that you have Java 8 or above installed on your local machine
 
 
 
