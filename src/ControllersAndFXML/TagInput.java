@@ -1,6 +1,7 @@
 package ControllersAndFXML;
 
 import NameSayer.backend.CreationStore;
+import NameSayer.backend.CreationsListEntry;
 
 import com.jfoenix.controls.JFXChip;
 import com.jfoenix.controls.JFXChipView;
@@ -22,11 +23,11 @@ import java.util.function.BiFunction;
 //Custom component inheriting from the JFXChipView
 public class TagInput extends JFXChipView<List<String>> {
 
-
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
 
 
     public TagInput() {
+
         //Utility to convert strings into the 'Tags'/'Chips'
         setConverter(new StringConverter<List<String>>() {
             @Override
@@ -36,13 +37,15 @@ public class TagInput extends JFXChipView<List<String>> {
 
             @Override
             public List<String> fromString(String string) {
-                return Arrays.asList(string.toLowerCase().split("[ -]+")); // TODO filter out bad values and other whitespace characters
+                return CreationsListEntry.parseNamesIntoList(string);
             }
         });
+
         //Tells the chipView which creations to consider as suggestions, (Filters the suggestions)
         setPredicate((item, text) -> {
             return String.join(" ", item).startsWith(text);
         });
+
         //Defining displaying the suggestions will be represented in the cells
         setSuggestionsCellFactory(listview -> {
             return new ListCell<List<String>>() {
@@ -58,19 +61,24 @@ public class TagInput extends JFXChipView<List<String>> {
                 }
             };
         });
+
         //Listener for real time suggestions update
         InvalidationListener suggestionsUpdater = o -> {
             getSuggestions().clear();
             List<String> names = _creationStore.getValue().getCreationNames();
             Collections.sort(names);
             for (String name : names) {
-                getSuggestions().add(Collections.singletonList(name));
+                if (!_creationStore.getValue().get(name).getVersions().isEmpty()) {
+                    getSuggestions().add(CreationsListEntry.parseNamesIntoList(name));
+                }
             }
         };
+
         _creationStore.addListener(o -> {
             suggestionsUpdater.invalidated(null);
             _creationStore.getValue().addListener(suggestionsUpdater);
         });
+
         //Making it so that if a creation is not present it is underlined in red
         setChipFactory((chipView, chip) -> {
             return new JFXDefaultChip<List<String>>(chipView, chip) {{
@@ -88,6 +96,7 @@ public class TagInput extends JFXChipView<List<String>> {
                 }
             }};
         });
+
     }
 
     public void setCreationStore(CreationStore creationStore) {

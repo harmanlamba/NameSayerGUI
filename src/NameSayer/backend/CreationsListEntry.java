@@ -9,6 +9,7 @@ import javafx.beans.InvalidationListener;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
@@ -16,6 +17,13 @@ import java.util.Collections;
 import NameSayer.backend.CreationStore;
 
 public class CreationsListEntry extends ObservableBase {
+
+    private final static String NAME_DELIMETER_PATTERN = "[\\s\\-]+";
+
+    public static List<String> parseNamesIntoList(String names) {
+        // TODO filter out bad values.
+        return Arrays.asList(names.toLowerCase().split(NAME_DELIMETER_PATTERN));
+    }
 
     private List<String> _names;
     private Map<String, Creation> _creations = new HashMap<>();
