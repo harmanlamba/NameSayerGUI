@@ -219,7 +219,7 @@ public class PracticeTool implements Initializable {
 
     //Setting up action handler for the databasePlayButton so that the media is loaded and played.
     public void databasePlayButtonAction() {
-        List<Recording> recordings = new ArrayList();
+        List<Recording> recordings = new ArrayList<>();
         //Identifying which recording is selected
         recordings.add(databaseComboBox.getValue());
         //Passing it through the ConcatAndSilence to play the file adequately

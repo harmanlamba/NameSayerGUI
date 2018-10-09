@@ -15,7 +15,7 @@ public class UserTextFile {
     This method is in charge of reading the UserText input file and making a list of lists that the TagInput then uses
     to populate the TagInput.
      */
-    public static List readFile() {
+    public static List<List<String>> readFile() {
         ArrayList<List<String>> _finalListOfNames = new ArrayList<List<String>>();
         FileChooser fc = new FileChooser();
         //Making it so the user can only select a .txt file
