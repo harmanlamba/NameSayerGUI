@@ -1,5 +1,6 @@
 package NameSayer.backend;
 
+import NameSayer.backend.CreationsListEntry;
 
 import javafx.stage.FileChooser;
 
@@ -28,9 +29,8 @@ public class UserTextFile {
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println("Line: "+line);
-                    line=line.replaceAll("[\\-]"," ");
                     //Adding a list into the list, after the reggex ensures that the hypen is treated as a space
-                    _finalListOfNames.add(Arrays.asList(line.toLowerCase().split(" ")));
+                    _finalListOfNames.add(CreationsListEntry.parseNamesIntoList(line));
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

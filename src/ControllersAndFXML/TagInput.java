@@ -1,6 +1,7 @@
 package ControllersAndFXML;
 
 import NameSayer.backend.CreationStore;
+import NameSayer.backend.CreationsListEntry;
 
 import com.jfoenix.controls.JFXChip;
 import com.jfoenix.controls.JFXChipView;
@@ -22,7 +23,6 @@ import java.util.function.BiFunction;
 //Custom component inheriting from the JFXChipView
 public class TagInput extends JFXChipView<List<String>> {
 
-
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
 
 
@@ -37,7 +37,7 @@ public class TagInput extends JFXChipView<List<String>> {
 
             @Override
             public List<String> fromString(String string) {
-                return Arrays.asList(string.toLowerCase().split("[ -]+")); // TODO filter out bad values and other whitespace characters
+                return CreationsListEntry.parseNamesIntoList(string);
             }
         });
 
@@ -69,7 +69,7 @@ public class TagInput extends JFXChipView<List<String>> {
             Collections.sort(names);
             for (String name : names) {
                 if (!_creationStore.getValue().get(name).getVersions().isEmpty()) {
-                    getSuggestions().add(Collections.singletonList(name));
+                    getSuggestions().add(CreationsListEntry.parseNamesIntoList(name));
                 }
             }
         };
