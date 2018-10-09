@@ -64,7 +64,9 @@ public class TagInput extends JFXChipView<List<String>> {
             List<String> names = _creationStore.getValue().getCreationNames();
             Collections.sort(names);
             for (String name : names) {
-                getSuggestions().add(Collections.singletonList(name));
+                if (!_creationStore.getValue().get(name).getVersions().isEmpty()) {
+                    getSuggestions().add(Collections.singletonList(name));
+                }
             }
         };
         _creationStore.addListener(o -> {
