@@ -53,11 +53,9 @@ public class Creation extends ObservableBase {
 
         switch (recording.getType()) {
             case VERSION:
-                assert _versions.containsKey(date);
                 _versions.remove(date);
                 break;
             case ATTEMPT:
-                assert _attempts.containsKey(date);
                 _attempts.remove(date);
                 break;
         }
