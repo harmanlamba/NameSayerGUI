@@ -1,4 +1,4 @@
-package namesayer.controller;
+package namesayer.controller.components;
 
 import namesayer.model.CreationStore;
 import namesayer.model.CreationsListEntry;
