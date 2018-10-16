@@ -258,7 +258,7 @@ public class RecordingStore {
         assert Platform.isFxApplicationThread();
 
         // Note: Our data flow goes:
-        //   View --> Controller --> Filesystem --> RecordingStore --> Recording.
+        //   View --> MainScene --> Filesystem --> RecordingStore --> Recording.
 
         try {
             _taskWatcher = new Task<Void>() {

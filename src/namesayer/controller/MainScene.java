@@ -17,7 +17,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -28,7 +27,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -49,7 +47,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Collections;
 
-public class Controller implements Initializable {
+public class MainScene implements Initializable {
 
     private CreationStore _creationStore;
     private RecordingStore _recordingStore;
@@ -78,11 +76,11 @@ public class Controller implements Initializable {
     public GridPane mainGridPane;
     public ScrollPane scrollPane;
 
-    public Controller(CreationStore creationStore) {
+    public MainScene(CreationStore creationStore) {
         _creationStore = creationStore;
     }
 
-    public Controller(CreationStore creationStore, RecordingStore recordingStore) {
+    public MainScene(CreationStore creationStore, RecordingStore recordingStore) {
         _creationStore = creationStore;
         _recordingStore = recordingStore;
     }
@@ -206,7 +204,7 @@ public class Controller implements Initializable {
      */
     public void playButtonAction() {
         if (!_isMediaPlaying.get()) {
-            ConcatAndSilence concatAndSilence = new ConcatAndSilence(_selectedRecordings) {
+            AudioProcessor audioProcessor = new AudioProcessor(_selectedRecordings) {
                 @Override
                 public void ready(String filePath) {
                     mediaLoaderAndPlayer(filePath);
@@ -275,8 +273,8 @@ public class Controller implements Initializable {
 
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/ComparingRecordingsBox.fxml"));
-        loader.setController(new CompareRecordingsBox(listView, compareRecordingsWindow));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/CompareTool.fxml"));
+        loader.setController(new CompareTool(listView, compareRecordingsWindow));
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         compareRecordingsWindow.setResizable(false);
@@ -311,8 +309,8 @@ public class Controller implements Initializable {
 
     public void openRecordingBox(String creationName) throws IOException {
         Stage recordingWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/RecordingBox.fxml"));
-        loader.setController(new RecordingBox(recordingWindow, creationName));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/RecordingTool.fxml"));
+        loader.setController(new RecordingTool(recordingWindow, creationName));
         Parent recordingScene = loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);

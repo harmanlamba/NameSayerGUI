@@ -33,7 +33,7 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 
-public class RecordingBox implements Initializable {
+public class RecordingTool implements Initializable {
     private Stage _recordingWindow;
     private String _creationName;
     private int seconds;
@@ -46,11 +46,11 @@ public class RecordingBox implements Initializable {
 
     private Task<Void> _recordingTask;
 
-    public RecordingBox(Stage recordingWindow, String creationName) {
+    public RecordingTool(Stage recordingWindow, String creationName) {
         _recordingWindow = recordingWindow;
         _creationName = creationName;
 
-        //Setting it so having an instance of a RecordingBox automatically starts the mic level progress bar, and on
+        //Setting it so having an instance of a RecordingTool automatically starts the mic level progress bar, and on
         //closing the window the mic level progress bar stops its data collection.
         _microphoneLevel = new MicrophoneLevel();
         _recordingWindow.setOnHiding(e -> {

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CompareRecordingsBox implements Initializable {
+public class CompareTool implements Initializable {
 
     private Stage _compareRecordingStage;
     private MediaPlayer _leftPlayer;
@@ -36,7 +36,7 @@ public class CompareRecordingsBox implements Initializable {
     private BooleanProperty _isLeftPlayerPlaying = new SimpleBooleanProperty();
 
 
-    public CompareRecordingsBox(CreationsListView listView, Stage compareRecordingStage) {
+    public CompareTool(CreationsListView listView, Stage compareRecordingStage) {
         _listView = listView;
         _compareRecordingStage = compareRecordingStage;
     }
@@ -164,10 +164,10 @@ public class CompareRecordingsBox implements Initializable {
 
     public void rightPlayButtonAction() {
         /*
-        Using ConcatAndSilence which is an abstract class, to play the database recording. For more information on the
-        nature of this class, please refer to the comments located directly in ConcatAndSilence
+        Using AudioProcessor which is an abstract class, to play the database recording. For more information on the
+        nature of this class, please refer to the comments located directly in AudioProcessor
          */
-        new ConcatAndSilence(recordings) {
+        new AudioProcessor(recordings) {
             @Override
             public void ready(String filePath) {
                 Media rightMedia = new Media(new File(filePath).toURI().toString());

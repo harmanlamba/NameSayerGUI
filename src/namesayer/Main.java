@@ -3,7 +3,7 @@ package namesayer;
 import namesayer.model.Recording;
 import namesayer.model.RecordingStore;
 import namesayer.model.CreationStore;
-import namesayer.controller.Controller;
+import namesayer.controller.MainScene;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,8 +28,8 @@ public class Main extends Application {
 
         //Loading the font for the icons and the scene
         Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainSceneFoenix.fxml"));
-        loader.setController(new Controller(_creationStore, _versionsStore));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainScene.fxml"));
+        loader.setController(new MainScene(_creationStore, _versionsStore));
         Parent root = loader.load();
         primaryStage.setTitle("NameSayer");
         primaryStage.setScene(new Scene(root, 981, 553));

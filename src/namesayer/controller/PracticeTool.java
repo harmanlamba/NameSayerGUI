@@ -13,7 +13,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -36,7 +35,7 @@ import java.util.ResourceBundle;
 public class PracticeTool implements Initializable {
     private static final String PRACTICE_TEMP_FOLDER = "tempPractice";
 
-    private Controller _controller;
+    private MainScene _controller;
     private CreationStore _creationStore;
     private MediaView _databaseMediaView = new MediaView();
     private MediaView _userMediaView = new MediaView();
@@ -59,7 +58,7 @@ public class PracticeTool implements Initializable {
     public QualityStars databaseQualityStars;
 
 
-    public PracticeTool(Controller controller, CreationStore creationStore, List<Recording> recordings) {
+    public PracticeTool(MainScene controller, CreationStore creationStore, List<Recording> recordings) {
         _controller = controller;
         _creationStore = creationStore;
         _recordings = recordings;
@@ -178,7 +177,7 @@ public class PracticeTool implements Initializable {
     public void populateDatabaseRecordings() {
         if (_databaseRecordings.size() > 1) {
             //Adding the concatenating recording as index 0, in the database comboBox
-            new ConcatAndSilence(_databaseRecordings, PRACTICE_TEMP_FOLDER) {
+            new AudioProcessor(_databaseRecordings, PRACTICE_TEMP_FOLDER) {
                 @Override
                 public void ready(String filePathString) {
                     Path recordingPath = Paths.get(filePathString);
@@ -221,8 +220,8 @@ public class PracticeTool implements Initializable {
         List<Recording> recordings = new ArrayList<>();
         //Identifying which recording is selected
         recordings.add(databaseComboBox.getValue());
-        //Passing it through the ConcatAndSilence to play the file adequately
-        new ConcatAndSilence(recordings) {
+        //Passing it through the AudioProcessor to play the file adequately
+        new AudioProcessor(recordings) {
             @Override
             public void ready(String filePath) {
                 Recording recordingToPlay = databaseComboBox.getValue();

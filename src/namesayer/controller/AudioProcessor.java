@@ -21,18 +21,18 @@ import namesayer.model.Recording;
  * the media will be played back. This class mainly deals with creating the file to be used in the concatenation command,
  * actually concatenating the files, and lastly removing the silence from the files.
  */
-public abstract class ConcatAndSilence {
+public abstract class AudioProcessor {
     private static final String DEFAULT_TEMP_FOLDER = "tempPlayback";
     private static final String DEAFULT_TEMP_CREATIONS_FOLDER = "data/tempCreations/";
     private static final double TARGET_VOLUME = -2;
 
     public abstract void ready(String filePath);
 
-    public ConcatAndSilence(List<Recording> recordings) {
+    public AudioProcessor(List<Recording> recordings) {
         this(recordings, DEFAULT_TEMP_FOLDER);
     }
 
-    public ConcatAndSilence(List<Recording> recordings, String folder) {
+    public AudioProcessor(List<Recording> recordings, String folder) {
         Path _path = Paths.get("./data/" + folder);
         try {
             if (Files.notExists(_path)) {
