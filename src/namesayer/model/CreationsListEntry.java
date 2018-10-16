@@ -18,7 +18,10 @@ public class CreationsListEntry extends ObservableBase {
 
     public static List<String> parseNamesIntoList(String names) {
         // TODO filter out bad values.
-        return Arrays.asList(names.toLowerCase().split(NAME_DELIMETER_PATTERN));
+        List<String> list = Arrays.asList(names.toLowerCase().split(NAME_DELIMETER_PATTERN));
+        list = new ArrayList<String>(list);
+        list.removeIf(entry -> entry.isEmpty());
+        return list;
     }
 
     private List<String> _names;
