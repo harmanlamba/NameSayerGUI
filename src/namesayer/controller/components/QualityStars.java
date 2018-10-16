@@ -1,4 +1,4 @@
-package namesayer.controller;
+package namesayer.controller.components;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
