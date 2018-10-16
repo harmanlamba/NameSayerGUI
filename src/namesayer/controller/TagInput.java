@@ -123,7 +123,9 @@ public class TagInput extends JFXChipView<List<String>> {
         bits = new ArrayList<>(bits);
 
         // Replace last bit with the autocompleted bit.
-        bits.remove(bits.size() - 1);
+        if (!bits.isEmpty()) {
+            bits.remove(bits.size() - 1);
+        }
         bits.addAll(autoCompletedBit);
 
         return bits;
