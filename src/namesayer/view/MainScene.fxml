@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import namesayer.controller.components.listview.CreationsListView?>
-<?import namesayer.controller.components.TagInput?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXComboBox?>
@@ -19,6 +17,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import namesayer.controller.components.TagInput?>
+<?import namesayer.controller.components.listview.CreationsListView?>
 
 <GridPane fx:id="mainGridPane" hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
@@ -121,7 +121,7 @@
                      <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin></Region>
-                  <JFXButton id="previousButton" fx:id="previousButton" onAction="#previousButtonAction" prefHeight="25.0" prefWidth="93.0" ripplerFill="RED" text="">
+                  <JFXButton id="previousButton" fx:id="previousButton" onAction="#previousButtonAction" prefHeight="25.0" prefWidth="100.0" ripplerFill="RED" text="">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin></JFXButton>
