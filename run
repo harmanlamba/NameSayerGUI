@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 #./build && java -jar ./namesayer.jar
-./build && java -ea -cp "bin:lib/jfoenix-8.0.7.jar" NameSayer.Main
+./build && java -ea -cp "bin:lib/jfoenix-8.0.7.jar" namesayer.Main
