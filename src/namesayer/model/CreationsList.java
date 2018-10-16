@@ -1,4 +1,4 @@
-package NameSayer.backend;
+package namesayer.model;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.InvalidationListener;

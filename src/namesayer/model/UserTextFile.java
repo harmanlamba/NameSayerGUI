@@ -1,13 +1,10 @@
-package NameSayer.backend;
-
-import NameSayer.backend.CreationsListEntry;
+package namesayer.model;
 
 import javafx.stage.FileChooser;
 
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserTextFile {
@@ -28,7 +25,6 @@ public class UserTextFile {
                 BufferedReader br = new BufferedReader(new FileReader(selectedFile));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    System.out.println("Line: "+line);
                     //Adding a list into the list, after the reggex ensures that the hypen is treated as a space
                     _finalListOfNames.add(CreationsListEntry.parseNamesIntoList(line));
                 }

@@ -1,14 +1,10 @@
-package NameSayer;
+package namesayer.model;
 
-import NameSayer.backend.Creation;
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.Recording;
-import NameSayer.backend.RecordingStore;
+import namesayer.model.Creation;
+import namesayer.model.CreationStore;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
 import java.io.IOException;

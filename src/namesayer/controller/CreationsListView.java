@@ -1,4 +1,4 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXListCell;
@@ -14,12 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Accordion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.Observable;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
@@ -27,10 +24,10 @@ import javafx.beans.InvalidationListener;
 import java.util.List;
 import java.util.ArrayList;
 
-import NameSayer.backend.Recording;
-import NameSayer.backend.Creation;
-import NameSayer.backend.CreationsList;
-import NameSayer.backend.CreationsListEntry;
+import namesayer.model.Recording;
+import namesayer.model.Creation;
+import namesayer.model.CreationsList;
+import namesayer.model.CreationsListEntry;
 
 // TODO: Refactor out the private inner classes into a new package as individual files.
 

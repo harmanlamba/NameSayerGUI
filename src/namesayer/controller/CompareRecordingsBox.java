@@ -1,7 +1,6 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
-import NameSayer.ConcatAndSilence;
-import NameSayer.backend.Recording;
+import namesayer.model.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -21,7 +20,6 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 

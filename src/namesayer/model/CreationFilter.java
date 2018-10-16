@@ -1,11 +1,8 @@
-package NameSayer;
+package namesayer.model;
 
 
-import NameSayer.backend.Creation;
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.CreationsList;
-import NameSayer.backend.Recording;
-import javafx.collections.FXCollections;
+import namesayer.model.CreationStore;
+import namesayer.model.CreationsList;
 import javafx.collections.ObservableList;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,10 +11,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 
 public class CreationFilter {

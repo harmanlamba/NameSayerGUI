@@ -1,4 +1,4 @@
-package NameSayer.backend;
+package namesayer.model;
 
 import java.util.Date;
 import java.util.List;

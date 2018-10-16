@@ -1,15 +1,10 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
 
-import NameSayer.ConcatAndSilence;
-import NameSayer.StreaksAndTiers;
-import NameSayer.backend.*;
-import NameSayer.CreationFilter;
+import namesayer.model.CreationFilter;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXCheckBox;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.InvalidationListener;
@@ -18,9 +13,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,17 +34,15 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import namesayer.model.CreationStore;
+import namesayer.model.Recording;
+import namesayer.model.RecordingStore;
+import namesayer.model.UserTextFile;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Collections;
@@ -290,7 +281,7 @@ public class Controller implements Initializable {
 
     public void compareRecordingsAction() throws IOException {
         Stage compareRecordingsWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/ComparingRecordingsBox.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/ComparingRecordingsBox.fxml"));
         loader.setController(new CompareRecordingsBox(listView, compareRecordingsWindow));
         Parent comparingScene = loader.load();
         compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
@@ -308,7 +299,7 @@ public class Controller implements Initializable {
 
     public void practiceRecordingsAction() throws IOException {
         Stage practiceRecordingsWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/PracticeTool.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/PracticeTool.fxml"));
         loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings));
         Parent comparingScene = loader.load();
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
@@ -326,7 +317,7 @@ public class Controller implements Initializable {
 
     public void openRecordingBox(String creationName) throws IOException {
         Stage recordingWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/RecordingBox.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/RecordingBox.fxml"));
         loader.setController(new RecordingBox(recordingWindow, creationName));
         Parent recordingScene = loader.load();
         recordingWindow.initModality(Modality.APPLICATION_MODAL);

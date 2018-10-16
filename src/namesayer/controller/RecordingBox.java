@@ -1,7 +1,6 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
-import NameSayer.MicrophoneLevel;
-import NameSayer.backend.RecordingStore;
+import namesayer.model.RecordingStore;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
@@ -14,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

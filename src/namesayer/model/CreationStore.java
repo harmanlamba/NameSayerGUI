@@ -1,7 +1,5 @@
-package NameSayer.backend;
+package namesayer.model;
 
-import java.nio.file.Path;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 

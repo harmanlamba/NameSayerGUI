@@ -1,9 +1,8 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
-import NameSayer.ConcatAndSilence;
-import NameSayer.backend.Creation;
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.Recording;
+import namesayer.model.Creation;
+import namesayer.model.CreationStore;
+import namesayer.model.Recording;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;

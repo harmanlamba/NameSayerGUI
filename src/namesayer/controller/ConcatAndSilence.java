@@ -1,4 +1,4 @@
-package NameSayer;
+package namesayer.controller;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.ArrayList;
 
-import NameSayer.backend.Recording;
+import namesayer.model.Recording;
 
 /**
  * Making an abstract class in order to have the template method for the method called ready, which essentially is how

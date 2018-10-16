@@ -1,4 +1,4 @@
-package NameSayer;
+package namesayer.controller;
 
 import javafx.concurrent.Task;
 import javafx.application.Platform;

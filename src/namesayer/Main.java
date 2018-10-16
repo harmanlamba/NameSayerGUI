@@ -1,15 +1,16 @@
-package NameSayer;
+package namesayer;
 
-import NameSayer.backend.Recording;
-import NameSayer.backend.RecordingStore;
-import NameSayer.backend.CreationStore;
-import ControllersAndFXML.Controller;
+import namesayer.model.Recording;
+import namesayer.model.RecordingStore;
+import namesayer.model.CreationStore;
+import namesayer.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import namesayer.model.StreaksAndTiers;
 
 import java.nio.file.Paths;
 
@@ -27,10 +28,10 @@ public class Main extends Application {
 
         //Loading the font for the icons and the scene
         Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ControllersAndFXML/MainSceneFoenix.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainSceneFoenix.fxml"));
         loader.setController(new Controller(_creationStore, _versionsStore));
         Parent root = loader.load();
-        primaryStage.setTitle("NameSayer");
+        primaryStage.setTitle("namesayer");
         primaryStage.setScene(new Scene(root, 981, 553));
         primaryStage.setMinWidth(981);
         primaryStage.setMinHeight(553);

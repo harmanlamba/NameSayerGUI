@@ -1,11 +1,11 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import NameSayer.backend.Recording;
+import namesayer.model.Recording;
 
 public class QualityStars extends HBox {
 

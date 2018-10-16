@@ -1,9 +1,8 @@
-package ControllersAndFXML;
+package namesayer.controller;
 
-import NameSayer.backend.CreationStore;
-import NameSayer.backend.CreationsListEntry;
+import namesayer.model.CreationStore;
+import namesayer.model.CreationsListEntry;
 
-import com.jfoenix.controls.JFXChip;
 import com.jfoenix.controls.JFXChipView;
 
 
@@ -18,7 +17,6 @@ import javafx.beans.property.SimpleObjectProperty;
 
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 //Custom component inheriting from the JFXChipView
 public class TagInput extends JFXChipView<List<String>> {

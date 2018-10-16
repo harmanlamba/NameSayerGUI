@@ -1,7 +1,5 @@
-package NameSayer.backend;
+package namesayer.model;
 
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.InvalidationListener;
@@ -13,8 +11,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
-
-import NameSayer.backend.CreationStore;
 
 public class CreationsListEntry extends ObservableBase {
 

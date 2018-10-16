@@ -1,8 +1,7 @@
-package NameSayer.backend;
+package namesayer.model;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
-import java.nio.file.FileSystem;
 import java.nio.file.WatchService;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchEvent;
@@ -15,7 +14,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
