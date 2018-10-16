@@ -59,7 +59,7 @@ public class RecordingBox implements Initializable {
     }
 
     //Setting up the FXML injections so that the components can be referenced directly by the code.
-    @FXML
+
     public Label upperLabel;
     public Label recordingLabel;
     public Button recordButton;
@@ -203,10 +203,10 @@ public class RecordingBox implements Initializable {
         _recordingWindow.close();
     }
 
-   /*
-   This method, when the user clicks saves, moves the temporary recording that was created and moves it to the ./data/attempts
-   folder, which then gets picked up by the listeners and gets added to the main scene
-    */
+    /*
+    This method, when the user clicks saves, moves the temporary recording that was created and moves it to the ./data/attempts
+    folder, which then gets picked up by the listeners and gets added to the main scene
+     */
     public void saveRecording() {
         //Correctly naming the file in addition to having the move command
         String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" +

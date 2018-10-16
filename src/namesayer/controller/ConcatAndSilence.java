@@ -23,8 +23,8 @@ import namesayer.model.Recording;
  */
 public abstract class ConcatAndSilence {
     private static final String DEFAULT_TEMP_FOLDER = "tempPlayback";
-    private static final String DEAFULT_TEMP_CREATIONS_FOLDER="data/tempCreations/";
-    private static final double TARGET_VOLUME= -2;
+    private static final String DEAFULT_TEMP_CREATIONS_FOLDER = "data/tempCreations/";
+    private static final double TARGET_VOLUME = -2;
 
     public abstract void ready(String filePath);
 
@@ -51,10 +51,10 @@ public abstract class ConcatAndSilence {
             private final List<Recording> _recordings = new ArrayList<>(recordings);
 
             @Override
-            protected Void call(){
+            protected Void call() {
 
                 List<String> concatData = new ArrayList<String>();
-                List<Path> creationsPaths=new ArrayList<>();
+                List<Path> creationsPaths = new ArrayList<>();
 
 
                 //Ensuring that the tempCreations folder exist
@@ -75,7 +75,7 @@ public abstract class ConcatAndSilence {
                 //them to the concatData arrayList to then have it be written into a file.
                 for (Recording counter : _recordings) {
                     //concatData.add("file '../../" + counter.getPath() + "'");
-                    concatData.add("file '../../"+DEAFULT_TEMP_CREATIONS_FOLDER + counter.getPath().getFileName() + "'");
+                    concatData.add("file '../../" + DEAFULT_TEMP_CREATIONS_FOLDER + counter.getPath().getFileName() + "'");
                     //System.out.println("ConcatData: "+concatData);
                     creationsPaths.add(counter.getPath());
                 }
@@ -89,36 +89,36 @@ public abstract class ConcatAndSilence {
                     // TODO
                 }
                 //Normalising the audio files before concatenating them
-                for(Path counter:creationsPaths){
+                for (Path counter : creationsPaths) {
                     //Setting up the process builder
                     //This command "greps" the max volume in order to later offset and have a normalisation effect
-                    String maxVolumeCmd="ffmpeg -i "+"./"+counter.toString()+" -af volumedetect -vn -sn -dn -f null /dev/null 2>&1 | grep max_volume";
-                    ProcessBuilder maxVolumeGrepBuilder= new ProcessBuilder("/bin/bash","-c", maxVolumeCmd);
+                    String maxVolumeCmd = "ffmpeg -i " + "./" + counter.toString() + " -af volumedetect -vn -sn -dn -f null /dev/null 2>&1 | grep max_volume";
+                    ProcessBuilder maxVolumeGrepBuilder = new ProcessBuilder("/bin/bash", "-c", maxVolumeCmd);
                     try {
                         Process processVolumeGrep = maxVolumeGrepBuilder.start();
                         processVolumeGrep.waitFor();
 
                         //Getting the greped value
-                        BufferedReader stdin= new BufferedReader(new InputStreamReader(processVolumeGrep.getInputStream()));
-                        String stdLine= stdin.readLine();
+                        BufferedReader stdin = new BufferedReader(new InputStreamReader(processVolumeGrep.getInputStream()));
+                        String stdLine = stdin.readLine();
 
                         //Applying REGGEX to only get the dB levels
-                        String reggexLine=stdLine.replaceAll("\\D+","");
-                        reggexLine=reggexLine.substring(reggexLine.length() -3);
+                        String reggexLine = stdLine.replaceAll("\\D+", "");
+                        reggexLine = reggexLine.substring(reggexLine.length() - 3);
 
                         //Converting it to a double
-                        double maxVolume= Double.parseDouble(reggexLine);
+                        double maxVolume = Double.parseDouble(reggexLine);
                         BigDecimal unscaled = new BigDecimal(maxVolume);
-                        BigDecimal scaled= unscaled.scaleByPowerOfTen(-1);
-                        double maxVolumeScaled= scaled.doubleValue()*-1;
+                        BigDecimal scaled = unscaled.scaleByPowerOfTen(-1);
+                        double maxVolumeScaled = scaled.doubleValue() * -1;
 
                         //Basic logic to get the change in volume necessary
-                        double changeInVol=(TARGET_VOLUME-maxVolumeScaled);
+                        double changeInVol = (TARGET_VOLUME - maxVolumeScaled);
 
                         //Applying the change in volume to each file
-                        String normaliseCmd="ffmpeg -i "+"./"+counter.toString()+" -filter:a \"volume="+changeInVol+"dB"+"\""+" -y "+"./"+DEAFULT_TEMP_CREATIONS_FOLDER + counter.getFileName();
-                        ProcessBuilder normaliseBuilder= new ProcessBuilder("/bin/bash","-c",normaliseCmd);
-                        Process normaliseProcess= normaliseBuilder.start();
+                        String normaliseCmd = "ffmpeg -i " + "./" + counter.toString() + " -filter:a \"volume=" + changeInVol + "dB" + "\"" + " -y " + "./" + DEAFULT_TEMP_CREATIONS_FOLDER + counter.getFileName();
+                        ProcessBuilder normaliseBuilder = new ProcessBuilder("/bin/bash", "-c", normaliseCmd);
+                        Process normaliseProcess = normaliseBuilder.start();
                         normaliseProcess.waitFor();
                         /*ProcessBuilder checkingTempProcess= new ProcessBuilder("/bin/bash","-c","ffmpeg -i "+"./"+DEAFULT_TEMP_CREATIONS_FOLDER+counter.getFileName()+" -af volumedetect -vn -sn -dn -f null /dev/null");
                         Process checkingTemp= checkingTempProcess.start();
@@ -148,14 +148,14 @@ public abstract class ConcatAndSilence {
                         "-i ./data/" + folder + "/playBack.wav -af " +
                         "silenceremove=1:0:-50dB:1:5:-50dB:0 " +
                         "./data/" + folder + "/playBackSilenced.wav");
-                ProcessBuilder deleteTempCreations= new ProcessBuilder("/bin/bash","-c",
+                ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c",
                     "rm -r ./data/tempCreations");
                 try {
                     Process process = concatBuilder.start();
                     process.waitFor(); //ensuring that concatenation happens before silencing
                     Process processSilence = silenceRemoverBuilder.start();
                     processSilence.waitFor();
-                    Process deleteTempCreationsProcess= deleteTempCreations.start();
+                    Process deleteTempCreationsProcess = deleteTempCreations.start();
                     deleteTempCreationsProcess.waitFor();
                 } catch (IOException e) {
                     e.printStackTrace();

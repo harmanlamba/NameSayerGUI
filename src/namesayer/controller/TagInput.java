@@ -15,8 +15,9 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 //Custom component inheriting from the JFXChipView
 public class TagInput extends JFXChipView<List<String>> {

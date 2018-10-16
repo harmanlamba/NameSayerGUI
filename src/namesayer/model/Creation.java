@@ -18,9 +18,9 @@ import javafx.beans.InvalidationListener;
 public class Creation extends ObservableBase {
 
     private String _name;
-    private IntegerProperty _streaks= new SimpleIntegerProperty(0);
-    private final ObservableMap<Date,Recording> _versions = FXCollections.observableHashMap();
-    private final ObservableMap<Date,Recording> _attempts = FXCollections.observableHashMap();
+    private IntegerProperty _streaks = new SimpleIntegerProperty(0);
+    private final ObservableMap<Date, Recording> _versions = FXCollections.observableHashMap();
+    private final ObservableMap<Date, Recording> _attempts = FXCollections.observableHashMap();
 
     // Note: do not allow constructions outside of backend package - it should be
     // done through CreationStore.
@@ -108,7 +108,7 @@ public class Creation extends ObservableBase {
             }
 
             // Use randomness as tie-breaker.
-            int random = (int)(Math.random() * 2) * 2 - 1;
+            int random = (int) (Math.random() * 2) * 2 - 1;
             return random;
 
         });

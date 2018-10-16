@@ -41,13 +41,11 @@ public class PracticeTool implements Initializable {
     private MediaView _userMediaView = new MediaView();
     private ObservableList<Recording> _databaseRecordings;
     private ObservableList<Recording> _databaseOptions;
-    private ObservableList<Recording> _attemptRecordings;
     private List<Recording> _recordings;
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
 
     //Setting up the FXML injections so they can be referenced directly through the code
-    @FXML
     public ComboBox<Recording> databaseComboBox;
     public ComboBox<Recording> userComboBox;
     public Button userPlayButton;
@@ -170,6 +168,7 @@ public class PracticeTool implements Initializable {
 
 
     }
+
     //Re-using the code from RecordBox
     public void recordButtonAction() throws IOException {
         _controller.openRecordingBox(databaseComboBox.getValue().getCreation().getName());

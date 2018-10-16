@@ -40,7 +40,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
 
-        
+
         setPlaceholder(new Label("Begin by entering a name.\nAll name tags will appear\nin the ordered typed"));
     }
 
@@ -107,6 +107,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
     private interface CellContents {
         public void setSelected(boolean value);
+
         public Object getItem();
     }
 
@@ -136,7 +137,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             _cell = cell;
 
             _selectedRecordings = selectedRecordings;
-            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
+            _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
             updateFromSelectedRecordings();
 
             _labelName.setText(recording.getCreation().getName());
@@ -181,14 +182,14 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             spaceBetweenStarsDelete.setMinWidth(20);
 
             getChildren().setAll(
-                    _checkBox,
-                    _labelNumber,
-                    spaceBetweenNumberName,
-                    _labelName,
-                    _labelDate,
-                    _qualityStars,
-                    spaceBetweenStarsDelete,
-                    showStreaks ? streaks : _btnDelete);
+                _checkBox,
+                _labelNumber,
+                spaceBetweenNumberName,
+                _labelName,
+                _labelDate,
+                _qualityStars,
+                spaceBetweenStarsDelete,
+                showStreaks ? streaks : _btnDelete);
         }
 
         private void updateFromSelectedRecordings() {
@@ -227,7 +228,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             } else if (item instanceof Recording) {
                 return item == _recording;
             } else if (item instanceof CreationsListEntry) {
-                CreationsListEntry entry = (CreationsListEntry)item;
+                CreationsListEntry entry = (CreationsListEntry) item;
                 List<Recording> recordings = entry.getRecordings();
                 return recordings.size() == 1 && recordings.get(0) == _recording;
             } else {
@@ -254,7 +255,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
             _entry = entry;
             _cell = cell;
             _selectedRecordings = selectedRecordings;
-            _selectedRecordings.addListener((InvalidationListener)(o -> updateFromSelectedRecordings()));
+            _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
             updateFromSelectedRecordings();
 
             entry.addListener(o -> updateDisabled());
@@ -388,7 +389,7 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
 
         protected void setCellContents(Node node) {
             if (node != null) {
-                _currentCellContents = (CellContents)node;
+                _currentCellContents = (CellContents) node;
                 _item = _currentCellContents.getItem();
             }
             setGraphic(node);

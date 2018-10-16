@@ -39,7 +39,7 @@ public class RecordingStore {
 
     private static final String QUALITY_FILENAME = "quality.dat";
     private static final Pattern FILENAME_PATTERN =
-            Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
+        Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
     public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) {
@@ -206,7 +206,7 @@ public class RecordingStore {
         }
         try {
             Files.write(_path.resolve(QUALITY_FILENAME), qualityData,
-                    StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+                StandardOpenOption.WRITE, StandardOpenOption.CREATE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -222,30 +222,30 @@ public class RecordingStore {
 
         try {
             Files.lines(qualityPath)
-                    .map(line -> line.split("\t"))
-                    .forEach(entry -> {
+                .map(line -> line.split("\t"))
+                .forEach(entry -> {
 
-                        // Ignore invalid lines
-                        if (entry.length < 2) return;
+                    // Ignore invalid lines
+                    if (entry.length < 2) return;
 
-                        String filename = entry[0];
-                        String qualityStr = entry[1];
+                    String filename = entry[0];
+                    String qualityStr = entry[1];
 
-                        // Ignore data associated with non-existent recordings.
-                        if (!_recordings.containsKey(filename)) return;
+                    // Ignore data associated with non-existent recordings.
+                    if (!_recordings.containsKey(filename)) return;
 
-                        // Apply.
-                        final Recording.Quality quality;
-                        try {
-                            quality = Recording.Quality.valueOf(entry[1]);
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
-                            // Ignore invalid quality entries.
-                            return;
-                        }
-                        Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
+                    // Apply.
+                    final Recording.Quality quality;
+                    try {
+                        quality = Recording.Quality.valueOf(entry[1]);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                        // Ignore invalid quality entries.
+                        return;
+                    }
+                    Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
 
-                    });
+                });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -268,16 +268,16 @@ public class RecordingStore {
                 {
                     _watcher = _path.getFileSystem().newWatchService();
                     _path.register(_watcher,
-                            StandardWatchEventKinds.ENTRY_CREATE,
-                            StandardWatchEventKinds.ENTRY_DELETE,
-                            StandardWatchEventKinds.ENTRY_MODIFY);
+                        StandardWatchEventKinds.ENTRY_CREATE,
+                        StandardWatchEventKinds.ENTRY_DELETE,
+                        StandardWatchEventKinds.ENTRY_MODIFY);
                 }
 
                 @Override
                 protected Void call() throws Exception {
                     WatchKey key;
                     while ((key = _watcher.take()) != null) {
-                        if (isCancelled()){
+                        if (isCancelled()) {
                             break;
                         }
                         for (WatchEvent<?> event : key.pollEvents()) {
@@ -343,7 +343,8 @@ public class RecordingStore {
             e.printStackTrace();
         }
     }
-    public void stopWatcher(){
+
+    public void stopWatcher() {
         _taskWatcher.cancel();
     }
 

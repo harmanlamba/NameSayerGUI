@@ -31,7 +31,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainSceneFoenix.fxml"));
         loader.setController(new Controller(_creationStore, _versionsStore));
         Parent root = loader.load();
-        primaryStage.setTitle("namesayer");
+        primaryStage.setTitle("NameSayer");
         primaryStage.setScene(new Scene(root, 981, 553));
         primaryStage.setMinWidth(981);
         primaryStage.setMinHeight(553);

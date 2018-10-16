@@ -42,7 +42,6 @@ public class CompareRecordingsBox implements Initializable {
     }
 
     //Setting up the FXML injections to be able to reference the components in the code
-    @FXML
     public Label recordingLabel;
     public Label leftTitleLabel;
     public Button leftPlayButton;

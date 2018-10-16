@@ -57,7 +57,6 @@ public class Controller implements Initializable {
     private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isMediaPaused = new SimpleBooleanProperty(true);
 
-    @FXML
     public Button playButton;
     public Button nextButton;
     public Button previousButton;
@@ -65,32 +64,25 @@ public class Controller implements Initializable {
     public Button compareButton;
     public Button practiceButton;
     public Button shuffleButton;
-    public Button clearButton;
     public ComboBox<CreationFilter.SortStrategy> comboBox;
     public Label topLabel;
     public Label bottomLabel;
-    public HBox bottomLabelHBox;
-    public HBox mediaControlHBox;
     public CreationsListView listView;
     public JFXSlider playbackSlider;
     public JFXSlider volumeSlider;
     public JFXCheckBox filterDisabler;
     public TagInput tagInput;
     public JFXNodesList nodeList;
-    public Button datbaseButton;
-    public Button appendButton;
-    public Button replaceButton;
     public GridPane mainGridPane;
     public ScrollPane scrollPane;
-    public Button uploadListButton;
 
     public Controller(CreationStore creationStore) {
         _creationStore = creationStore;
     }
 
-    public Controller(CreationStore creationStore, RecordingStore recordingStore){
-        _creationStore=creationStore;
-        _recordingStore=recordingStore;
+    public Controller(CreationStore creationStore, RecordingStore recordingStore) {
+        _creationStore = creationStore;
+        _recordingStore = recordingStore;
     }
 
     @Override
@@ -99,8 +91,8 @@ public class Controller implements Initializable {
         nodeList.setRotate(180);
         scrollPane.setFitToWidth(true);
         //Making sure that clicking anywhere in the scene makes it so the nodeLists collapses
-        mainGridPane.setOnMouseClicked(e ->{
-            if(e.getPickResult().getIntersectedNode() != nodeList){
+        mainGridPane.setOnMouseClicked(e -> {
+            if (e.getPickResult().getIntersectedNode() != nodeList) {
                 nodeList.animateList(false);
             }
         });
@@ -150,8 +142,8 @@ public class Controller implements Initializable {
         // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
             practiceButton.setDisable(
-                    _isMediaPlaying.get() ||
-                        PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
+                _isMediaPlaying.get() ||
+                    PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
         };
         _selectedRecordings.addListener(practiceButtonDisabler);
         _isMediaPlaying.addListener(practiceButtonDisabler);
@@ -221,7 +213,7 @@ public class Controller implements Initializable {
         } else if (_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
             _mediaView.getMediaPlayer().pause();
             _isMediaPaused.set(true);
-        } else if (_isMediaPlaying.getValue() && _isMediaPaused.get()){
+        } else if (_isMediaPlaying.getValue() && _isMediaPaused.get()) {
             _mediaView.getMediaPlayer().play();
             _isMediaPaused.set(false);
         }
@@ -332,28 +324,28 @@ public class Controller implements Initializable {
         });
     }
 
-    public void appendDatabase(){
+    public void appendDatabase() {
         tagInput.requestFocus();
-        DirectoryChooser dc= new DirectoryChooser();
-        File selectedDirectory=dc.showDialog(null);
-        if(selectedDirectory != null){
-            new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+        DirectoryChooser dc = new DirectoryChooser();
+        File selectedDirectory = dc.showDialog(null);
+        if (selectedDirectory != null) {
+            new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
         }
     }
 
-    public void replaceDatabase(){
+    public void replaceDatabase() {
         tagInput.requestFocus();
-        DirectoryChooser dc= new DirectoryChooser();
-        File selectedDirectory= dc.showDialog(null);
-        if(selectedDirectory !=  null){
+        DirectoryChooser dc = new DirectoryChooser();
+        File selectedDirectory = dc.showDialog(null);
+        if (selectedDirectory != null) {
             _recordingStore.stopWatcher();
             _creationStore.clear();
-            _recordingStore= new RecordingStore(Paths.get(selectedDirectory.getPath()),_creationStore, Recording.Type.VERSION);
+            _recordingStore = new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
         }
     }
 
-    public void uploadUserList(){
-        List<List<String>> userNames= UserTextFile.readFile();
+    public void uploadUserList() {
+        List<List<String>> userNames = UserTextFile.readFile();
         tagInput.getChips().addAll(userNames);
     }
 

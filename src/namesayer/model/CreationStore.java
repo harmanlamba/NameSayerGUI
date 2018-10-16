@@ -13,7 +13,7 @@ import javafx.beans.InvalidationListener;
  */
 public class CreationStore extends ObservableBase {
 
-    private final ObservableMap<String,Creation> _creations = FXCollections.observableHashMap();
+    private final ObservableMap<String, Creation> _creations = FXCollections.observableHashMap();
 
     public CreationStore() {
         InvalidationListener listener = o -> invalidate();
@@ -51,7 +51,7 @@ public class CreationStore extends ObservableBase {
         return new ArrayList<Creation>(_creations.values());
     }
 
-    public void clear(){
+    public void clear() {
         _creations.clear();
     }
 

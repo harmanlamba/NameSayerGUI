@@ -16,11 +16,11 @@ public class ObservableBase implements Observable {
 
     public void addListener(InvalidationListener listener) {
         _listeners.add(listener);
-    } 
+    }
 
     public void removeListener(InvalidationListener listener) {
         _listeners.remove(listener);
-    } 
+    }
 
     protected void invalidate() {
         for (InvalidationListener listener : _listeners) {

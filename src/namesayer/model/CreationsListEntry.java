@@ -114,7 +114,8 @@ public class CreationsListEntry extends ObservableBase {
         List<Recording> ourRecordings = getRecordings();
         if (ourRecordings.size() == 0) {
             return false;
-        };
+        }
+        ;
         if (ourRecordings.size() != recordings.size()) {
             return false;
         }

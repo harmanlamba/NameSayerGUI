@@ -3,7 +3,11 @@ package namesayer.model;
 import javafx.stage.FileChooser;
 
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +20,7 @@ public class UserTextFile {
         ArrayList<List<String>> _finalListOfNames = new ArrayList<List<String>>();
         FileChooser fc = new FileChooser();
         //Making it so the user can only select a .txt file
-        FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fc.getExtensionFilters().addAll(extensionFilter);
         //Showing the dialog box to choose
         File selectedFile = fc.showOpenDialog(null);

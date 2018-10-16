@@ -38,7 +38,7 @@ public class Recording {
     }
 
     public enum Quality {
-        QUALITY_UNRATED(0,3),
+        QUALITY_UNRATED(0, 3),
         QUALITY_1_STAR(1),
         QUALITY_2_STAR(2),
         QUALITY_3_STAR(3),

@@ -1,8 +1,6 @@
 package namesayer.model;
 
 
-import namesayer.model.CreationStore;
-import namesayer.model.CreationsList;
 import javafx.collections.ObservableList;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,14 +9,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.InvalidationListener;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
 public class CreationFilter {
-     /*
-     Setting up an enum for the only two possible sorting strategies being by NAME and by DATE, which are presented to
-     the user in the comboBox next to the filter.
-      */
+    /*
+    Setting up an enum for the only two possible sorting strategies being by NAME and by DATE, which are presented to
+    the user in the comboBox next to the filter.
+     */
     public enum SortStrategy {
         DONT_SORT("Not sorted"),
         SORT_BY_NAME("Sort by name"),
@@ -33,7 +32,9 @@ public class CreationFilter {
         public String toString() {
             return _text;
         }
-    };
+    }
+
+    ;
 
     private CreationsList _filterResults;
     private CreationsList _intermediateList;
@@ -82,7 +83,7 @@ public class CreationFilter {
         }
 
         //After having the list, based on the sorting strategy modify the list and then publish the results
-        switch(_sortStrategy.getValue()) {
+        switch (_sortStrategy.getValue()) {
             case DONT_SORT:
                 break;
             case SORT_BY_NAME:
@@ -95,13 +96,11 @@ public class CreationFilter {
         publishResults();
     }
 
-    private void sortByName(){
-        Collections.sort(_intermediateList, (entry1, entry2) -> {
-            return entry1.toString().compareTo(entry2.toString());
-        });
+    private void sortByName() {
+        Collections.sort(_intermediateList, Comparator.comparing(CreationsListEntry::toString));
     }
 
-    private void sortByDate(){
+    private void sortByDate() {
         Collections.sort(_intermediateList, (entry1, entry2) -> {
             return entry2.lastModified().compareTo(entry1.lastModified());
         });

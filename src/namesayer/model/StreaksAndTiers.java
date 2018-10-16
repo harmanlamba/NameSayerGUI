@@ -1,7 +1,5 @@
 package namesayer.model;
 
-import namesayer.model.Creation;
-import namesayer.model.CreationStore;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -119,7 +117,7 @@ public class StreaksAndTiers {
 
         List<String> streakData = new ArrayList<String>();
         List<Creation> creationList = _creationStore.getCreations();
-        for (Creation creation: creationList) {
+        for (Creation creation : creationList) {
             streakData.add(creation.getName() + "\t" + creation.getStreaks());
         }
         try {
@@ -133,7 +131,7 @@ public class StreaksAndTiers {
      * Listen to whenever the streaks counter changes for any creation.
      */
     private void updateListeners() {
-        for (Creation creation: _creationStore.getCreations()) {
+        for (Creation creation : _creationStore.getCreations()) {
             creation.streaksProperty().removeListener(changesInStreakIntegerProperty);
             creation.streaksProperty().addListener(changesInStreakIntegerProperty);
         }
