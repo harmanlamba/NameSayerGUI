@@ -1,33 +1,18 @@
-package namesayer.controller.components;
+package namesayer.controller.components.listview;
 
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXListCell;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXButton;
-
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.Priority;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.TitledPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.InvalidationListener;
-
 import java.util.List;
 import java.util.ArrayList;
 
 import namesayer.model.Recording;
-import namesayer.model.Creation;
 import namesayer.model.CreationsList;
 import namesayer.model.CreationsListEntry;
+
 
 public class CreationsListView extends JFXListView<CreationsListEntry> {
 

@@ -1,5 +1,6 @@
 package namesayer.controller;
 
+import namesayer.controller.components.listview.CreationsListView;
 import namesayer.model.Recording;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.InvalidationListener;
@@ -7,7 +8,6 @@ import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

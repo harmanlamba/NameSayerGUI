@@ -1,5 +1,6 @@
 package namesayer.controller;
 
+import namesayer.controller.components.QualityStars;
 import namesayer.model.Creation;
 import namesayer.model.CreationStore;
 import namesayer.model.Recording;

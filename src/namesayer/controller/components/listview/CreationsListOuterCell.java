@@ -1,4 +1,8 @@
-package namesayer.controller.components.creationslistview;
+package namesayer.controller.components.listview;
+
+import javafx.collections.ObservableList;
+import namesayer.model.CreationsListEntry;
+import namesayer.model.Recording;
 
 public class CreationsListOuterCell extends CreationsListCell<CreationsListEntry> {
 

@@ -1,5 +1,8 @@
 package namesayer.controller.components.listview;
 
+import javafx.collections.ObservableList;
+import namesayer.model.Recording;
+
 public class CreationsListInnerCell extends CreationsListCell<Recording> {
 
     private ObservableList<Recording> _selectedRecordings;

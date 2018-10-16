@@ -1,9 +1,29 @@
 package namesayer.controller.components.listview;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXListCell;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.SelectionModel;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+
+import namesayer.controller.components.QualityStars;
+import namesayer.controller.components.Streaks;
+import namesayer.model.CreationsListEntry;
+import namesayer.model.Recording;
+
+import java.util.List;
+
 /**
  * Displayed entry for a recording, or a creation with a single recording.
  */
-private class SingleCellContents extends HBox implements CellContents {
+public class SingleCellContents extends HBox implements CellContents {
 
     private JFXCheckBox _checkBox = new JFXCheckBox();
     private Label _labelNumber = new Label();

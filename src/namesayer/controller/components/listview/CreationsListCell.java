@@ -1,5 +1,9 @@
 package namesayer.controller.components.listview;
 
+import com.jfoenix.controls.JFXListCell;
+import javafx.beans.InvalidationListener;
+import javafx.scene.Node;
+
 public abstract class CreationsListCell<T> extends JFXListCell<T> {
 
     private CellContents _currentCellContents = null;
