@@ -7,11 +7,17 @@ import com.jfoenix.controls.JFXChipView;
 
 
 import com.jfoenix.controls.JFXDefaultChip;
+import javafx.scene.Node;
+import javafx.scene.control.SkinBase;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -24,7 +30,8 @@ public class TagInput extends JFXChipView<List<String>> {
 
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
 
-    private String _lastUpdatedText;
+    private StringProperty _currentText = new SimpleStringProperty();
+    private TextArea _textArea = null;
 
     public TagInput() {
 
@@ -97,6 +104,38 @@ public class TagInput extends JFXChipView<List<String>> {
             }};
         });
 
+        skinProperty().addListener(o -> updateTextArea());
+        InvalidationListener promptUpdater = o -> updatePromptText();
+        getChips().addListener(promptUpdater);
+        _currentText.addListener(promptUpdater);
+        skinProperty().addListener(promptUpdater);
+
+    }
+
+    private void updateTextArea() {
+        // Unfortunately, JFXChipView does not expose the text area to us.
+        // The following is a ghetto work around to access the text area.
+        Pane pane = (Pane)((SkinBase)getSkin()).getChildren().get(0);
+        _textArea = (TextArea)pane.getChildren().get(0);
+        _textArea.focusedProperty().addListener(o -> updatePromptText());
+        _currentText.bind(_textArea.textProperty());
+    }
+
+    private void updatePromptText() {
+        if (_textArea == null) {
+            return;
+        }
+
+        boolean promptVisible =
+            !_textArea.isFocused() &&
+            getChips().isEmpty() &&
+            _currentText.isEmpty().get();
+
+        if (promptVisible) {
+            _textArea.setPromptText("Enter some names here, and press enter...");
+        } else {
+            _textArea.setPromptText(null);
+        }
     }
 
     public void setCreationStore(CreationStore creationStore) {
@@ -104,9 +143,6 @@ public class TagInput extends JFXChipView<List<String>> {
     }
 
     private boolean shouldSuggest(List<String> suggestion, String text) {
-        // This is the only place we get to know what text is being typed-in.
-        _lastUpdatedText = text;
-
         List<String> nameBits = CreationsListEntry.parseNamesIntoList(text);
         if (nameBits.isEmpty()) {
             return true;
@@ -117,7 +153,7 @@ public class TagInput extends JFXChipView<List<String>> {
     }
 
     private List<String> autoCompleteSelectionHandler(List<String> autoCompletedBit) {
-        List<String> bits = CreationsListEntry.parseNamesIntoList(_lastUpdatedText);
+        List<String> bits = CreationsListEntry.parseNamesIntoList(_currentText.getValue());
 
         // Can't work on abstract list directly, so clone it.
         bits = new ArrayList<>(bits);
