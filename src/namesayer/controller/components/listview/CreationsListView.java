@@ -82,6 +82,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         List<Recording> wasSelected = new ArrayList<>(_selectedRecordings);
         getItems().setAll(_creationsList);
 
+        // Deselect recordings not in the list, as that confuses the user.
+        wasSelected.removeIf(recording -> !_creationsList.hasRecording(recording));
+
         // Updating our listview deselects some recordings. Reselect them even when they are
         // no longer visible on the list through the current list filter.
         _selectedRecordings.setAll(wasSelected);
