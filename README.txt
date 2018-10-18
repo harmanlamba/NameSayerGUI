@@ -150,3 +150,12 @@ creation) more than 3 times, will enable the streaks in the MediaPlayer which sh
 Attempt, and no order at all.
 4) Uploading database within app
 4.4) Please refer to the section title "Uploading a New Database"
+
+
+
+Thanks:
+-------
+
+This project uses the Ionicons icon pack and the JFoenix JavaFX Material Design Library. Please see the respective licenses at:
+- JFoenix: ./lib/jfoenix-license.txt
+- Ionicons: ./src/icons/ionicons-license.txt
