@@ -4,10 +4,7 @@ import namesayer.model.CreationStore;
 import namesayer.model.CreationsListEntry;
 
 import com.jfoenix.controls.JFXChipView;
-
-
 import com.jfoenix.controls.JFXDefaultChip;
-import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
@@ -25,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//Custom component inheriting from the JFXChipView
+// Custom component inheriting from the JFXChipView.
 public class TagInput extends JFXChipView<List<String>> {
 
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
@@ -35,7 +32,7 @@ public class TagInput extends JFXChipView<List<String>> {
 
     public TagInput() {
 
-        //Utility to convert strings into the 'Tags'/'Chips'
+        // Utility to convert strings into the 'Tags'/'Chips'.
         setConverter(new StringConverter<List<String>>() {
             @Override
             public String toString(List<String> names) {
@@ -48,12 +45,12 @@ public class TagInput extends JFXChipView<List<String>> {
             }
         });
 
-        //Tells the chipView which creations to consider as suggestions, (Filters the suggestions)
+        // Tells the chipView which creations to consider as suggestions, (Filters the suggestions).
         setPredicate((item, text) -> shouldSuggest(item, text));
 
         setSelectionHandler(autoCompletedBit -> autoCompleteSelectionHandler(autoCompletedBit));
 
-        //Defining displaying the suggestions will be represented in the cells
+        // Defining displaying the suggestions will be represented in the cells.
         setSuggestionsCellFactory(listview -> {
             return new ListCell<List<String>>() {
                 @Override
@@ -69,7 +66,7 @@ public class TagInput extends JFXChipView<List<String>> {
             };
         });
 
-        //Listener for real time suggestions update
+        // Listener for real time suggestions update.
         InvalidationListener suggestionsUpdater = o -> {
             getSuggestions().clear();
             List<String> names = _creationStore.getValue().getCreationNames();
@@ -86,7 +83,7 @@ public class TagInput extends JFXChipView<List<String>> {
             _creationStore.getValue().addListener(suggestionsUpdater);
         });
 
-        //Making it so that if a creation is not present it is underlined in red
+        // Making it so that if a creation is not present it is underlined in red.
         setChipFactory((chipView, chip) -> {
             return new JFXDefaultChip<List<String>>(chipView, chip) {{
                 List<String> listOfNames = getItem();
@@ -96,7 +93,7 @@ public class TagInput extends JFXChipView<List<String>> {
                 for (String name : listOfNames) {
                     Label label = new Label(name);
                     if (_creationStore.get().get(name) == null) {
-                        //Creation Name does not exist
+                        // Creation Name does not exist.
                         label.getStyleClass().add("invalid-name");
                     }
                     labelAndCross.getChildren().add(label);
