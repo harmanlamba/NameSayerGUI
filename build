@@ -12,7 +12,7 @@ cp --parents $(find . -type f -name "*") ../bin
 popd
 
 pushd ./bin
-jar cvfm ../namesayer.jar ../manifest.mf $(find .)
+jar cvfm ../namesayer.jar ../src/META-INF/MANIFEST.MF $(find .)
 popd
 
 chmod +x ./namesayer.jar

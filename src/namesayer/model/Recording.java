@@ -156,6 +156,8 @@ public class Recording {
         };
         Thread th = new Thread(deleter);
         th.start();
+
+        _creation.removeRecording(this);
     }
 
     public void debugDump() {

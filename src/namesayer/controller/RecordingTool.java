@@ -34,9 +34,19 @@ import java.util.ResourceBundle;
 
 
 public class RecordingTool implements Initializable {
+    /**
+     * Max duration to record before stopping.
+     */
+    private static final int MAX_SECONDS = 15;
+
+    /**
+     * Number of channels to record.
+     * Set to mono (1) to be consistent with database recordings, so framesize is consistent when merging later on.
+     */
+    private static final int NUM_CHANNELS = 1;
+
     private Stage _recordingWindow;
     private String _creationName;
-    private int seconds;
     private Timeline _recordingTimeline;
     private MediaPlayer _mediaPlayer;
     private MicrophoneLevel _microphoneLevel;
@@ -50,15 +60,15 @@ public class RecordingTool implements Initializable {
         _recordingWindow = recordingWindow;
         _creationName = creationName;
 
-        //Setting it so having an instance of a RecordingTool automatically starts the mic level progress bar, and on
-        //closing the window the mic level progress bar stops its data collection.
+        // Setting it so having an instance of a RecordingTool automatically starts the mic level progress bar, and on
+        // closing the window the mic level progress bar stops its data collection.
         _microphoneLevel = new MicrophoneLevel();
         _recordingWindow.setOnHiding(e -> {
             _microphoneLevel.close();
         });
     }
 
-    //Setting up the FXML injections so that the components can be referenced directly by the code.
+    // Setting up the FXML injections so that the components can be referenced directly by the code.
 
     public Label upperLabel;
     public Label recordingLabel;
@@ -79,7 +89,7 @@ public class RecordingTool implements Initializable {
             if (_isRecording.get()) {
                 recordButton.setText("Stop");
 
-                // Starting the recording animation, which tells the user the amount of time they have remaining
+                // Starting the recording animation, which tells the user the amount of time they have remaining.
                 recordingTimerStart();
             } else {
                 _hasRecorded.set(true);
@@ -107,7 +117,7 @@ public class RecordingTool implements Initializable {
 
             @Override
             protected Void call() throws Exception {
-                //Checking if the tempCreations folder exist, and in the case that it doesn't the folder is created
+                // Checking if the tempCreations folder exist, and in the case that it doesn't the folder is created.
                 Path _path = Paths.get("./data/tempCreations");
                 try {
                     if (Files.notExists(_path)) {
@@ -121,9 +131,17 @@ public class RecordingTool implements Initializable {
                     e.printStackTrace();
                 }
 
-                //Setting up the recording command for ffmpeg
-                String recordingCmd = "ffmpeg -nostdin -y -f alsa -ac 1 -i default -t 5  ./data/tempCreations/tempAudio.wav";
-                //Ensuring that the correct buttons are disabled during the recording to not corrupt the recording by mistake
+                // Setting up the recording command for ffmpeg.
+                String recordingCmd = "ffmpeg " +
+                    "-nostdin " +
+                    "-y " +
+                    "-f alsa " +
+                    "-ac " + NUM_CHANNELS + " " +
+                    "-i default " +
+                    "-t " + MAX_SECONDS + " " +
+                    "./data/tempCreations/tempAudio.wav";
+
+                // Ensuring that the correct buttons are disabled during the recording to not corrupt the recording by mistake.
                 Platform.runLater(() -> {
                     _isRecording.set(true);
                     recordingLabel.requestFocus();
@@ -149,7 +167,7 @@ public class RecordingTool implements Initializable {
                 return null;
             }
 
-            //After recording is completed, re-enable all the buttons for the user
+            // After recording is completed, re-enable all the buttons for the user.
             @Override
             protected void succeeded() {
                 _hasRecorded.set(true);
@@ -203,12 +221,12 @@ public class RecordingTool implements Initializable {
         _recordingWindow.close();
     }
 
-    /*
-    This method, when the user clicks saves, moves the temporary recording that was created and moves it to the ./data/attempts
-    folder, which then gets picked up by the listeners and gets added to the main scene
+    /**
+     * Moves temporary recording that was created to the ./data/attempts
+     * folder, which then gets picked up by the listeners and gets added to the list view.
      */
     public void saveRecording() {
-        //Correctly naming the file in addition to having the move command
+        // Correctly naming the file in addition to having the move command.
         String moveCreations = "mv ./data/tempCreations/tempAudio.wav ./data/attempts/" +
             "\"" + "se206_" + RecordingStore.getDateStringNow() + "_" + _creationName + "\"" + ".wav";
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
@@ -227,22 +245,24 @@ public class RecordingTool implements Initializable {
         _recordingWindow.close();
     }
 
-    /*
-    This method handles the countdown for the timer.
+    /**
+     * Show and begin countdown animation.
      */
     private void recordingTimerStart() {
-        //Retrieve the constant value that has been set, currently it is at 5
-        seconds = 5;
-        final int[] seconds2 = {seconds};
+
+        final int[] seconds2 = { MAX_SECONDS };
+
         _recordingTimeline = new Timeline();
         _recordingTimeline.setCycleCount(Timeline.INDEFINITE);
         recordingLabel.setOpacity(1);
         recordingSpinner.setDisable(false);
         recordingSpinner.setOpacity(1);
         recordingLabel.setWrapText(true);
-        //Changing the color to RED, to clearly tell the user recording has begun.
+
+        // Changing the color to RED, to clearly tell the user recording has begun.
         recordingLabel.setTextFill(Color.web("ab4642"));
-        //Counting down every second, having and EventHandler ensure that every second the value is reduced by one.
+
+        // Counting down every second, having and EventHandler ensure that every second the value is reduced by one.
         KeyFrame frame = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

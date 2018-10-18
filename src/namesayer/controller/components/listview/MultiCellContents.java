@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import java.util.List;
 
 import namesayer.controller.components.Streaks;
 import namesayer.model.Creation;
@@ -31,6 +32,7 @@ public class MultiCellContents extends VBox implements CellContents {
     private JFXListCell<CreationsListEntry> _cell;
     private VBox _innerLists = new VBox();
     private ObservableList<Recording> _selectedRecordings;
+    private Label _foundCounter = new Label();
 
     public MultiCellContents(CreationsListEntry entry, JFXListCell<CreationsListEntry> cell, ObservableList<Recording> selectedRecordings) {
         super();
@@ -40,8 +42,8 @@ public class MultiCellContents extends VBox implements CellContents {
         _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
         updateFromSelectedRecordings();
 
-        entry.addListener(o -> updateDisabled());
-        updateDisabled();
+        entry.addListener(o -> updateFromEntry());
+        updateFromEntry();
 
         BooleanProperty isHovered = new SimpleBooleanProperty(false);
         setOnMouseEntered(event -> isHovered.setValue(true));
@@ -66,7 +68,7 @@ public class MultiCellContents extends VBox implements CellContents {
 
         Streaks streaks = new Streaks();
         streaks.bindStreaks(entry.streaksProperty());
-        HBox heading = new HBox(_checkBox, checkboxSpacer, names, streaks);
+        HBox heading = new HBox(_checkBox, checkboxSpacer, names, _foundCounter, streaks);
 
         Creation overallAttempts = entry.getOverallAttemptsCreation();
         if (overallAttempts != null) {
@@ -131,11 +133,21 @@ public class MultiCellContents extends VBox implements CellContents {
         return _entry;
     }
 
-    private void updateDisabled() {
+    private void updateFromEntry() {
         if (!isStillValid()) {
             return;
         }
-        _cell.setDisable(_entry.getRecordings().isEmpty());
+
+        List<Recording> recordingsAvailable = _entry.getRecordings();
+        _cell.setDisable(recordingsAvailable.isEmpty());
+
+        int availableCount = recordingsAvailable.size();
+        int requestedCount = _entry.getNames().size();
+        if (availableCount != requestedCount) {
+            _foundCounter.setText(recordingsAvailable.size() + " / " + requestedCount +  " available");
+        } else {
+            _foundCounter.setText("");
+        }
     }
 
     private boolean isStillValid() {

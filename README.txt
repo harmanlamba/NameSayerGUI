@@ -2,7 +2,11 @@
                         Name Sayer User Guide
 =======================================================================
 
+
+
 Target User: University Student
+
+
 
 Requirements for the program:
 -----------------------------
@@ -30,6 +34,7 @@ What is being displayed at start up:
 
 *) Note that the Program comes with a pre-installed database of recordings. Please read about uploading list/database
 if you would like to replace/append the pre-loaded database
+
 
 
 Playing individual recordings:
@@ -120,8 +125,10 @@ Using the practice tool:
 8) Once done practicing, to exit click on the x in the top right corner
 
 
+
 Uploading a New Database:
 -------------------------
+
 1) Click on the "Database..." button in the left side of the MediaPlayer
 2) This will prompt 2 possible options, "Append" or "Replace"
 3) Once you choose of the options, a directory viewer will pop up which will allow you to select a new database folder
@@ -133,13 +140,17 @@ with the default directory. If you wish to permanently add new recordings to the
 ./data/database folder manually.
 
 
+
 Quitting NameSayer:
 -------------------
 
 1) Click on the x on the top right corner, which will safely close the program.
 
+
+
 Special Features:
 ------------------
+
 1) Streaks
 1.1) Streaks follow the same streaks concept as Snapchat, once you Practice (NOTE: Entering the practice tool with the
 creation) more than 3 times, will enable the streaks in the MediaPlayer which show next to a fire Icon.
@@ -150,3 +161,12 @@ creation) more than 3 times, will enable the streaks in the MediaPlayer which sh
 Attempt, and no order at all.
 4) Uploading database within app
 4.4) Please refer to the section title "Uploading a New Database"
+
+
+
+Thanks:
+-------
+
+This project uses the Ionicons icon pack and the JFoenix JavaFX Material Design Library. Please see the respective licenses at:
+- JFoenix: ./lib/jfoenix-license.txt
+- Ionicons: ./src/icons/ionicons-license.txt

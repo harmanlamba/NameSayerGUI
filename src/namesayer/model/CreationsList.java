@@ -49,6 +49,15 @@ public class CreationsList extends SimpleListProperty<CreationsListEntry> {
         }
     }
 
+    public boolean hasRecording(Recording recording) {
+        for (CreationsListEntry entry : this) {
+            if (entry.getRecordings().contains(recording)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int firstIndexInSelection(List<Recording> selectedRecordings) {
         for (int i = 0; i < size(); i++) {
             CreationsListEntry entry = get(i);

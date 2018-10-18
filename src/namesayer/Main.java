@@ -22,12 +22,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Reading  and initializing data from database
+        // Reading and initializing data from database.
         initStores();
 
-
-        //Loading the font for the icons and the scene
-        Font.loadFont(getClass().getResource("/icons/ionicons.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainScene.fxml"));
         loader.setController(new MainScene(_creationStore, _versionsStore));
         Parent root = loader.load();
@@ -42,10 +39,10 @@ public class Main extends Application {
         launch(args);
     }
 
-    //Being listening to the folders
+    // Begin listening to the folders.
     private void initStores() {
         _creationStore = new CreationStore();
-        _versionsStore=new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
+        _versionsStore = new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
         new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
         new StreaksAndTiers(_creationStore);
     }
