@@ -130,10 +130,11 @@ public class MainScene implements Initializable {
         _selectedRecordings = listView.getSelectedRecordings();
         BooleanBinding isListEmpty = Bindings.isEmpty(_creationFilter.getFilterResults());
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
-        BooleanBinding isMultipleSelections = Bindings.size(_selectedRecordings).greaterThan(1);
+        BooleanProperty isTagsNotShown = filterDisabler.selectedProperty();
+        BooleanBinding hasMultipleTags = Bindings.size(tagInput.getChips()).greaterThan(1);
         playbackSlider.disableProperty().bind(isSelected.not());
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
-        shuffleButton.disableProperty().bind(isMultipleSelections.not().or(_isMediaPlaying));
+        shuffleButton.disableProperty().bind(hasMultipleTags.not().or(isTagsNotShown).or(_isMediaPlaying));
         playButton.disableProperty().bind(isSelected.not());
         topLabel.visibleProperty().bind(isSelected);
         nextButton.disableProperty().bind(isListEmpty);
@@ -193,7 +194,7 @@ public class MainScene implements Initializable {
     }
 
     public void shuffleButtonAction() {
-        Collections.shuffle(_selectedRecordings);
+        _creationFilter.shuffle();
     }
 
     /**
