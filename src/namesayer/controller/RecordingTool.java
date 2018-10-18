@@ -37,7 +37,7 @@ public class RecordingTool implements Initializable {
     /**
      * Max duration to record before stopping.
      */
-    private static final int MAX_SECONDS = 5;
+    private static final int MAX_SECONDS = 15;
 
     /**
      * Number of channels to record.
