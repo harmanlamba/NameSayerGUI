@@ -1,3 +1,5 @@
+@import url(./MainScene.css);
+
 .root{
     -fx-background-color: #181818;
 }
