@@ -32,17 +32,21 @@ public class CreationsListEntry extends ObservableBase {
     private InvalidationListener _creationChangeHandler = o -> invalidate();
     private InvalidationListener _streakChangeHandler = o -> updateStreaks();
 
+    private CreationsListEntry(CreationStore creationStore) {
+        assert creationStore != null;
+        _creationStore = creationStore;
+    }
+
     CreationsListEntry(String name, CreationStore creationStore) {
-        this(Collections.singletonList(name), creationStore);
-        assert !name.contains(" ") && !name.contains("-");
+        this(creationStore);
+        _names = parseNamesIntoList(name);
+        refresh();
     }
 
     CreationsListEntry(List<String> names, CreationStore creationStore) {
+        this(creationStore);
         assert names.size() > 0;
-        assert creationStore != null;
         _names = names;
-        _creationStore = creationStore;
-
         refresh();
     }
 
@@ -53,7 +57,7 @@ public class CreationsListEntry extends ObservableBase {
 
         Creation theOnlyCreation = getCreations().get(0);
         if (theOnlyCreation.getRecordingCount() > 1) return false;
-        assert !theOnlyCreation.getVersions().isEmpty();
+        if (theOnlyCreation.getVersions().isEmpty()) return false;
 
         return true;
     }

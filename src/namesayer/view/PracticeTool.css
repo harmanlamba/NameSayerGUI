@@ -24,7 +24,14 @@
     -jfx-focus-color:#ba8baf;
 }
 
-#userPlayButton , #userRecordButton, #databasePlayButton, #databaseShuffleButton{
+#loopingButton{
+    -fx-font-family: "Ionicons";
+    -fx-font-size: 30px;
+    -fx-text-fill: #ab4642;
+    -fx-background-color: #383838;
+}
+
+#userPlayButton , #userRecordButton, #databasePlayButton, #databaseShuffleButton, #loopingButton{
     -fx-background-color: #383838;
 }
 

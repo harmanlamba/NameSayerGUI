@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,25 +55,31 @@ public class StreaksAndTiers {
                     .forEach(entry -> {
 
                         // Ignore invalid lines.
-                        if (entry.length < 2) return;
+                        if (entry.length < 3) return;
 
                         String name = entry[0];
                         String streaksString = entry[1];
+                        String dateString = entry[2];
                         final Creation creation = _creationStore.get(name);
 
                         // Ignore data associated with non-existent creations.
                         if (creation == null) return;
 
                         final int streaks;
+                        final LocalDateTime date;
                         try {
                             streaks = Integer.parseInt(streaksString);
-                        } catch (NumberFormatException e) {
+                            date = LocalDateTime.parse(dateString);
+                        } catch (NumberFormatException | DateTimeParseException e) {
                             e.printStackTrace();
                             // Ignore invalid streak entries.
                             return;
                         }
 
-                        Platform.runLater(() -> creation.setStreaks(streaks));
+                        Platform.runLater(() -> {
+                            creation.setStreaks(streaks);
+                            creation.setLastStreakDate(date);
+                        });
 
                     });
 
@@ -118,7 +126,7 @@ public class StreaksAndTiers {
         List<String> streakData = new ArrayList<String>();
         List<Creation> creationList = _creationStore.getCreations();
         for (Creation creation : creationList) {
-            streakData.add(creation.getName() + "\t" + creation.getStreaks());
+            streakData.add(creation.getName() + "\t" + creation.getStreaks() + "\t" + creation.getLastStreakDate().toString());
         }
         try {
             Files.write(_path.resolve(STREAKS_FILENAME), streakData, StandardOpenOption.WRITE, StandardOpenOption.CREATE);

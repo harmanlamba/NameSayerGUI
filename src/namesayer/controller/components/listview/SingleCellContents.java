@@ -71,12 +71,25 @@ public class SingleCellContents extends HBox implements CellContents {
 
         _btnDelete.setText("\uf252");
         _btnDelete.getStyleClass().add("delete-btn");
-        _btnDelete.setVisible(recording.getType() == Recording.Type.ATTEMPT);
+
+        Label labelType = new Label();
+        labelType.getStyleClass().add("list-cell-type");
+        if (recording.getType() == Recording.Type.ATTEMPT) {
+            labelType.setText("Attempt");
+            cell.getStyleClass().add("attempt");
+            _btnDelete.setVisible(true);
+        } else {
+            labelType.setVisible(false);
+            cell.getStyleClass().add("version");
+            _btnDelete.setVisible(false);
+        }
 
         Streaks streaks = new Streaks();
         streaks.bindStreaks(recording.getCreation().streaksProperty());
 
-        boolean showStreaks = recording.getCreation().getRecordingCount() == 1;
+        boolean showStreaks =
+            recording.getCreation().getRecordingCount() == 1 &&
+            recording.getType() == Recording.Type.VERSION;
 
         _labelNumber.setPrefWidth(16);
         Region spaceBetweenNumberName = new Region();
@@ -90,11 +103,14 @@ public class SingleCellContents extends HBox implements CellContents {
         Region spaceBetweenStarsDelete = new Region();
         spaceBetweenStarsDelete.setMinWidth(20);
 
+        getStyleClass().add("single-cell-contents");
+
         getChildren().setAll(
             _checkBox,
             _labelNumber,
             spaceBetweenNumberName,
             _labelName,
+            labelType,
             _labelDate,
             _qualityStars,
             spaceBetweenStarsDelete,

@@ -40,12 +40,7 @@ public class CreationsList extends SimpleListProperty<CreationsListEntry> {
 
     public void addAllCreations() {
         for (Creation creation : _creationStore.getCreations()) {
-
-            // Don't add attempt-only creations.
-            if (!creation.getVersions().isEmpty()) {
-                addWithName(creation.getName());
-            }
-
+            addWithName(creation.getName());
         }
     }
 

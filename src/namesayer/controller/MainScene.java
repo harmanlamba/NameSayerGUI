@@ -61,7 +61,6 @@ public class MainScene implements Initializable {
     public Button nextButton;
     public Button previousButton;
     public Button recordButton;
-    public Button compareButton;
     public Button practiceButton;
     public Button shuffleButton;
     public ComboBox<CreationFilter.SortStrategy> comboBox;
@@ -153,18 +152,6 @@ public class MainScene implements Initializable {
         _isMediaPlaying.addListener(practiceButtonDisabler);
         practiceButtonDisabler.invalidated(null);
 
-        // Disable compare button appropriately:
-        InvalidationListener compareButtonDisabler = (Observable observable) -> {
-            bottomLabel.setText(getCombinedName());
-            compareButton.setDisable(
-                _selectedRecordings.size() != 2 ||
-                    _selectedRecordings.get(0).getCreation() != _selectedRecordings.get(1).getCreation() ||
-                    _selectedRecordings.get(0).getType() == _selectedRecordings.get(1).getType() || _isMediaPlaying.get());
-        };
-        compareButton.setDisable(true);
-        _selectedRecordings.addListener(compareButtonDisabler);
-        _isMediaPlaying.addListener(compareButtonDisabler);
-
         // Play button icon sync.
         _isMediaPaused.addListener(o -> {
             if (_isMediaPaused.get()) {
@@ -174,8 +161,9 @@ public class MainScene implements Initializable {
             }
         });
 
-        // Reset player whenever we change selections.
+        // Reset player whenever we change selections. Also update bottom label.
         _selectedRecordings.addListener((Observable o) -> {
+            bottomLabel.setText(getCombinedName());
             playbackSlider.setValue(0);
             _isMediaPlaying.set(false);
             _isMediaPaused.set(true);
@@ -275,28 +263,10 @@ public class MainScene implements Initializable {
     // Note: The following window-opening routines are repeated in code to encourage customizability
     // and tweaking of each window during our prototyping stage.
 
-    public void compareRecordingsAction() throws IOException {
-        Stage compareRecordingsWindow = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/CompareTool.fxml"));
-        loader.setController(new CompareTool(listView, compareRecordingsWindow));
-        Parent comparingScene = loader.load();
-        compareRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
-        compareRecordingsWindow.setResizable(false);
-        compareRecordingsWindow.setTitle("Comparing Tool");
-        compareRecordingsWindow.setScene(new Scene(comparingScene, 716, 198));
-        compareRecordingsWindow.show();
-        compareRecordingsWindow.requestFocus();
-        compareRecordingsWindow.setOnHidden(e -> {
-            // Deselect the compare button.
-            topLabel.requestFocus();
-        });
-
-    }
-
     public void practiceRecordingsAction() throws IOException {
         Stage practiceRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/PracticeTool.fxml"));
-        loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings));
+        loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings, practiceRecordingsWindow));
         Parent comparingScene = loader.load();
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
@@ -333,7 +303,11 @@ public class MainScene implements Initializable {
         DirectoryChooser dc = new DirectoryChooser();
         File selectedDirectory = dc.showDialog(null);
         if (selectedDirectory != null) {
-            new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            try {
+                new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            } catch (RecordingStore.StoreUnavailableException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -344,7 +318,11 @@ public class MainScene implements Initializable {
         if (selectedDirectory != null) {
             _recordingStore.stopWatcher();
             _creationStore.clear();
-            _recordingStore = new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            try {
+                _recordingStore = new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            } catch (RecordingStore.StoreUnavailableException e) {
+                e.printStackTrace();
+            }
         }
     }
 

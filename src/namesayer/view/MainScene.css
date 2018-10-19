@@ -53,6 +53,9 @@
 .titled-pane *.content{
     -fx-border-color: #282828;
 }
+.titled-pane > .title > .arrow-button {
+    -fx-padding: 0 0.583em 0 4.7em;
+}
 
 #topLabel {
     -fx-text-fill: #e8e8e8;
@@ -108,6 +111,10 @@
     -fx-cursor: hand;
 }
 
+.button:show-mnemonics > .mnemonic-underline{
+    -fx-stroke: #e8e8e8;
+}
+
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
     -fx-font-family: "Ionicons";
     -fx-font-size: 20px;
@@ -152,6 +159,14 @@
     -fx-opacity: 0.8;
 }
 
+.list-cell.attempt {
+    -fx-background-color: #181818;
+}
+
+.list-cell.attempt:hover {
+    -fx-background-color: #202020;
+}
+
 .list-cell > * {
     -fx-opacity: 1;
 }
@@ -162,6 +177,22 @@
 
 .list-cell:filled:hover {
     -fx-opacity: 1;
+}
+
+.list-cell .list-cell-type {
+    -fx-alignment: center;
+    -fx-pref-width: 12em;
+    -fx-padding: 2px;
+    -fx-text-fill: #ab4642;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #ab4642;
+    -fx-border-radius: 3px;
+    -fx-border-insets: 0 3em;
+}
+
+.list-cell .single-cell-contents {
+    -fx-alignment: center;
 }
 
 #selectionTray {

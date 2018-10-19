@@ -1,6 +1,7 @@
 package namesayer.controller;
 
 import namesayer.model.RecordingStore;
+import namesayer.Util;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.animation.KeyFrame;
@@ -92,10 +93,14 @@ public class RecordingTool implements Initializable {
                 // Starting the recording animation, which tells the user the amount of time they have remaining.
                 recordingTimerStart();
             } else {
-                _hasRecorded.set(true);
+                // Note: don't set hasRecorded to true, as recording may have failed.
                 recordButton.setText("Record");
                 recordingTimerStop();
             }
+        });
+
+        _isPlaying.addListener(o ->{
+            upperLabel.requestFocus();
         });
 
         recordButton.disableProperty().bind(_isPlaying);
@@ -116,20 +121,9 @@ public class RecordingTool implements Initializable {
         _recordingTask = new Task<Void>() {
 
             @Override
-            protected Void call() throws Exception {
+            protected Void call() throws Util.HandledException {
                 // Checking if the tempCreations folder exist, and in the case that it doesn't the folder is created.
-                Path _path = Paths.get("./data/tempCreations");
-                try {
-                    if (Files.notExists(_path)) {
-                        Files.createDirectories(_path);
-                    }
-                    if (!Files.isDirectory(_path)) {
-                        Files.delete(_path);
-                        Files.createDirectories(_path);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Util.ensureFolderExists(Paths.get("./data/tempCreations"));
 
                 // Setting up the recording command for ffmpeg.
                 String recordingCmd = "ffmpeg " +
@@ -151,17 +145,28 @@ public class RecordingTool implements Initializable {
                 try {
                     Process process = recordingAudio.start();
                     while (process.isAlive()) {
-                        if (isCancelled()) {
+                        try {
+                            if (isCancelled()) {
+                                Thread.sleep(10);
+                                process.destroy();
+                                return null;
+                            }
                             Thread.sleep(10);
-                            process.destroy();
-                            return null;
+                        } catch(InterruptedException e) {
+                            // We don't mind getting interrupted.
                         }
-                        Thread.sleep(10);
                     }
                     if (process.exitValue() != 0) {
+                        Util.showProblem("Error while recording audio",
+                            "Sorry, but something went wrong while recording the audio",
+                            "Please try again later.");
+                        throw new Util.HandledException();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Util.showException(e, "Error while recording audio",
+                        "Sorry, but something went wrong while recording the audio\n" +
+                        "Please try again later.");
+                    throw new Util.HandledException();
                 }
 
                 return null;
@@ -176,7 +181,6 @@ public class RecordingTool implements Initializable {
 
             @Override
             protected void failed() {
-                getException().printStackTrace();
                 cleanup();
             }
 
@@ -232,15 +236,17 @@ public class RecordingTool implements Initializable {
         ProcessBuilder moveCreationsProcess = new ProcessBuilder("/bin/bash", "-c", moveCreations);
         try {
             Process moveCreation = moveCreationsProcess.start();
-            try {
-                if (moveCreation.waitFor() != 0) {
-                    System.out.println("Error in saving recording");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Util.awaitProcess(moveCreation, "Error while saving your attempt",
+                "Sorry, but we couldn't save your audio file into the folder of attempts.\n"  +
+                "Please try again.");
         } catch (IOException e) {
-            e.printStackTrace();
+            Util.showException(e, "Error while saving your attempt",
+                "Sorry, but we couldn't save your audio file into the folder of attempts.\n" +
+                "Please try again.");
+        } catch (Util.HandledException e) {
+            // Don't continue with closing window.
+            // Don't do anything else with this exception since it's already handled.
+            return;
         }
         _recordingWindow.close();
     }

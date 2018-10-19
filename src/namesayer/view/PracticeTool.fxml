@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import namesayer.controller.components.QualityStars?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXSlider?>
@@ -13,8 +12,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import namesayer.controller.components.QualityStars?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="329.0" prefWidth="658.0" stylesheets="@PracticeTool.css" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="329.0" prefWidth="829.0" stylesheets="@PracticeTool.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -37,7 +37,7 @@
             </Label>
          </children>
       </VBox>
-      <HBox prefHeight="100.0" prefWidth="826.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+      <HBox prefHeight="100.0" prefWidth="826.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <children>
             <Region prefHeight="200.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
             <VBox id="databaseVBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="159.0" prefWidth="270.0" spacing="10.0">
@@ -86,6 +86,8 @@
                </HBox.margin>
             </VBox>
             <Region prefHeight="200.0" prefWidth="10.0" HBox.hgrow="ALWAYS" />
+            <JFXButton id="loopingButton" fx:id="loopingButton" onAction="#loopingButtonAction" text="" translateX="-30.0" translateY="100.0" />
+            <Region prefHeight="200.0" prefWidth="10.0" />
             <VBox id="userVBox" maxHeight="-Infinity" prefHeight="171.0" prefWidth="270.0" spacing="10.0">
                <children>
                   <Label id="userLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="17.0" prefWidth="1000.0" text="FROM USER ATTEMPTS" textAlignment="CENTER" HBox.hgrow="ALWAYS">

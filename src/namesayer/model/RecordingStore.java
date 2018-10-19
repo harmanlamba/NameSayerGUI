@@ -1,5 +1,7 @@
 package namesayer.model;
 
+import namesayer.Util;
+
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.WatchService;
@@ -42,22 +44,16 @@ public class RecordingStore {
         Pattern.compile("\\A\\w+_(?<date>\\d+-\\d+-\\d+_\\d+-\\d+-\\d+)_(?<name>.*)\\.wav\\z");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-M-yyyy_HH-mm-ss");
 
-    public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) {
+    public RecordingStore(Path path, CreationStore creationStore, Recording.Type type) throws StoreUnavailableException {
         _path = path;
         _type = type;
         _creationStore = creationStore;
 
         // Ensure directory exists.
         try {
-            if (Files.notExists(_path)) {
-                Files.createDirectories(_path);
-            }
-            if (!Files.isDirectory(_path)) {
-                Files.delete(_path);
-                Files.createDirectories(_path);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            Util.ensureFolderExists(_path);
+        } catch (Util.HandledException e) {
+            throw new StoreUnavailableException();
         }
 
         populateFromFilesystem();
@@ -77,14 +73,16 @@ public class RecordingStore {
 
         Task<Void> qualityWriter = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() throws IOException {
                 saveQualities();
                 return null;
             }
 
             @Override
             protected void failed() {
-                getException().printStackTrace();
+                Util.showException(getException(), "Error saving file quality",
+                    "Sorry, we are having difficulty saving information about the recording qualities.\n" +
+                    "You may continue using this app, but if this keeps happening, try restarting the app.");
             }
         };
         Thread th = new Thread(qualityWriter);
@@ -99,14 +97,16 @@ public class RecordingStore {
 
         Task<Void> qualityReloader = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() throws IOException {
                 reloadQualities();
                 return null;
             }
 
             @Override
             protected void failed() {
-                getException().printStackTrace();
+                Util.showException(getException(), "Error loading information about recording qualities",
+                    "Sorry, we are having difficulty reading information about the recording qualities.\n" +
+                    "You may continue using this app, but if this keeps happening, try restarting the app.");
             }
         };
 
@@ -128,7 +128,9 @@ public class RecordingStore {
 
             @Override
             protected void failed() {
-                getException().printStackTrace();
+                Util.showException(getException(), "Error loading the recordings",
+                    "Sorry, we could not load the recordings properly.\n" +
+                    "You may continue using this app, but if things don't work, try restarting the app.");
             }
 
             private void scheduleReloadQualities() {
@@ -159,7 +161,6 @@ public class RecordingStore {
         try {
             date = DATE_FORMAT.parse(matcher.group("date"));
         } catch (ParseException e) {
-            e.printStackTrace();
             // Ignore invalid files.
             return;
         }
@@ -197,22 +198,18 @@ public class RecordingStore {
         _recordings.remove(filename);
     }
 
-    private synchronized void saveQualities() {
+    private synchronized void saveQualities() throws IOException {
         assert !Platform.isFxApplicationThread();
 
         List<String> qualityData = new ArrayList<>();
         for (String filename : _recordings.keySet()) {
             qualityData.add(filename + "\t" + _recordings.get(filename).getQuality());
         }
-        try {
-            Files.write(_path.resolve(QUALITY_FILENAME), qualityData,
-                StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Files.write(_path.resolve(QUALITY_FILENAME), qualityData,
+            StandardOpenOption.WRITE, StandardOpenOption.CREATE);
     }
 
-    private synchronized void reloadQualities() {
+    private synchronized void reloadQualities() throws IOException {
         assert !Platform.isFxApplicationThread();
 
         Path qualityPath = _path.resolve(QUALITY_FILENAME);
@@ -220,35 +217,30 @@ public class RecordingStore {
             return;
         }
 
-        try {
-            Files.lines(qualityPath)
-                .map(line -> line.split("\t"))
-                .forEach(entry -> {
+        Files.lines(qualityPath)
+            .map(line -> line.split("\t"))
+            .forEach(entry -> {
 
-                    // Ignore invalid lines
-                    if (entry.length < 2) return;
+                // Ignore invalid lines
+                if (entry.length < 2) return;
 
-                    String filename = entry[0];
-                    String qualityStr = entry[1];
+                String filename = entry[0];
+                String qualityStr = entry[1];
 
-                    // Ignore data associated with non-existent recordings.
-                    if (!_recordings.containsKey(filename)) return;
+                // Ignore data associated with non-existent recordings.
+                if (!_recordings.containsKey(filename)) return;
 
-                    // Apply.
-                    final Recording.Quality quality;
-                    try {
-                        quality = Recording.Quality.valueOf(entry[1]);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                        // Ignore invalid quality entries.
-                        return;
-                    }
-                    Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
+                // Apply.
+                final Recording.Quality quality;
+                try {
+                    quality = Recording.Quality.valueOf(entry[1]);
+                } catch (IllegalArgumentException e) {
+                    // Ignore invalid quality entries.
+                    return;
+                }
+                Platform.runLater(() -> _recordings.get(filename).setQuality(quality));
 
-                });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            });
     }
 
     /**
@@ -298,10 +290,12 @@ public class RecordingStore {
 
                 @Override
                 protected void failed() {
-                    getException().printStackTrace();
+                    Util.showException(getException(), "Error watching the filesystem",
+                        "Sorry, we are having difficulty keeping track with the recordings in your folders.\n" +
+                        "You may continue using this app, but new changes will not show up until you restart the app.");
                 }
 
-                private void handleEvent(WatchEvent<?> event) {
+                private void handleEvent(WatchEvent<?> event) throws IOException {
                     WatchEvent.Kind<?> kind = event.kind();
 
                     if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
@@ -340,7 +334,9 @@ public class RecordingStore {
 
             th.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            Util.showException(e, "Error watching the filesystem",
+                "Sorry, we are having difficulty keeping track with the recordings in your folders.\n" +
+                "You may continue using this app, but new changes will not show up until you restart the app.");
         }
     }
 
@@ -348,5 +344,11 @@ public class RecordingStore {
         _taskWatcher.cancel();
     }
 
+    /**
+     * Thrown by the constructor when the recording store path is not valid.
+     */
+    @SuppressWarnings("serial")
+    public static class StoreUnavailableException extends Exception {
+    }
 
 }
