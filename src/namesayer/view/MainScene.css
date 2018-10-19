@@ -53,6 +53,9 @@
 .titled-pane *.content{
     -fx-border-color: #282828;
 }
+.titled-pane > .title > .arrow-button {
+    -fx-padding: 0 0.583em 0 4.7em;
+}
 
 #topLabel {
     -fx-text-fill: #e8e8e8;
