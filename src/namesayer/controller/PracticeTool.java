@@ -1,5 +1,6 @@
 package namesayer.controller;
 
+import javafx.stage.Stage;
 import namesayer.controller.components.QualityStars;
 import namesayer.model.Creation;
 import namesayer.model.CreationStore;
@@ -36,6 +37,7 @@ public class PracticeTool implements Initializable {
     private static final String PRACTICE_TEMP_FOLDER = "tempPractice";
 
     private MainScene _controller;
+    private Stage _practiceToolStage;
     private CreationStore _creationStore;
     private MediaView _databaseMediaView = new MediaView();
     private MediaView _userMediaView = new MediaView();
@@ -44,6 +46,7 @@ public class PracticeTool implements Initializable {
     private List<Recording> _recordings;
     private BooleanProperty _isUserMediaPlaying = new SimpleBooleanProperty();
     private BooleanProperty _isDatabaseMediaPlaying = new SimpleBooleanProperty();
+    private BooleanProperty _isLooping = new SimpleBooleanProperty();
 
     //Setting up the FXML injections so they can be referenced directly through the code
     public ComboBox<Recording> databaseComboBox;
@@ -52,16 +55,19 @@ public class PracticeTool implements Initializable {
     public Button databasePlayButton;
     public Button databaseShuffleButton;
     public Button userRecordButton;
+    public Button loopingButton;
     public Label recordingLabel;
     public JFXSlider databaseVolumeSlider;
     public JFXSlider userVolumeSlider;
     public QualityStars databaseQualityStars;
 
 
-    public PracticeTool(MainScene controller, CreationStore creationStore, List<Recording> recordings) {
+    public PracticeTool(MainScene controller, CreationStore creationStore, List<Recording> recordings,
+                        Stage practiceToolStage) {
         _controller = controller;
         _creationStore = creationStore;
         _recordings = recordings;
+        _practiceToolStage = practiceToolStage;
 
         // Streaks.
         for (Recording recording : recordings) {
@@ -147,25 +153,42 @@ public class PracticeTool implements Initializable {
         changes.
          */
         BooleanBinding isUserRecordingSelected = userComboBox.valueProperty().isNotNull();
-        userPlayButton.disableProperty().bind(isUserRecordingSelected.not().or(_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
-        databasePlayButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
-        userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
-        databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying).or(_isUserMediaPlaying));
+        userPlayButton.disableProperty().bind(isUserRecordingSelected.not().or(_isDatabaseMediaPlaying)
+            .or(_isUserMediaPlaying).or(_isLooping));
+        databasePlayButton.disableProperty().bind((_isDatabaseMediaPlaying)
+            .or(_isUserMediaPlaying).or(_isLooping));
+        userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying)
+            .or(_isUserMediaPlaying).or(_isLooping));
+        databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying)
+            .or(_isUserMediaPlaying).or(_isLooping));
 
-        //Ensuring that once we exit the PracticeTool the mediaplayers stop their respective playback.
-        databaseComboBox.sceneProperty().addListener(o -> {
-            databaseComboBox.getScene().windowProperty().addListener(o1 -> {
-                databaseComboBox.getScene().getWindow().setOnHiding(event -> {
-                    if (_databaseMediaView.getMediaPlayer() != null) {
-                        _databaseMediaView.getMediaPlayer().stop();
-                    }
-                    if (_userMediaView.getMediaPlayer() != null) {
-                        _userMediaView.getMediaPlayer().stop();
-                    }
-                });
-            });
+
+
+        _isDatabaseMediaPlaying.addListener(e -> {
+            if (_isLooping.get() && !_isDatabaseMediaPlaying.get()) {
+                userPlayButtonAction();
+            }
         });
 
+        _isUserMediaPlaying.addListener(e -> {
+            if (_isLooping.get() && !_isUserMediaPlaying.get()) {
+                databasePlayButtonAction();
+            }
+        });
+
+        //Ensuring that once the window is closed the recording playback stops
+        _practiceToolStage.setOnHiding(e -> {
+            if (_databaseMediaView.getMediaPlayer() != null) {
+                _isLooping.set(false);
+                _databaseMediaView.getMediaPlayer().stop();
+                _isDatabaseMediaPlaying.set(false);
+            }
+            if (_userMediaView.getMediaPlayer() != null) {
+                _isLooping.set(false);
+                _userMediaView.getMediaPlayer().stop();
+                _isUserMediaPlaying.set(false);
+            }
+        });
 
     }
 
@@ -212,6 +235,9 @@ public class PracticeTool implements Initializable {
         mediaPlayer.setOnEndOfMedia(() -> {
             _isUserMediaPlaying.set(false);
         });
+        mediaPlayer.setOnStopped(() -> {
+            _isUserMediaPlaying.set(false);
+        });
 
     }
 
@@ -234,8 +260,26 @@ public class PracticeTool implements Initializable {
                 mediaPlayer.setOnEndOfMedia(() -> {
                     _isDatabaseMediaPlaying.set(false);
                 });
+                mediaPlayer.setOnStopped(() -> {
+                    _isDatabaseMediaPlaying.set(false);
+                });
             }
         };
+    }
+
+    public void loopingButtonAction() {
+        _isLooping.set(!_isLooping.get());
+        if (_isLooping.get()) {
+            loopingButton.setText("\uf24f");
+            recordingLabel.requestFocus();
+            databasePlayButtonAction();
+        } else {
+            loopingButton.setText("\uf201");
+            recordingLabel.requestFocus();
+            if (_databaseMediaView.getMediaPlayer() != null) _databaseMediaView.getMediaPlayer().stop();
+            if (_userMediaView.getMediaPlayer() != null) _userMediaView.getMediaPlayer().stop();
+        }
+
     }
 
     private void refreshUserComboBox() {
