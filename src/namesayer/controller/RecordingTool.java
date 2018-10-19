@@ -98,6 +98,10 @@ public class RecordingTool implements Initializable {
             }
         });
 
+        _isPlaying.addListener(o ->{
+            upperLabel.requestFocus();
+        });
+
         recordButton.disableProperty().bind(_isPlaying);
         playButton.disableProperty().bind(_hasRecorded.not().or(_isRecording).or(_isPlaying));
         saveButton.disableProperty().bind(_hasRecorded.not().or(_isRecording).or(_isPlaying));
