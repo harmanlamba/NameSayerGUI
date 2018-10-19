@@ -72,10 +72,14 @@ public class SingleCellContents extends HBox implements CellContents {
         _btnDelete.setText("\uf252");
         _btnDelete.getStyleClass().add("delete-btn");
 
+        Label labelType = new Label();
+        labelType.getStyleClass().add("list-cell-type");
         if (recording.getType() == Recording.Type.ATTEMPT) {
+            labelType.setText("Attempt");
             cell.getStyleClass().add("attempt");
             _btnDelete.setVisible(true);
         } else {
+            labelType.setVisible(false);
             cell.getStyleClass().add("version");
             _btnDelete.setVisible(false);
         }
@@ -104,6 +108,7 @@ public class SingleCellContents extends HBox implements CellContents {
             _labelNumber,
             spaceBetweenNumberName,
             _labelName,
+            labelType,
             _labelDate,
             _qualityStars,
             spaceBetweenStarsDelete,
