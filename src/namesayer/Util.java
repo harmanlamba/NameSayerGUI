@@ -33,7 +33,7 @@ public class Util {
                 Files.createDirectories(path);
             }
         } catch (IOException e) {
-            showException(e, "Error preparing folder.",
+            showException(e, "Error preparing folder",
                 "Sorry, but we're having difficulty opening one of our folders needed:\n" +
                 "\"" + path + "\". Try restarting the app.");
             throw new HandledException();

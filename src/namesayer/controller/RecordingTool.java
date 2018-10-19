@@ -157,7 +157,7 @@ public class RecordingTool implements Initializable {
                         }
                     }
                     if (process.exitValue() != 0) {
-                        Util.showProblem("Error while recording audio.",
+                        Util.showProblem("Error while recording audio",
                             "Sorry, but something went wrong while recording the audio",
                             "Please try again later.");
                         throw new Util.HandledException();

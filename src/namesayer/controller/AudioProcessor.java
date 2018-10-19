@@ -25,7 +25,7 @@ import namesayer.Util;
 public abstract class AudioProcessor {
     private static final String DEFAULT_TEMP_FOLDER = "tempPlayback";
     private static final String TEMP_CREATIONS_FOLDER = "data/tempCreations/";
-    private static final String ERROR_TITLE = "Error while preparing audio to playback.";
+    private static final String ERROR_TITLE = "Error while preparing audio to playback";
     private static final double TARGET_VOLUME = -2;
     private static final int NORMALISED_SAMPLERATE = 48000;
     private static final int NORMALISED_NUM_CHANNEL = 1;
