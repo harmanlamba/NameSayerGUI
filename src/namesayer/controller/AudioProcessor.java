@@ -25,6 +25,9 @@ public abstract class AudioProcessor {
     private static final String DEFAULT_TEMP_FOLDER = "tempPlayback";
     private static final String DEAFULT_TEMP_CREATIONS_FOLDER = "data/tempCreations/";
     private static final double TARGET_VOLUME = -2;
+    private static final int NORMALISED_SAMPLERATE = 48000;
+    private static final int NORMALISED_NUM_CHANNEL = 1;
+    private static final String NORMALISED_BITDEPTH = "s16";
 
     public abstract void ready(String filePath);
 
@@ -116,7 +119,14 @@ public abstract class AudioProcessor {
                         double changeInVol = (TARGET_VOLUME - maxVolumeScaled);
 
                         //Applying the change in volume to each file
-                        String normaliseCmd = "ffmpeg -i " + "./" + counter.toString() + " -filter:a \"volume=" + changeInVol + "dB" + "\"" + " -y " + "./" + DEAFULT_TEMP_CREATIONS_FOLDER + counter.getFileName();
+                        String normaliseCmd = "ffmpeg " +
+                            "-i " + "./" + counter.toString() + " " +
+                            "-ar " + NORMALISED_SAMPLERATE + " " +
+                            "-ac " + NORMALISED_NUM_CHANNEL + " " +
+                            "-sample_fmt " + NORMALISED_BITDEPTH  + " " +
+                            "-filter:a \"volume=" + changeInVol + "dB" + "\"" + " " +
+                            "-y " +
+                            "./" + DEAFULT_TEMP_CREATIONS_FOLDER + counter.getFileName();
                         ProcessBuilder normaliseBuilder = new ProcessBuilder("/bin/bash", "-c", normaliseCmd);
                         Process normaliseProcess = normaliseBuilder.start();
                         normaliseProcess.waitFor();
@@ -148,15 +158,15 @@ public abstract class AudioProcessor {
                         "-i ./data/" + folder + "/playBack.wav -af " +
                         "silenceremove=1:0:-25dB:1:5:-25dB:0 " +
                         "./data/" + folder + "/playBackSilenced.wav");
-                ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c",
-                    "rm -r ./data/tempCreations");
+                //ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c",
+                    //"rm -r ./data/tempCreations");
                 try {
                     Process process = concatBuilder.start();
                     process.waitFor(); //ensuring that concatenation happens before silencing
                     Process processSilence = silenceRemoverBuilder.start();
                     processSilence.waitFor();
-                    Process deleteTempCreationsProcess = deleteTempCreations.start();
-                    deleteTempCreationsProcess.waitFor();
+                    //Process deleteTempCreationsProcess = deleteTempCreations.start();
+                    //deleteTempCreationsProcess.waitFor();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
