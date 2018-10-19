@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -72,7 +75,7 @@ public class PracticeTool implements Initializable {
         // Streaks.
         for (Recording recording : recordings) {
             Creation creation = recording.getCreation();
-            creation.setStreaks(creation.getStreaks() + 1);
+            creation.bumpStreaks();
         }
 
         // Clone. Don't break the recording box if the selection changes in the main scene.

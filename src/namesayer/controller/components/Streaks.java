@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class Streaks extends HBox {
 
     private static final String FIRE_CHAR = "\uf319";
-    private static final int THRESHOLD = 3;
+    private static final int THRESHOLD = 1;
 
     private final IntegerProperty _streaks = new SimpleIntegerProperty();
 
