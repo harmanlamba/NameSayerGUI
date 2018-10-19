@@ -71,7 +71,14 @@ public class SingleCellContents extends HBox implements CellContents {
 
         _btnDelete.setText("\uf252");
         _btnDelete.getStyleClass().add("delete-btn");
-        _btnDelete.setVisible(recording.getType() == Recording.Type.ATTEMPT);
+
+        if (recording.getType() == Recording.Type.ATTEMPT) {
+            getStyleClass().add("attempt");
+            _btnDelete.setVisible(true);
+        } else {
+            getStyleClass().add("version");
+            _btnDelete.setVisible(false);
+        }
 
         Streaks streaks = new Streaks();
         streaks.bindStreaks(recording.getCreation().streaksProperty());
