@@ -73,10 +73,10 @@ public class SingleCellContents extends HBox implements CellContents {
         _btnDelete.getStyleClass().add("delete-btn");
 
         if (recording.getType() == Recording.Type.ATTEMPT) {
-            getStyleClass().add("SingleCellContents_attempt");
+            cell.getStyleClass().add("attempt");
             _btnDelete.setVisible(true);
         } else {
-            getStyleClass().add("SingleCellContents_version");
+            cell.getStyleClass().add("version");
             _btnDelete.setVisible(false);
         }
 

@@ -15,11 +15,11 @@
 }
 
 
-.SingleCellContents_attempt{
-    -fx-background-color: #282828;
+.list-cell.attempt{
+    -fx-background-color: #181818;
 }
 
-.SingleCellContents_version{
+.list-cell.version{
 
 }
 
