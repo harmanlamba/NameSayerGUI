@@ -157,8 +157,9 @@ public class MainScene implements Initializable {
             }
         });
 
-        // Reset player whenever we change selections.
+        // Reset player whenever we change selections. Also update bottom label.
         _selectedRecordings.addListener((Observable o) -> {
+            bottomLabel.setText(getCombinedName());
             playbackSlider.setValue(0);
             _isMediaPlaying.set(false);
             _isMediaPaused.set(true);
