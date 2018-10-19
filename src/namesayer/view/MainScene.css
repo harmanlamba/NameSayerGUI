@@ -159,6 +159,14 @@
     -fx-opacity: 0.8;
 }
 
+.list-cell.attempt {
+    -fx-background-color: #181818;
+}
+
+.list-cell.attempt:hover {
+    -fx-background-color: #202020;
+}
+
 .list-cell > * {
     -fx-opacity: 1;
 }
@@ -169,6 +177,22 @@
 
 .list-cell:filled:hover {
     -fx-opacity: 1;
+}
+
+.list-cell .list-cell-type {
+    -fx-alignment: center;
+    -fx-pref-width: 12em;
+    -fx-padding: 2px;
+    -fx-text-fill: #ab4642;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #ab4642;
+    -fx-border-radius: 3px;
+    -fx-border-insets: 0 3em;
+}
+
+.list-cell .single-cell-contents {
+    -fx-alignment: center;
 }
 
 #selectionTray {

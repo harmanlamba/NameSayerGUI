@@ -31,6 +31,7 @@ public class Streaks extends HBox {
         // Outer component:
 
         setSpacing(10);
+        setAlignment(Pos.CENTER);
         getChildren().setAll(count, fire);
 
         // Bindings:

@@ -2,6 +2,7 @@ package namesayer.controller.components;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
+import javafx.geometry.Pos;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -24,15 +25,19 @@ public class QualityStars extends HBox {
     };
 
     public QualityStars() {
-        //Setting the stars into the HBox, it is important to note that quality stars is a custom component that extends
-        //an HBox
+        // Setting the stars into the HBox, it is important to note that quality stars is a
+        // custom component that extends an HBox.
         getChildren().setAll(_stars);
-        //Iterating through all the stars and adding a mouseClicked event and the adequate style class.
+
+        setAlignment(Pos.CENTER);
+
+        // Iterating through all the stars and adding a mouseClicked event and the adequate style class.
         for (int i = 0; i < _stars.length; i++) {
             final int qualityIndex = i + 1;
             _stars[i].setOnMouseClicked(event -> selectQuality(qualityIndex));
             _stars[i].getStyleClass().add("quality-star");
         }
+
         //Ensuring that the quality stars get updated when a new quality is assigned.
         _recording.addListener(o1 -> {
             renderQuality();
