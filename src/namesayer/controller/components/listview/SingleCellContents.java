@@ -83,7 +83,9 @@ public class SingleCellContents extends HBox implements CellContents {
         Streaks streaks = new Streaks();
         streaks.bindStreaks(recording.getCreation().streaksProperty());
 
-        boolean showStreaks = recording.getCreation().getRecordingCount() == 1;
+        boolean showStreaks =
+            recording.getCreation().getRecordingCount() == 1 &&
+            recording.getType() == Recording.Type.VERSION;
 
         _labelNumber.setPrefWidth(16);
         Region spaceBetweenNumberName = new Region();
