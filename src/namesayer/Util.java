@@ -2,6 +2,7 @@ package namesayer;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.concurrent.Task;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -41,16 +42,37 @@ public class Util {
 
     /**
      * Provides a consistent mechanism to instrusively inform the user of a critical error.
+     * Ensures the dialog is created from the application thread, and waits for it to close.
      */
     public static void showProblem(String title, String friendlySummary, String detail) {
-        // Ensure the dialog is created from the application thread.
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(title);
-            alert.setHeaderText(friendlySummary);
-            alert.setContentText(detail);
-            alert.showAndWait();
-        });
+        Task<Void> alertTask = new Task<Void>() {
+            @Override
+            protected Void call() {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(title);
+                alert.setHeaderText(friendlySummary);
+                alert.setContentText(detail);
+                alert.showAndWait();
+                return null;
+            }
+            @Override
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        if (Platform.isFxApplicationThread()) {
+            // Run immediately - don't create deadlock with its own thread.
+            alertTask.run();
+        } else {
+            Platform.runLater(alertTask);
+            try {
+                // Wait for it to close.
+                alertTask.get();
+            } catch (Exception e) {
+                // Can't do much about this.
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
