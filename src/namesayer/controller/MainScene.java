@@ -146,9 +146,6 @@ public class MainScene implements Initializable {
                     PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
         };
         _selectedRecordings.addListener(practiceButtonDisabler);
-        _selectedRecordings.addListener((InvalidationListener) e -> {
-            bottomLabel.setText(getCombinedName());
-        });
         _isMediaPlaying.addListener(practiceButtonDisabler);
         practiceButtonDisabler.invalidated(null);
 
