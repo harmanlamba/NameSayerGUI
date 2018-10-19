@@ -57,6 +57,14 @@ public class CreationFilter {
         _creationStore.addListener(filterUpdater);
         _sortStrategy.addListener(filterUpdater);
         _filterDisable.addListener(filterUpdater);
+
+        _filterDisable.addListener(o -> {
+            if (_filterDisable.get()) {
+                _sortStrategy.setValue(SortStrategy.SORT_BY_NAME);
+            } else {
+                _sortStrategy.setValue(SortStrategy.DONT_SORT);
+            }
+        });
     }
 
     public ObjectProperty<SortStrategy> sortStrategyProperty() {
