@@ -108,6 +108,10 @@
     -fx-cursor: hand;
 }
 
+.button:show-mnemonics > .mnemonic-underline{
+    -fx-stroke: #e8e8e8;
+}
+
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton, #volumeLabel, .delete-btn {
     -fx-font-family: "Ionicons";
     -fx-font-size: 20px;
