@@ -123,6 +123,12 @@ public class Creation extends ObservableBase {
                 latestRecording = recording;
             }
         }
+        for (Recording recording : _attempts.values()) {
+            if (recording.getDate().compareTo(latestDate) >= 0) {
+                latestDate = recording.getDate();
+                latestRecording = recording;
+            }
+        }
         return latestRecording;
     }
 
