@@ -163,7 +163,10 @@ public class RecordingTool implements Initializable {
                         throw new Util.HandledException();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Util.showException(e, "Error while recording audio",
+                        "Sorry, but something went wrong while recording the audio\n" +
+                        "Please try again later.");
+                    throw new Util.HandledException();
                 }
 
                 return null;

@@ -1,7 +1,8 @@
 package namesayer.model;
 
-import javafx.stage.FileChooser;
+import namesayer.Util;
 
+import javafx.stage.FileChooser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,9 +34,13 @@ public class UserTextFile {
                     _finalListOfNames.add(CreationsListEntry.parseNamesIntoList(line));
                 }
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Util.showException(e, "Error uploading file - file not found",
+                    "The file containing the list of names you want to upload could not be found.\n" +
+                    "Please try again.");
             } catch (IOException e) {
-                e.printStackTrace();
+                Util.showException(e, "Error uploading file",
+                    "Sorry, but we're having difficulty reading the file containing the list of names.\n" +
+                    "Please try again.");
             }
         }
         return _finalListOfNames;

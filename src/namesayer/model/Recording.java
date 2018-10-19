@@ -1,5 +1,7 @@
 package namesayer.model;
 
+import namesayer.Util;
+
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -151,7 +153,9 @@ public class Recording {
 
             @Override
             public void failed() {
-                getException().printStackTrace();
+                Util.showException(getException(), "Error deleting recording",
+                    "Sorry, but we're having difficulty deleting the specified recording.\n" +
+                    "Please try again");
             }
         };
         Thread th = new Thread(deleter);
