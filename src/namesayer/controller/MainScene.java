@@ -329,7 +329,11 @@ public class MainScene implements Initializable {
         DirectoryChooser dc = new DirectoryChooser();
         File selectedDirectory = dc.showDialog(null);
         if (selectedDirectory != null) {
-            new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            try {
+                new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            } catch (RecordingStore.StoreUnavailableException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -340,7 +344,11 @@ public class MainScene implements Initializable {
         if (selectedDirectory != null) {
             _recordingStore.stopWatcher();
             _creationStore.clear();
-            _recordingStore = new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            try {
+                _recordingStore = new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
+            } catch (RecordingStore.StoreUnavailableException e) {
+                e.printStackTrace();
+            }
         }
     }
 

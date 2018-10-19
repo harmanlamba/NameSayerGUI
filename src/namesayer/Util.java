@@ -80,7 +80,7 @@ public class Util {
      * filesystem IO operations and external bash commands. These errors should be alerted
      * to the user and logged appropriately for further investigation for developers.
      */
-    public static void showException(Exception e, String title, String friendlyMessage) {
+    public static void showException(Throwable e, String title, String friendlyMessage) {
         e.printStackTrace();
         showProblem(title, friendlyMessage, "Refer to the terminal for more information.");
     }

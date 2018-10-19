@@ -41,10 +41,16 @@ public class Main extends Application {
 
     // Begin listening to the folders.
     private void initStores() {
-        _creationStore = new CreationStore();
-        _versionsStore = new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
-        new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
-        new StreaksAndTiers(_creationStore);
+        try {
+            _creationStore = new CreationStore();
+            _versionsStore = new RecordingStore(Paths.get("data/database"), _creationStore, Recording.Type.VERSION);
+            new RecordingStore(Paths.get("data/attempts"), _creationStore, Recording.Type.ATTEMPT);
+            new StreaksAndTiers(_creationStore);
+        } catch (RecordingStore.StoreUnavailableException e) {
+            // Can't continue running the app without all stores available.
+            System.out.println("Some stores are unavailable. Closing the app.");
+            System.exit(1);
+        }
     }
 
 }
