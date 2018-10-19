@@ -44,6 +44,7 @@ public class CreationFilter {
     private ObjectProperty<SortStrategy> _sortStrategy =
         new SimpleObjectProperty<SortStrategy>(SortStrategy.DONT_SORT);
     private BooleanProperty _filterDisable = new SimpleBooleanProperty();
+    private boolean _isPublishing = false;
 
     public CreationFilter(ObservableList<List<String>> requestedNames, CreationStore creationStore) {
         _requestedNames = requestedNames;
@@ -57,6 +58,7 @@ public class CreationFilter {
         _creationStore.addListener(filterUpdater);
         _sortStrategy.addListener(filterUpdater);
         _filterDisable.addListener(filterUpdater);
+        _filterResults.addListener(filterUpdater);
 
         _filterDisable.addListener(o -> {
             if (_filterDisable.get()) {
@@ -80,6 +82,12 @@ public class CreationFilter {
     }
 
     private void updateFilter() {
+        if (_isPublishing) {
+            // We want to update our filter list for all events *except* for when we
+            // are causing it via publishResults. Otherwise, this is an infinite loop.
+            return;
+        }
+
         _intermediateList.clear();
 
         if (_filterDisable.get()) {
@@ -115,8 +123,12 @@ public class CreationFilter {
     }
 
     private void publishResults() {
+        _isPublishing = true;
+
         // Motivation: Don't want to operate on observable list (e.g. while sorting list).
         _filterResults.setAll(_intermediateList);
+
+        _isPublishing = false;
     }
 
 }
