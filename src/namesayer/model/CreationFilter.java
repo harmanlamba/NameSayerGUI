@@ -34,8 +34,6 @@ public class CreationFilter {
         }
     }
 
-    ;
-
     private CreationsList _filterResults;
     private CreationsList _intermediateList;
 
@@ -69,6 +67,11 @@ public class CreationFilter {
 
     public CreationsList getFilterResults() {
         return _filterResults;
+    }
+
+    public void shuffle() {
+        _sortStrategy.setValue(SortStrategy.DONT_SORT);
+        Collections.shuffle(_requestedNames);
     }
 
     private void updateFilter() {

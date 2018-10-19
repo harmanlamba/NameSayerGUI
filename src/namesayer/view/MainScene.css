@@ -210,6 +210,6 @@
     -fx-stroke: #282828;
 }
 
-.quality-star {
+.quality-star, .streaks-fire {
     -fx-font-family: "Ionicons";
 }
