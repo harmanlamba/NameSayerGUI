@@ -1,5 +1,7 @@
 package namesayer.model;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class Creation extends ObservableBase {
 
     private String _name;
     private IntegerProperty _streaks = new SimpleIntegerProperty(0);
+    private LocalDateTime _lastStreakDate = LocalDateTime.MIN;
     private final ObservableMap<Date, Recording> _versions = FXCollections.observableHashMap();
     private final ObservableMap<Date, Recording> _attempts = FXCollections.observableHashMap();
 
@@ -159,4 +162,26 @@ public class Creation extends ObservableBase {
     public void setStreaks(int streaks) {
         _streaks.set(streaks);
     }
+
+    public LocalDateTime getLastStreakDate(){
+        return _lastStreakDate;
+    }
+
+    public void setLastStreakDate(LocalDateTime modifiedDate){
+        _lastStreakDate=modifiedDate;
+    }
+
+    public void bumpStreaks(){
+        long differenceInDates= getLastStreakDate().until(LocalDateTime.now(), ChronoUnit.HOURS);
+        System.out.println(differenceInDates);
+        if(differenceInDates >= 24 && differenceInDates <= 48){
+            setLastStreakDate(LocalDateTime.now());
+            setStreaks(this.getStreaks() + 1);
+        }else{
+            setStreaks(10);
+            setLastStreakDate(LocalDateTime.now());
+            setStreaks(0);
+        }
+    }
+
 }
