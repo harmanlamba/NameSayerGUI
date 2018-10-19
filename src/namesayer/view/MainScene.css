@@ -191,6 +191,10 @@
     -fx-border-insets: 0 3em;
 }
 
+.list-cell .single-cell-contents {
+    -fx-alignment: center;
+}
+
 #selectionTray {
     -fx-background-color: #181818;
 }

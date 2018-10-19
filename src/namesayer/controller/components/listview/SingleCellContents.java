@@ -103,6 +103,8 @@ public class SingleCellContents extends HBox implements CellContents {
         Region spaceBetweenStarsDelete = new Region();
         spaceBetweenStarsDelete.setMinWidth(20);
 
+        getStyleClass().add("single-cell-contents");
+
         getChildren().setAll(
             _checkBox,
             _labelNumber,
