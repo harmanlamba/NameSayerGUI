@@ -173,11 +173,12 @@ public class Creation extends ObservableBase {
 
     public void bumpStreaks(){
         long differenceInDates= getLastStreakDate().until(LocalDateTime.now(), ChronoUnit.HOURS);
-        System.out.println(differenceInDates);
-        if(differenceInDates >= 24 && differenceInDates <= 48){
-            setLastStreakDate(LocalDateTime.now());
-            setStreaks(this.getStreaks() + 1);
-        }else{
+        if (differenceInDates <= 48) {
+            if (differenceInDates >= 24) {
+                setLastStreakDate(LocalDateTime.now());
+                setStreaks(this.getStreaks() + 1);
+            }
+        } else {
             setStreaks(10);
             setLastStreakDate(LocalDateTime.now());
             setStreaks(0);
