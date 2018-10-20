@@ -212,6 +212,11 @@ public class PracticeTool implements Initializable {
                     databaseComboBox.setItems(_databaseOptions);
                     databaseComboBox.getSelectionModel().select(0);
                 }
+
+                @Override
+                public void failed() {
+                    // No cleanup or reporting needed.
+                }
             };
         } else {
             _databaseOptions.setAll(_databaseRecordings);
@@ -249,6 +254,10 @@ public class PracticeTool implements Initializable {
         List<Recording> recordings = new ArrayList<>();
         //Identifying which recording is selected
         recordings.add(databaseComboBox.getValue());
+
+        //Immediately set the playing status - we want to prevent button double-clicking.
+        _isDatabaseMediaPlaying.set(true);
+
         //Passing it through the AudioProcessor to play the file adequately
         new AudioProcessor(recordings) {
             @Override
@@ -258,14 +267,19 @@ public class PracticeTool implements Initializable {
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 _databaseMediaView.setMediaPlayer(mediaPlayer);
                 mediaPlayer.play();
+
                 //Defining the boolean properties
-                _isDatabaseMediaPlaying.set(true);
                 mediaPlayer.setOnEndOfMedia(() -> {
                     _isDatabaseMediaPlaying.set(false);
                 });
                 mediaPlayer.setOnStopped(() -> {
                     _isDatabaseMediaPlaying.set(false);
                 });
+            }
+
+            @Override
+            public void failed() {
+                _isDatabaseMediaPlaying.set(false);
             }
         };
     }

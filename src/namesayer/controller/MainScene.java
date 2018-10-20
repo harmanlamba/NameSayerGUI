@@ -54,8 +54,9 @@ public class MainScene implements Initializable {
     private CreationFilter _creationFilter;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
-    private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty();
+    private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty(false);
     private BooleanProperty _isMediaPaused = new SimpleBooleanProperty(true);
+    private BooleanProperty _isMediaLoading = new SimpleBooleanProperty(false);
 
     public Button playButton;
     public Button nextButton;
@@ -134,10 +135,10 @@ public class MainScene implements Initializable {
         playbackSlider.disableProperty().bind(isSelected.not());
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
         shuffleButton.disableProperty().bind(hasMultipleTags.not().or(isTagsNotShown).or(_isMediaPlaying));
-        playButton.disableProperty().bind(isSelected.not());
+        playButton.disableProperty().bind(isSelected.not().or(_isMediaLoading));
         topLabel.visibleProperty().bind(isSelected);
-        nextButton.disableProperty().bind(isListEmpty);
-        previousButton.disableProperty().bind(isListEmpty);
+        nextButton.disableProperty().bind(isListEmpty.or(_isMediaLoading));
+        previousButton.disableProperty().bind(isListEmpty.or(_isMediaLoading));
 
         // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
@@ -193,10 +194,17 @@ public class MainScene implements Initializable {
      */
     public void playButtonAction() {
         if (!_isMediaPlaying.get()) {
+            _isMediaLoading.set(true);
             AudioProcessor audioProcessor = new AudioProcessor(_selectedRecordings) {
                 @Override
                 public void ready(String filePath) {
+                    _isMediaLoading.set(false);
                     mediaLoaderAndPlayer(filePath);
+                }
+
+                @Override
+                public void failed() {
+                    _isMediaLoading.set(false);
                 }
             };
         } else if (_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
