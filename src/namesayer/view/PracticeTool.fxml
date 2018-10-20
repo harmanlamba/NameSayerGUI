@@ -30,7 +30,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label id="recordingLabel" fx:id="recordingLabel" alignment="CENTER" prefHeight="40.0" prefWidth="708.0" text="Label">
+            <Label id="recordingLabel" fx:id="recordingLabel" alignment="CENTER" prefHeight="40.0" prefWidth="708.0" text="loading...">
                <font>
                   <Font size="28.0" />
                </font>
