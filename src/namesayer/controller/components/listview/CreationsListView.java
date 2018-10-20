@@ -6,6 +6,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.Observable;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -14,6 +15,10 @@ import namesayer.model.CreationsList;
 import namesayer.model.CreationsListEntry;
 
 
+/**
+ * Custom Component that displays the recordings in the main screen. This class is in charge of holding other custom
+ * components and displaying the corresponding information in the "listView" for the user.
+ */
 public class CreationsListView extends JFXListView<CreationsListEntry> {
 
     private ObservableList<Recording> _selectedRecordings = FXCollections.observableArrayList();
@@ -39,6 +44,12 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         return _selectedRecordings;
     }
 
+    /**
+     * Selects the next cell in the list.
+     * If nothing is selected, selects the first cell.
+     * If multiple things are selected discontinuously, treats it as a continuous range and selects
+     * the cell immediately after it.
+     */
     public void selectNext() {
         int originalIndex = _creationsList.lastIndexInSelection(_selectedRecordings);
 
@@ -49,6 +60,12 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         }
     }
 
+    /**
+     * Selects the prevoious cell in the list.
+     * If nothing is selected, selects the last cell.
+     * If multiple things are selected discontinuously, treats it as a continuous range and selects
+     * the cell immediately before it.
+     */
     public void selectPrevious() {
         int originalIndex = _creationsList.firstIndexInSelection(_selectedRecordings);
 
@@ -63,6 +80,9 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         }
     }
 
+    /**
+     * @return True if the specified cell is selectable, or false otherwise.
+     */
     private boolean trySelectIndex(int index) {
         assert index >= -_creationsList.size();
         index += _creationsList.size();

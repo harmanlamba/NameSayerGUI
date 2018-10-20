@@ -27,7 +27,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// Custom component inheriting from the JFXChipView.
+/**
+ * Where the user types in what names they wish to practice. Comes with autocomplete, and a
+ * visualisation of what names have been entered allowing the user to remove their entered names.
+ */
 public class TagInput extends JFXChipView<List<String>> {
 
     private final ObjectProperty<CreationStore> _creationStore = new SimpleObjectProperty<CreationStore>();
@@ -85,6 +88,7 @@ public class TagInput extends JFXChipView<List<String>> {
             }
         };
 
+        // Suggestions need to be updated when creations are added/removed to the CreationStore.
         _creationStore.addListener(o -> {
             suggestionsUpdater.invalidated(null);
             _creationStore.getValue().addListener(suggestionsUpdater);
@@ -109,6 +113,7 @@ public class TagInput extends JFXChipView<List<String>> {
         });
 
         skinProperty().addListener(o -> updateTextArea());
+
         InvalidationListener promptUpdater = o -> updatePromptText();
         getChips().addListener(promptUpdater);
         _currentText.addListener(promptUpdater);
@@ -116,15 +121,23 @@ public class TagInput extends JFXChipView<List<String>> {
 
     }
 
+    /**
+     * Retrieve the TextArea associated with the JFXChipView.
+     * Unfortunately, JFXChipView does not directly expose the text area to us.
+     */
     private void updateTextArea() {
-        // Unfortunately, JFXChipView does not expose the text area to us.
-        // The following is a ghetto work around to access the text area.
         Pane pane = (Pane)((SkinBase)getSkin()).getChildren().get(0);
         _textArea = (TextArea)pane.getChildren().get(pane.getChildren().size() - 1);
         _textArea.focusedProperty().addListener(o -> updatePromptText());
+
+        // From this TextArea, we finally have acces to what's being typed in real-time.
         _currentText.bind(_textArea.textProperty());
     }
 
+    /**
+     * Only show the prompt text in certain conditions where the user expects them.
+     * Call this method when such conditions change.
+     */
     private void updatePromptText() {
         if (_textArea == null) {
             return;
@@ -142,10 +155,16 @@ public class TagInput extends JFXChipView<List<String>> {
         }
     }
 
+    /**
+     * TagInput requires a CreationStore purely for suggestions and validation purposes.
+     */
     public void setCreationStore(CreationStore creationStore) {
         _creationStore.setValue(creationStore);
     }
 
+    /**
+     * Show a popover to use this input with better real estate for long lists of names.
+     */
     public void expand() {
         TagInput expandedInput = new TagInput();
         expandedInput._creationStore.bind(_creationStore);
@@ -168,6 +187,14 @@ public class TagInput extends JFXChipView<List<String>> {
         setDisable(true);
     }
 
+    /**
+     * The predicate for matching potential suggestions with the current text.
+     * Match only the last name word out of the full name, so TagInput can continue suggesting
+     * second and third names after the first name has been typed.
+     *
+     * @param suggestion Potential suggested name from the CreationsStore to match.
+     * @param text Currently typed text.
+     */
     private boolean shouldSuggest(List<String> suggestion, String text) {
         List<String> nameBits = CreationsListEntry.parseNamesIntoList(text);
         if (nameBits.isEmpty()) {
@@ -178,6 +205,12 @@ public class TagInput extends JFXChipView<List<String>> {
         return String.join(" ", suggestion).startsWith(lastBit);
     }
 
+    /**
+     * Apply the desired suggestion to the currently typed text.
+     * Replaces the last name word out of the full name, with the auto-completed name word.
+     *
+     * @param autoCompletedBit The desired suggestion to apply.
+     */
     private List<String> autoCompleteSelectionHandler(List<String> autoCompletedBit) {
         List<String> bits = CreationsListEntry.parseNamesIntoList(_currentText.getValue());
 

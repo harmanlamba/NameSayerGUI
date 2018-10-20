@@ -120,14 +120,33 @@ public class SingleCellContents extends HBox implements CellContents {
             showStreaks ? streaks : _btnDelete);
     }
 
+    /**
+     * Call this when the selected-recordings has changed.
+     * Ensures this cell's selected state is synchronised with the overall selection.
+     */
     private void updateFromSelectedRecordings() {
         setSelected(_selectedRecordings.contains(_recording));
     }
 
+    /**
+     * @see CellContents#getItem()
+     */
     public Object getItem() {
         return _recording;
     }
 
+    /**
+     * Call this when there is new information/intention regarding the selection state of this cell.
+     * 1. Updates states of internal components to accurately represent the desired selection state.
+     * 2. Updates the selectedRecordings list if it doesn't realise the intended state.
+     * This can cause a few recursive calls before the state settles.
+     *
+     * Note: This can be called when there are stale event listeners from old cell contents, since
+     * list cells are regularly recycled by the list view. It is important to verify that this
+     * cell contents class is still representing what the cell is displaying.
+     *
+     * @param value True/false refers to whether this cell should be selected or not.
+     */
     public void setSelected(boolean value) {
         if (!isStillValid()) {
             return;
@@ -149,6 +168,10 @@ public class SingleCellContents extends HBox implements CellContents {
         }
     }
 
+    /**
+     * @return Whether (true) this cell contents still represent the item currently displayed by the
+     *         actual list cell, or whether (false) this cell contents class has gone stale.
+     */
     private boolean isStillValid() {
         Object item = _cell.getItem();
         if (item == null) {
