@@ -31,7 +31,10 @@ public class UserTextFile {
                 String line;
                 while ((line = br.readLine()) != null) {
                     //Adding a list into the list, after the reggex ensures that the hypen is treated as a space
-                    _finalListOfNames.add(CreationsListEntry.parseNamesIntoList(line));
+                    List<String> parsedList = CreationsListEntry.parseNamesIntoList(line);
+                    if(!parsedList.isEmpty()){
+                        _finalListOfNames.add(parsedList);
+                    }
                 }
             } catch (FileNotFoundException e) {
                 Util.showException(e, "Error uploading file - file not found",
