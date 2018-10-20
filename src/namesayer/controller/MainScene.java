@@ -25,6 +25,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
@@ -173,6 +176,16 @@ public class MainScene implements Initializable {
                 _mediaView.setMediaPlayer(null);
             }
         });
+
+    }
+
+    public void initShortcuts(Scene scene) {
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.R, KeyCombination.ALT_DOWN), () -> recordButtonAction());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN), () -> playButtonAction());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.DOWN, KeyCombination.ALT_DOWN), () -> listView.selectNext());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.UP, KeyCombination.ALT_DOWN), () -> listView.selectPrevious());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN), () -> previousButtonAction());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN), () -> nextButtonAction());
     }
 
     // Setting up the action handlers for the buttons
@@ -191,7 +204,10 @@ public class MainScene implements Initializable {
      * takes over the recording process. Please refer to the comments in the RecordingTool for more further information.s
      * @throws IOException
      */
-    public void recordButtonAction() throws IOException {
+    public void recordButtonAction() {
+        if (recordButton.isDisabled()) {
+            return;
+        }
         openRecordingBox(getCombinedName());
     }
 
@@ -211,6 +227,10 @@ public class MainScene implements Initializable {
      * 3. Resuming the media player if it's paused.
      */
     public void playButtonAction() {
+        if (playButton.isDisabled()) {
+            return;
+        }
+
         if (!_isMediaPlaying.get()) {
             _isMediaLoading.set(true);
             AudioProcessor audioProcessor = new AudioProcessor(_selectedRecordings) {
@@ -241,6 +261,9 @@ public class MainScene implements Initializable {
      * of handling the playback.
      */
     public void nextButtonAction() {
+        if (nextButton.isDisabled()) {
+            return;
+        }
         listView.selectNext();
         playButtonAction();
     }
@@ -251,6 +274,9 @@ public class MainScene implements Initializable {
      * "playButtonAction" which then takes care of handling the playback.
      */
     public void previousButtonAction() {
+        if (previousButton.isDisabled()) {
+            return;
+        }
         listView.selectPrevious();
         playButtonAction();
     }
@@ -333,11 +359,19 @@ public class MainScene implements Initializable {
      * @param creationName The name which is being recorded
      * @throws IOException
      */
-    public void openRecordingBox(String creationName) throws IOException {
+    public void openRecordingBox(String creationName) {
         Stage recordingWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/RecordingTool.fxml"));
         loader.setController(new RecordingTool(recordingWindow, creationName));
-        Parent recordingScene = loader.load();
+
+        Parent recordingScene;
+        try {
+            recordingScene = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         recordingWindow.initModality(Modality.APPLICATION_MODAL);
         recordingWindow.setResizable(false);
         recordingWindow.setTitle("Recording Tool - " + creationName);

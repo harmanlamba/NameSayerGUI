@@ -29,6 +29,10 @@ public class CreationsListView extends JFXListView<CreationsListEntry> {
         setCellFactory(listView -> new CreationsListOuterCell(_selectedRecordings));
 
         setPlaceholder(new Label("Begin by entering a name.\nAll name tags will appear\nin the ordered typed"));
+
+        setOnKeyPressed(e -> {
+            if (!e.isAltDown()) e.consume();
+        });
     }
 
     public void setCreationsList(CreationsList creationsList) {

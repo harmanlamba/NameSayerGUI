@@ -26,13 +26,17 @@ public class Main extends Application {
         initStores();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/MainScene.fxml"));
-        loader.setController(new MainScene(_creationStore, _versionsStore));
+        MainScene controller = new MainScene(_creationStore, _versionsStore);
+        loader.setController(controller);
         Parent root = loader.load();
         primaryStage.setTitle("NameSayer");
-        primaryStage.setScene(new Scene(root, 981, 553));
+        Scene scene = new Scene(root, 981, 553);
+        primaryStage.setScene(scene);
         primaryStage.setMinWidth(981);
         primaryStage.setMinHeight(553);
         primaryStage.show();
+
+        controller.initShortcuts(scene);
     }
 
     public static void main(String[] args) {
