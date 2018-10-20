@@ -86,10 +86,11 @@ public class MainScene implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Making node list animate upwards
+        // Making node list animate upwards.
         nodeList.setRotate(180);
         scrollPane.setFitToWidth(true);
-        //Making sure that clicking anywhere in the scene makes it so the nodeLists collapses
+
+        // Making sure that clicking anywhere in the scene makes it so the nodeLists collapses.
         mainGridPane.setOnMouseClicked(e -> {
             if (e.getPickResult().getIntersectedNode() != nodeList) {
                 nodeList.animateList(false);
@@ -98,6 +99,7 @@ public class MainScene implements Initializable {
         listView.setOnMouseClicked(e -> {
             nodeList.animateList(false);
         });
+
         // Bind volume slider to media player.
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
@@ -107,6 +109,7 @@ public class MainScene implements Initializable {
                 }
             }
         });
+
         // Bind list view, sort type combo, tag input, and filter disabler.
         _creationFilter = new CreationFilter(tagInput.getChips(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
@@ -172,7 +175,7 @@ public class MainScene implements Initializable {
         });
     }
 
-    //Setting up the action handlers for the buttons
+    // Setting up the action handlers for the buttons
 
     /**
      * The associated action when the clear button is pressed. It clears the TagInput, in addition to clearing the
@@ -310,7 +313,7 @@ public class MainScene implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/PracticeTool.fxml"));
         loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings, practiceRecordingsWindow));
         Parent comparingScene = loader.load();
-        //Ensuring that the background stage can not be used while this stage is open
+        // Ensuring that the background stage can not be used while this stage is open
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
         practiceRecordingsWindow.setTitle("Practice Tool");
@@ -349,7 +352,7 @@ public class MainScene implements Initializable {
 
     /**
      * Corresponds to the button action for "Append". This method passes the chosen database folder to the RecordingStore
-     * for the recordings to appear in the CreationListView and be fully "followed/tracked"
+     * for the recordings to appear in the CreationListView and be fully "followed/tracked".
      */
     public void appendDatabase() {
         tagInput.requestFocus();
@@ -388,7 +391,7 @@ public class MainScene implements Initializable {
      * Corresponds to the "Upload List" button action, where a static utility method from the UserTextFile is called
      * to read the file. A List of List of Strings is used which is then set for the tagInput which then sets the TagInput.
      * It is important to note that the TagInput distinguishes each list in the list as its own "Tag" i.e. the row in the
-     * text file
+     * text file.
      */
     public void uploadUserList() {
         List<List<String>> userNames = UserTextFile.readFile((Stage) bottomLabel.getScene().getWindow());

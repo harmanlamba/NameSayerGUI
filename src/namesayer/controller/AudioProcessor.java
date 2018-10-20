@@ -66,7 +66,7 @@ public abstract class AudioProcessor {
                     creationsPaths.add(counter.getPath());
                 }
 
-                //Writing the concatenation data into its corresponding file
+                // Writing the concatenation data into its corresponding file
                 Path path = Paths.get("./data/" + folder + "/concat.txt");
                 try {
                     Files.write(path, concatData,

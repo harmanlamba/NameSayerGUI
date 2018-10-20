@@ -5,7 +5,7 @@ import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
 
 /**
- * Handles the selection behaviour for the Recordings that the class represents
+ * Handles the selection behaviour for the Recordings that the class represents.
  */
 public abstract class CreationsListCell<T> extends JFXListCell<T> {
 
@@ -32,6 +32,10 @@ public abstract class CreationsListCell<T> extends JFXListCell<T> {
         selectedProperty().addListener(cellSelectedListener);
     }
 
+    /**
+     * Use this instead of setGraphic directly, so selection handling is configured for
+     * the new cell contents.
+     */
     protected void setCellContents(Node node) {
         if (node != null) {
             _currentCellContents = (CellContents) node;

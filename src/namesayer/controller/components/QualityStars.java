@@ -7,12 +7,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import namesayer.model.Recording;
+
 /**
  * Custom component for the rating for each recording.
  */
 public class QualityStars extends HBox {
 
-    //Setting up the constants for the icons of the filled and unfilled stars
+    // Setting up the constants for the icons of the filled and unfilled stars.
     private static final String STAR_FILLED_CHAR = "\uf2fc";
     private static final String STAR_UNFILLED_CHAR = "\uf3ae";
 
@@ -40,7 +41,7 @@ public class QualityStars extends HBox {
             _stars[i].getStyleClass().add("quality-star");
         }
 
-        //Ensuring that the quality stars get updated when a new quality is assigned.
+        // Ensuring that the quality stars get updated when a new quality is assigned.
         _recording.addListener(o1 -> {
             renderQuality();
             _recording.getValue().qualityProperty().addListener(o2 -> renderQuality());
