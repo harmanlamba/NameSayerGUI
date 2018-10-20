@@ -32,6 +32,7 @@ public abstract class AudioProcessor {
     private static final String NORMALISED_BITDEPTH = "s16";
 
     public abstract void ready(String filePath);
+    public abstract void failed();
 
     public AudioProcessor(List<Recording> recordings) {
         this(recordings, DEFAULT_TEMP_FOLDER);
@@ -41,7 +42,7 @@ public abstract class AudioProcessor {
         try {
             Util.ensureFolderExists(Paths.get("./data/" + folder));
         } catch (Util.HandledException e) {
-            // Already handled by helper function.
+            failed();
             return;
         }
 
@@ -187,6 +188,11 @@ public abstract class AudioProcessor {
                 Platform.runLater(() -> {
                     ready("./data/" + folder + "/playBackSilenced.wav");
                 });
+            }
+
+            @Override
+            protected void failed() {
+                AudioProcessor.this.failed();
             }
         };
         Thread thread = new Thread(task);

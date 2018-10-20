@@ -121,9 +121,14 @@
     -fx-text-fill: #ab4642;
 }
 
-.list-cell:selected .delete-btn{
+.list-cell:selected .delete-btn {
     -fx-text-fill: #e8e8e8;
 }
+.list-cell:selected .list-cell-type {
+    -fx-text-fill: #e8e8e8;
+    -fx-border-color: #e8e8e8;
+}
+
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
 #compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton {
     -fx-background-color: #383838;
@@ -146,7 +151,8 @@
     -fx-background-color: #ab4642;
 }
 
-.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected {
+.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected,
+.list-cell.attempt:selected, .list-cell.attempt:selected:hover {
     -fx-background-color: #ab4642;
 }
 
@@ -181,14 +187,15 @@
 
 .list-cell .list-cell-type {
     -fx-alignment: center;
-    -fx-pref-width: 12em;
+    -fx-pref-width: 11em;
     -fx-padding: 2px;
-    -fx-text-fill: #ab4642;
+    -fx-text-fill: #ba8baf;
     -fx-border-style: solid;
     -fx-border-width: 1px;
-    -fx-border-color: #ab4642;
+    -fx-border-color: #ba8baf;
     -fx-border-radius: 3px;
     -fx-border-insets: 0 3em;
+    -fx-font-size: 0.8em;
 }
 
 .list-cell .single-cell-contents {

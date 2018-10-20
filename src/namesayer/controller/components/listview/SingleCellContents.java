@@ -75,7 +75,7 @@ public class SingleCellContents extends HBox implements CellContents {
         Label labelType = new Label();
         labelType.getStyleClass().add("list-cell-type");
         if (recording.getType() == Recording.Type.ATTEMPT) {
-            labelType.setText("Attempt");
+            labelType.setText("ATTEMPT");
             cell.getStyleClass().add("attempt");
             _btnDelete.setVisible(true);
         } else {
