@@ -147,7 +147,14 @@ public abstract class AudioProcessor {
                 ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c",
                     "ffmpeg -hide_banner -y " +
                     "-i ./data/" + folder + "/playBack.wav -af " +
-                    "silenceremove=1:0:-25dB:1:5:-25dB:0 " +
+                    "silenceremove=" +
+                        "start_periods=1:" +
+                        "start_duration=0:" +
+                        "start_threshold=-25dB:" +
+                        "stop_periods=-1:" +
+                        "stop_duration=1:" +
+                        "stop_threshold=-25dB:" +
+                        "leave_silence=1 " +
                     "./data/" + folder + "/playBackSilenced.wav");
 
                 ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c",
