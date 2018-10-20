@@ -132,9 +132,10 @@ public class MainScene implements Initializable {
         BooleanBinding isSelected = Bindings.isNotEmpty(_selectedRecordings);
         BooleanProperty isTagsNotShown = filterDisabler.selectedProperty();
         BooleanBinding hasMultipleTags = Bindings.size(tagInput.getChips()).greaterThan(1);
+
         playbackSlider.disableProperty().bind(isSelected.not());
-        recordButton.disableProperty().bind(isSelected.not().or(_isMediaPlaying));
-        shuffleButton.disableProperty().bind(hasMultipleTags.not().or(isTagsNotShown).or(_isMediaPlaying));
+        recordButton.disableProperty().bind(isSelected.not().or(_isMediaPaused.not()));
+        shuffleButton.disableProperty().bind(hasMultipleTags.not().or(isTagsNotShown).or(_isMediaPaused.not()));
         playButton.disableProperty().bind(isSelected.not().or(_isMediaLoading));
         topLabel.visibleProperty().bind(isSelected);
         nextButton.disableProperty().bind(isListEmpty.or(_isMediaLoading));
@@ -143,11 +144,11 @@ public class MainScene implements Initializable {
         // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
             practiceButton.setDisable(
-                _isMediaPlaying.get() ||
+                !_isMediaPaused.get() ||
                     PracticeTool.filterSelectedRecordings(_selectedRecordings).isEmpty());
         };
         _selectedRecordings.addListener(practiceButtonDisabler);
-        _isMediaPlaying.addListener(practiceButtonDisabler);
+        _isMediaPaused.addListener(practiceButtonDisabler);
         practiceButtonDisabler.invalidated(null);
 
         // Play button icon sync.
