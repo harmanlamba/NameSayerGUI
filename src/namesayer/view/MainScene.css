@@ -121,9 +121,14 @@
     -fx-text-fill: #ab4642;
 }
 
-.list-cell:selected .delete-btn{
+.list-cell:selected .delete-btn {
     -fx-text-fill: #e8e8e8;
 }
+.list-cell:selected .list-cell-type {
+    -fx-text-fill: #e8e8e8;
+    -fx-border-color: #e8e8e8;
+}
+
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
 #compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton {
     -fx-background-color: #383838;
@@ -146,7 +151,8 @@
     -fx-background-color: #ab4642;
 }
 
-.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected {
+.list-cell:selected, .list-cell:selected:hover, .list-cell:hover:selected,
+.list-cell.attempt:selected, .list-cell.attempt:selected:hover {
     -fx-background-color: #ab4642;
 }
 
