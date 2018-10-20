@@ -45,6 +45,9 @@ public class SingleCellContents extends HBox implements CellContents {
         _recording = recording;
         _cell = cell;
 
+        // Cell could be disabled due to it being previously used for MultiCellContents.
+        cell.setDisable(false);
+
         _selectedRecordings = selectedRecordings;
         _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
         updateFromSelectedRecordings();
