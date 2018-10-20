@@ -179,6 +179,9 @@ public class MainScene implements Initializable {
 
     }
 
+    /**
+     * Attaches useful shortcut key combinations to the specified scene.
+     */
     public void initShortcuts(Scene scene) {
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.R, KeyCombination.ALT_DOWN), () -> recordButtonAction());
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN), () -> playButtonAction());
