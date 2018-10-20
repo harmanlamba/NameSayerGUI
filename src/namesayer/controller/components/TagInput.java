@@ -6,6 +6,7 @@ import namesayer.model.CreationsListEntry;
 import org.controlsfx.control.PopOver;
 import com.jfoenix.controls.JFXChipView;
 import com.jfoenix.controls.JFXDefaultChip;
+import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
@@ -164,8 +165,9 @@ public class TagInput extends JFXChipView<List<String>> {
 
     /**
      * Show a popover to use this input with better real estate for long lists of names.
+     * @param node Node under which to show this popover.
      */
-    public void expand() {
+    public void expand(Node node) {
         TagInput expandedInput = new TagInput();
         expandedInput._creationStore.bind(_creationStore);
         expandedInput.getChips().setAll(getChips());
@@ -181,8 +183,10 @@ public class TagInput extends JFXChipView<List<String>> {
         PopOver popOver = new PopOver(container);
         popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
         popOver.setDetachable(false);
-        popOver.show(this);
+        popOver.show(node);
         popOver.setOnHidden(e -> setDisable(false));
+
+        popOver.setX(popOver.getX() - 250);
 
         setDisable(true);
     }

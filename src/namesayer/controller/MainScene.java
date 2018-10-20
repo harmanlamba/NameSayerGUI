@@ -30,6 +30,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -77,6 +78,7 @@ public class MainScene implements Initializable {
     public JFXNodesList nodeList;
     public GridPane mainGridPane;
     public ScrollPane scrollPane;
+    public HBox inputBar;
 
     public MainScene(CreationStore creationStore) {
         _creationStore = creationStore;
@@ -428,7 +430,7 @@ public class MainScene implements Initializable {
      * Corresponds to the "Edit Names List" button action, to display the tags in a larger popover.
      */
     public void expandInput() {
-        tagInput.expand();
+        tagInput.expand(inputBar);
     }
 
     /**

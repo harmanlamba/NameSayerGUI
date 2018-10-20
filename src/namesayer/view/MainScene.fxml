@@ -31,7 +31,7 @@
       <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <HBox alignment="CENTER" spacing="10.0">
+      <HBox fx:id="inputBar" alignment="CENTER" spacing="10.0">
          <children>
             <ScrollPane id="scrollPane" fx:id="scrollPane" hbarPolicy="NEVER" maxWidth="1.7976931348623157E308" prefHeight="43.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <content>
