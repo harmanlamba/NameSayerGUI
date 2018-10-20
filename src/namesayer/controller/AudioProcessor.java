@@ -83,7 +83,7 @@ public abstract class AudioProcessor {
                     // Setting up the process builder.
                     // This command "greps" the max volume in order to later offset and have a normalisation effect.
                     String maxVolumeCmd = "ffmpeg " +
-                        "-i " + "./" + counter.toString() + " " +
+                        "-i " + "\"" + counter.toString() + "\" " +
                         "-af volumedetect " +
                         "-vn -sn -dn " +
                         "-f null " +
@@ -116,7 +116,7 @@ public abstract class AudioProcessor {
 
                         // Applying the change in volume to each file.
                         String normaliseCmd = "ffmpeg " +
-                            "-i " + "./" + counter.toString() + " " +
+                            "-i " + "\"" + counter.toString() + "\" " +
                             "-ar " + NORMALISED_SAMPLERATE + " " +
                             "-ac " + NORMALISED_NUM_CHANNEL + " " +
                             "-sample_fmt " + NORMALISED_BITDEPTH + " " +
@@ -143,12 +143,12 @@ public abstract class AudioProcessor {
                 // appropriately.
                 ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c",
                     "ffmpeg -f concat -safe 0 -y " +
-                        "-i ./data/" + folder + "/concat.txt " +
-                        "-c copy ./data/" + folder + "/playBack.wav");
+                        "-i \"./data/" + folder + "/concat.txt\" " +
+                        "-c copy \"./data/" + folder + "/playBack.wav\"");
 
                 ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c",
                     "ffmpeg -hide_banner -y " +
-                        "-i ./data/" + folder + "/playBack.wav -af " +
+                        "-i \"./data/" + folder + "/playBack.wav\" -af " +
                         "silenceremove=" +
                         "start_periods=1:" +
                         "start_duration=0:" +
