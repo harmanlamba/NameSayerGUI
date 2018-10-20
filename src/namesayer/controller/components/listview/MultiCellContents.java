@@ -3,6 +3,7 @@ package namesayer.controller.components.listview;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
 import java.util.List;
+import java.util.ArrayList;
 
 import namesayer.controller.components.Streaks;
 import namesayer.model.Creation;
@@ -106,7 +109,7 @@ public class MultiCellContents extends VBox implements CellContents {
     }
 
     private void updateFromSelectedRecordings() {
-        setSelected(_entry.matchesRecordings(_selectedRecordings));
+        setSelected(_entry.includedInRecordings(_selectedRecordings));
     }
 
     public void setSelected(boolean value) {
@@ -118,13 +121,28 @@ public class MultiCellContents extends VBox implements CellContents {
         _checkBox.setSelected(value);
         if (value) {
             selectionModel.select(_cell.getIndex());
-            if (!_entry.matchesRecordings(_selectedRecordings)) {
-                _selectedRecordings.setAll(_entry.getRecordings());
+            if (!_entry.includedInRecordings(_selectedRecordings)) {
+                _selectedRecordings.addAll(_entry.getRecordings());
             }
         } else {
             selectionModel.clearSelection(_cell.getIndex());
-            if (_entry.matchesRecordings(_selectedRecordings)) {
-                _selectedRecordings.clear();
+
+            int selectionIdx = _entry.findInRecordings(_selectedRecordings);
+            if (selectionIdx != -1) {
+                // Selection contains this CreationsListEntry. Remove the found subsequence by
+                // creating the selection before and after it, and merging it altogether.
+
+                // The list before the subsequence.
+                List<Recording> newSelection = new ArrayList<>(_selectedRecordings.subList(0, selectionIdx));
+
+                // Position after the subsequence.
+                selectionIdx += _entry.getRecordings().size();
+
+                // Merge in the list after the subsequence.
+                newSelection.addAll(_selectedRecordings.subList(selectionIdx, _selectedRecordings.size()));
+
+                // Update the selection.
+                _selectedRecordings.setAll(newSelection);
             }
         }
     }

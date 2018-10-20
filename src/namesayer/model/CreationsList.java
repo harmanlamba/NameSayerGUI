@@ -56,7 +56,7 @@ public class CreationsList extends SimpleListProperty<CreationsListEntry> {
     public int firstIndexInSelection(List<Recording> selectedRecordings) {
         for (int i = 0; i < size(); i++) {
             CreationsListEntry entry = get(i);
-            if (entry.matchesRecordings(selectedRecordings)) {
+            if (entry.includedInRecordings(selectedRecordings)) {
                 return i;
             }
         }
@@ -66,7 +66,7 @@ public class CreationsList extends SimpleListProperty<CreationsListEntry> {
     public int lastIndexInSelection(List<Recording> selectedRecordings) {
         for (int i = size() - 1; i >= 0; i--) {
             CreationsListEntry entry = get(i);
-            if (entry.matchesRecordings(selectedRecordings)) {
+            if (entry.includedInRecordings(selectedRecordings)) {
                 return i;
             }
         }

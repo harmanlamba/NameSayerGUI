@@ -112,21 +112,49 @@ public class CreationsListEntry extends ObservableBase {
         return _streaks;
     }
 
-    public boolean matchesRecordings(List<Recording> recordings) {
+    /**
+     * Search for the starting index of the first subsequence in the list of recordings that
+     * matches this CreationsListEntry in terms of their associated creations.
+     * @param recordings List in which to search.
+     * @return Starting index of such subsequence, or -1 if not found.
+     */
+    public int findInRecordings(List<Recording> recordings) {
         List<Recording> ourRecordings = getRecordings();
         if (ourRecordings.size() == 0) {
-            return false;
+            return -1;
         }
-        ;
-        if (ourRecordings.size() != recordings.size()) {
-            return false;
-        }
-        for (int i = 0; i < ourRecordings.size(); i++) {
-            if (recordings.get(i).getCreation() != ourRecordings.get(i).getCreation()) {
-                return false;
+
+        // First fast forward to the first matching recording.
+        Creation firstCreation = ourRecordings.get(0).getCreation();
+        int offset;
+        for (offset = 0; offset < recordings.size(); offset++) {
+            if (recordings.get(offset).getCreation() == firstCreation) {
+                break;
             }
         }
-        return true;
+
+        // Check for enough size.
+        if (recordings.size() - offset < ourRecordings.size()) {
+            return -1;
+        }
+
+        // Check for matching sequence of creations.
+        for (int i = 0; i < ourRecordings.size(); i++) {
+            if (recordings.get(i + offset).getCreation() != ourRecordings.get(i).getCreation()) {
+                return -1;
+            }
+        }
+
+        return offset;
+    }
+
+    /**
+     * Determines if this CreationsListEntry is represented in the given list of recordings.
+     * @param recordings
+     * @return Whether there exists a representative subsequence in the list.
+     */
+    public boolean includedInRecordings(List<Recording> recordings) {
+        return findInRecordings(recordings) != -1;
     }
 
     private void refresh() {
