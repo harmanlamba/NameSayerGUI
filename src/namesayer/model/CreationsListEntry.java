@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 
 public class CreationsListEntry extends ObservableBase {
 
@@ -119,33 +120,18 @@ public class CreationsListEntry extends ObservableBase {
      * @return Starting index of such subsequence, or -1 if not found.
      */
     public int findInRecordings(List<Recording> recordings) {
-        List<Recording> ourRecordings = getRecordings();
-        if (ourRecordings.size() == 0) {
-            return -1;
+
+        List<Creation> ourCreations = new ArrayList<>();
+        for (Recording r : getRecordings()) {
+            ourCreations.add(r.getCreation());
         }
 
-        // First fast forward to the first matching recording.
-        Creation firstCreation = ourRecordings.get(0).getCreation();
-        int offset;
-        for (offset = 0; offset < recordings.size(); offset++) {
-            if (recordings.get(offset).getCreation() == firstCreation) {
-                break;
-            }
+        List<Creation> theirCreations = new ArrayList<>();
+        for (Recording r : recordings) {
+            theirCreations.add(r.getCreation());
         }
 
-        // Check for enough size.
-        if (recordings.size() - offset < ourRecordings.size()) {
-            return -1;
-        }
-
-        // Check for matching sequence of creations.
-        for (int i = 0; i < ourRecordings.size(); i++) {
-            if (recordings.get(i + offset).getCreation() != ourRecordings.get(i).getCreation()) {
-                return -1;
-            }
-        }
-
-        return offset;
+        return Collections.indexOfSubList(theirCreations, ourCreations);
     }
 
     /**

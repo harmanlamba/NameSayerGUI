@@ -128,7 +128,7 @@ public class MultiCellContents extends VBox implements CellContents {
             selectionModel.clearSelection(_cell.getIndex());
 
             int selectionIdx = _entry.findInRecordings(_selectedRecordings);
-            if (selectionIdx != -1) {
+            while (selectionIdx != -1 ) {
                 // Selection contains this CreationsListEntry. Remove the found subsequence by
                 // creating the selection before and after it, and merging it altogether.
 
@@ -143,6 +143,9 @@ public class MultiCellContents extends VBox implements CellContents {
 
                 // Update the selection.
                 _selectedRecordings.setAll(newSelection);
+
+                // Search for any other occurences.
+                selectionIdx = _entry.findInRecordings(_selectedRecordings);
             }
         }
     }
