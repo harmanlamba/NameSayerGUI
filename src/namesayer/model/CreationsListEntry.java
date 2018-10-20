@@ -158,10 +158,13 @@ public class CreationsListEntry extends ObservableBase {
      * @return Starting index of such subsequence, or -1 if not found.
      */
     public int findInRecordings(List<Recording> recordings) {
-
         List<Creation> ourCreations = new ArrayList<>();
         for (Recording r : getRecordings()) {
             ourCreations.add(r.getCreation());
+        }
+
+        if (ourCreations.size() == 0) {
+            return -1;
         }
 
         List<Creation> theirCreations = new ArrayList<>();
