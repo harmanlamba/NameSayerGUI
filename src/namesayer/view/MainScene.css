@@ -69,7 +69,7 @@
     -fx-font-weight: bold;
 }
 
-#tagInput .text-area {
+.tag-input .text-area {
     -fx-background-color: #282828;
     -fx-text-fill: #ba8baf;
     -fx-font-weight: bold;
@@ -78,7 +78,16 @@
     -fx-highlight-fill: #ba8baf;
 }
 
-#scrollPane {
+.popover {
+    -fx-background-color: #282828;
+    -fx-stroke-width: 0;
+}
+
+.popover .scroll-pane {
+    -fx-padding: 1em;
+}
+
+.scroll-pane {
     -fx-background-color: #282828;
 }
 
@@ -130,12 +139,13 @@
 }
 
 #Record, #shuffleButton, #previousButton, #playButton, #nextButton,
-#compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton {
+#compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton, #uploadListButton,
+#expandInputButton {
     -fx-background-color: #383838;
 }
 
 #compareButton, #practiceButton, #clearButton, #databaseButton, #appendButton, #replaceButton,
-#uploadListButton {
+#uploadListButton, #expandInputButton {
     -fx-text-fill: #e8e8e8;
 }
 

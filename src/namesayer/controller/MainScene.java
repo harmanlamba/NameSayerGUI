@@ -388,6 +388,13 @@ public class MainScene implements Initializable {
     }
 
     /**
+     * Corresponds to the "Edit Names List" button action, to display the tags in a larger popover.
+     */
+    public void expandInput() {
+        tagInput.expand();
+    }
+
+    /**
      * Corresponds to the "Upload List" button action, where a static utility method from the UserTextFile is called
      * to read the file. A List of List of Strings is used which is then set for the tagInput which then sets the TagInput.
      * It is important to note that the TagInput distinguishes each list in the list as its own "Tag" i.e. the row in the

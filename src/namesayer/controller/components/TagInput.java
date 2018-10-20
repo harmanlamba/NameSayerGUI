@@ -3,20 +3,25 @@ package namesayer.controller.components;
 import namesayer.model.CreationStore;
 import namesayer.model.CreationsListEntry;
 
+import org.controlsfx.control.PopOver;
 import com.jfoenix.controls.JFXChipView;
 import com.jfoenix.controls.JFXDefaultChip;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.util.StringConverter;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.Observable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +39,8 @@ public class TagInput extends JFXChipView<List<String>> {
     private TextArea _textArea = null;
 
     public TagInput() {
+
+        getStyleClass().add("tag-input");
 
         // Utility to convert strings into the 'Tags'/'Chips'.
         setConverter(new StringConverter<List<String>>() {
@@ -120,7 +127,7 @@ public class TagInput extends JFXChipView<List<String>> {
      */
     private void updateTextArea() {
         Pane pane = (Pane)((SkinBase)getSkin()).getChildren().get(0);
-        _textArea = (TextArea)pane.getChildren().get(0);
+        _textArea = (TextArea)pane.getChildren().get(pane.getChildren().size() - 1);
         _textArea.focusedProperty().addListener(o -> updatePromptText());
 
         // From this TextArea, we finally have acces to what's being typed in real-time.
@@ -153,6 +160,31 @@ public class TagInput extends JFXChipView<List<String>> {
      */
     public void setCreationStore(CreationStore creationStore) {
         _creationStore.setValue(creationStore);
+    }
+
+    /**
+     * Show a popover to use this input with better real estate for long lists of names.
+     */
+    public void expand() {
+        TagInput expandedInput = new TagInput();
+        expandedInput._creationStore.bind(_creationStore);
+        expandedInput.getChips().setAll(getChips());
+        expandedInput.getChips().addListener((Observable o) -> {
+            getChips().setAll(expandedInput.getChips());
+        });
+        expandedInput.setMinWidth(600);
+
+        ScrollPane container = new ScrollPane(expandedInput);
+        container.setMinWidth(640);
+        container.setMinHeight(400);
+
+        PopOver popOver = new PopOver(container);
+        popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+        popOver.setDetachable(false);
+        popOver.show(this);
+        popOver.setOnHidden(e -> setDisable(false));
+
+        setDisable(true);
     }
 
     /**

@@ -20,7 +20,7 @@
 <?import namesayer.controller.components.TagInput?>
 <?import namesayer.controller.components.listview.CreationsListView?>
 
-<GridPane fx:id="mainGridPane" hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="mainGridPane" hgap="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="981.0" stylesheets="@MainScene.css" vgap="3.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -35,9 +35,10 @@
          <children>
             <ScrollPane id="scrollPane" fx:id="scrollPane" hbarPolicy="NEVER" maxWidth="1.7976931348623157E308" prefHeight="43.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <content>
-                  <TagInput id="tagInput" fx:id="tagInput" maxWidth="1.7976931348623157E308" prefWidth="660.0" HBox.hgrow="ALWAYS" />
+                  <TagInput id="tagInput" fx:id="tagInput" maxHeight="-Infinity" HBox.hgrow="ALWAYS" />
                </content>
             </ScrollPane>
+            <JFXButton fx:id="expandInputButton" onAction="#expandInput" text="Edit Names List" />
             <JFXButton id="uploadListButton" fx:id="uploadListButton" onAction="#uploadUserList" text="_Upload List">
                <tooltip>
                   <Tooltip autoHide="true" text="Upload a custom list of names in a .txt file" />
