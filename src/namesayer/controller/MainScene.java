@@ -45,7 +45,6 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Collections;
 
 public class MainScene implements Initializable {
 
@@ -307,7 +306,7 @@ public class MainScene implements Initializable {
     public void appendDatabase() {
         tagInput.requestFocus();
         DirectoryChooser dc = new DirectoryChooser();
-        File selectedDirectory = dc.showDialog(null);
+        File selectedDirectory = dc.showDialog(bottomLabel.getScene().getWindow());
         if (selectedDirectory != null) {
             try {
                 new RecordingStore(Paths.get(selectedDirectory.getPath()), _creationStore, Recording.Type.VERSION);
@@ -320,7 +319,7 @@ public class MainScene implements Initializable {
     public void replaceDatabase() {
         tagInput.requestFocus();
         DirectoryChooser dc = new DirectoryChooser();
-        File selectedDirectory = dc.showDialog(null);
+        File selectedDirectory = dc.showDialog(bottomLabel.getScene().getWindow());
         if (selectedDirectory != null) {
             _recordingStore.stopWatcher();
             _creationStore.clear();
@@ -333,7 +332,7 @@ public class MainScene implements Initializable {
     }
 
     public void uploadUserList() {
-        List<List<String>> userNames = UserTextFile.readFile();
+        List<List<String>> userNames = UserTextFile.readFile((Stage)bottomLabel.getScene().getWindow());
         tagInput.getChips().addAll(userNames);
     }
 
