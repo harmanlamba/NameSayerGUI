@@ -169,7 +169,11 @@ public class PracticeTool implements Initializable {
 
         _isDatabaseMediaPlaying.addListener(e -> {
             if (_isLooping.get() && !_isDatabaseMediaPlaying.get()) {
-                userPlayButtonAction();
+                if (isUserRecordingSelected.get()) {
+                    userPlayButtonAction();
+                } else {
+                    databasePlayButtonAction();
+                }
             }
         });
 
