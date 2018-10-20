@@ -313,7 +313,9 @@ public class PracticeTool implements Initializable {
         if (_isLooping.get()) {
             loopingButton.setText("\uf24f");
             recordingLabel.requestFocus();
-            databasePlayButtonAction();
+            if (!_isDatabaseMediaPlaying.get() && !_isUserMediaPlaying.get()) {
+                databasePlayButtonAction();
+            }
         } else {
             loopingButton.setText("\uf201");
             recordingLabel.requestFocus();
