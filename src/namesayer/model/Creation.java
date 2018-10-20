@@ -171,6 +171,10 @@ public class Creation extends ObservableBase {
         _lastStreakDate=modifiedDate;
     }
 
+    /**
+     * Method ensures that the streaks dates are between 1 day, if so the streak counter gets incremented by one
+     * if not the streaks reset and the current date is then written to the file.
+     */
     public void bumpStreaks(){
         long differenceInDates= getLastStreakDate().until(LocalDateTime.now(), ChronoUnit.HOURS);
         if (differenceInDates <= 48) {

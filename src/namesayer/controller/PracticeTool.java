@@ -166,7 +166,6 @@ public class PracticeTool implements Initializable {
             .or(_isUserMediaPlaying).or(_isLooping));
 
 
-
         _isDatabaseMediaPlaying.addListener(e -> {
             if (_isLooping.get() && !_isDatabaseMediaPlaying.get()) {
                 if (isUserRecordingSelected.get()) {
@@ -204,7 +203,12 @@ public class PracticeTool implements Initializable {
         _controller.openRecordingBox(databaseComboBox.getValue().getCreation().getName());
     }
 
-    public void populateDatabaseRecordings() {
+    /**
+     * Transfers selected database recordings into the comboBox and also creates the concatenated version of the selected
+     * recordings if needed (i.e. if the size > 1). Just so the PracticeTool has the individual names and the
+     * concatenated names.
+     */
+    private void populateDatabaseRecordings() {
         if (_databaseRecordings.size() > 1) {
             //Adding the concatenating recording as index 0, in the database comboBox
             new AudioProcessor(_databaseRecordings, PRACTICE_TEMP_FOLDER) {
@@ -229,13 +233,16 @@ public class PracticeTool implements Initializable {
         }
     }
 
+    /**
+     * This method uses java's built in shuffle feature to randomize the selected recordings and then populate the database
+     */
     public void shuffleDatabaseRecordings() {
-        //Using java's built in shuffle feature to randomize the selected recordings and then populate the database
         Collections.shuffle(_databaseRecordings);
         populateDatabaseRecordings();
     }
 
     //Setting up the action handlers for the userPlay button to playback the media when the play button is pressed.
+
     public void userPlayButtonAction() {
         Recording userRecordingToPlay = userComboBox.getValue();
         Media media = new Media(new File(userRecordingToPlay.getPath().toString()).toURI().toString());
@@ -288,6 +295,11 @@ public class PracticeTool implements Initializable {
         };
     }
 
+    /**
+     * Setting up the action handlers for the loopingButton action, so it changes the icon of the button, plays each
+     * recording, which is then propagated via InvalidationListeners. Additionally, declares the _isLooping boolean
+     * accordingly so the bindings disable the buttons correspondingly.
+     */
     public void loopingButtonAction() {
         _isLooping.set(!_isLooping.get());
         if (_isLooping.get()) {
@@ -303,6 +315,10 @@ public class PracticeTool implements Initializable {
 
     }
 
+    /**
+     * This method finds the list of  associated user recording to the selected database recording, and presents them
+     * to the user in the user sides comboBox.
+     */
     private void refreshUserComboBox() {
         if (databaseComboBox.getValue() == null) {
             userComboBox.getItems().clear();

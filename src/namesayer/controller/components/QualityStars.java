@@ -7,7 +7,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import namesayer.model.Recording;
-
+/**
+ * Custom component for the rating for each recording.
+ */
 public class QualityStars extends HBox {
 
     //Setting up the constants for the icons of the filled and unfilled stars
@@ -45,6 +47,10 @@ public class QualityStars extends HBox {
         });
     }
 
+    /**
+     * Applies the desired quality number to the currently associated recording
+     * @param i
+     */
     private void selectQuality(int i) {
         if (_recording.getValue() == null) return;
         if (i < 1) i = 1;
@@ -52,6 +58,9 @@ public class QualityStars extends HBox {
         _recording.getValue().setQuality(Recording.Quality.fromIndex(i));
     }
 
+    /**
+     * Renders the stars by filling them in or un-filling them accordingly
+     */
     private void renderQuality() {
         int qualityIndex = _recording.getValue().getQuality().getIndex();
         for (int i = 0; i < _stars.length; i++) {

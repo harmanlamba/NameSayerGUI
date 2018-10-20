@@ -6,6 +6,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.Observable;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -14,6 +15,10 @@ import namesayer.model.CreationsList;
 import namesayer.model.CreationsListEntry;
 
 
+/**
+ * Custom Component that displays the recordings in the main screen. This class is in charge of holding other custom
+ * components and displaying the corresponding information in the "listView" for the user.
+ */
 public class CreationsListView extends JFXListView<CreationsListEntry> {
 
     private ObservableList<Recording> _selectedRecordings = FXCollections.observableArrayList();

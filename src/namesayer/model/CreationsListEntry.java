@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 
 public class CreationsListEntry extends ObservableBase {
 
@@ -103,10 +102,6 @@ public class CreationsListEntry extends ObservableBase {
             }
         }
         return latestDate;
-    }
-
-    public boolean has(Creation creation) {
-        return getCreations().contains(creation);
     }
 
     public String toString() {

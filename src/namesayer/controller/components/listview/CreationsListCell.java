@@ -4,12 +4,15 @@ import com.jfoenix.controls.JFXListCell;
 import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
 
+/**
+ * Handles the selection behaviour for the Recordings that the class represents
+ */
 public abstract class CreationsListCell<T> extends JFXListCell<T> {
 
     private CellContents _currentCellContents = null;
     private Object _item = null;
     private InvalidationListener cellSelectedListener = o -> {
-        // Do not delesct when the cell goes off screen, or when the item is
+        // Do not deselect when the cell goes off screen, or when the item is
         // transitioning to a different recording.
         if (_currentCellContents == null) return;
         if (!isVisible()) return;

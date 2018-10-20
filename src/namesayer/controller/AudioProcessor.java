@@ -32,6 +32,7 @@ public abstract class AudioProcessor {
     private static final String NORMALISED_BITDEPTH = "s16";
 
     public abstract void ready(String filePath);
+
     public abstract void failed();
 
     public AudioProcessor(List<Recording> recordings) {
@@ -65,6 +66,7 @@ public abstract class AudioProcessor {
                     creationsPaths.add(counter.getPath());
                 }
 
+                //Writing the concatenation data into its corresponding file
                 Path path = Paths.get("./data/" + folder + "/concat.txt");
                 try {
                     Files.write(path, concatData,
@@ -93,7 +95,7 @@ public abstract class AudioProcessor {
                         Process processVolumeGrep = maxVolumeGrepBuilder.start();
                         Util.awaitProcess(processVolumeGrep, ERROR_TITLE,
                             "Sorry, we failed to read some audio file information\n" +
-                            "needed to combine the audio properly. Please try again.");
+                                "needed to combine the audio properly. Please try again.");
 
                         // Getting the greped value.
                         BufferedReader stdin = new BufferedReader(new InputStreamReader(processVolumeGrep.getInputStream()));
@@ -117,7 +119,7 @@ public abstract class AudioProcessor {
                             "-i " + "./" + counter.toString() + " " +
                             "-ar " + NORMALISED_SAMPLERATE + " " +
                             "-ac " + NORMALISED_NUM_CHANNEL + " " +
-                            "-sample_fmt " + NORMALISED_BITDEPTH  + " " +
+                            "-sample_fmt " + NORMALISED_BITDEPTH + " " +
                             "-filter:a \"volume=" + changeInVol + "dB" + "\"" + " " +
                             "-y " +
                             "./" + TEMP_CREATIONS_FOLDER + counter.getFileName();
@@ -126,12 +128,12 @@ public abstract class AudioProcessor {
                         Process normaliseProcess = normaliseBuilder.start();
                         Util.awaitProcess(normaliseProcess, ERROR_TITLE,
                             "Sorry, but we failed to normalise an audio:\n" + counter +
-                            "\nPlease try again.");
+                                "\nPlease try again.");
 
                     } catch (IOException e) {
                         Util.showException(e, ERROR_TITLE,
                             "Sorry, but we're having difficulty normalising the audio file: " + counter +
-                            "\nPlease try again.");
+                                "\nPlease try again.");
                         throw new Util.HandledException();
                     }
 
@@ -141,13 +143,13 @@ public abstract class AudioProcessor {
                 // appropriately.
                 ProcessBuilder concatBuilder = new ProcessBuilder("/bin/bash", "-c",
                     "ffmpeg -f concat -safe 0 -y " +
-                    "-i ./data/" + folder + "/concat.txt " +
-                    "-c copy ./data/" + folder + "/playBack.wav");
+                        "-i ./data/" + folder + "/concat.txt " +
+                        "-c copy ./data/" + folder + "/playBack.wav");
 
                 ProcessBuilder silenceRemoverBuilder = new ProcessBuilder("/bin/bash", "-c",
                     "ffmpeg -hide_banner -y " +
-                    "-i ./data/" + folder + "/playBack.wav -af " +
-                    "silenceremove=" +
+                        "-i ./data/" + folder + "/playBack.wav -af " +
+                        "silenceremove=" +
                         "start_periods=1:" +
                         "start_duration=0:" +
                         "start_threshold=-25dB:" +
@@ -155,7 +157,7 @@ public abstract class AudioProcessor {
                         "stop_duration=1:" +
                         "stop_threshold=-25dB:" +
                         "leave_silence=1 " +
-                    "./data/" + folder + "/playBackSilenced.wav");
+                        "./data/" + folder + "/playBackSilenced.wav");
 
                 ProcessBuilder deleteTempCreations = new ProcessBuilder("/bin/bash", "-c",
                     "rm -r ./data/tempCreations");
@@ -176,14 +178,14 @@ public abstract class AudioProcessor {
 
                     Util.showException(e, ERROR_TITLE,
                         "Sorry, but we're having difficulty combining the audio files together" +
-                        "\nPlease try again.");
+                            "\nPlease try again.");
                     throw new Util.HandledException();
 
                 } catch (InterruptedException e) {
 
                     Util.showException(e, ERROR_TITLE,
                         "Sorry, but we got interrupted while combining the audio files together" +
-                        "\nPlease try again.");
+                            "\nPlease try again.");
                     throw new Util.HandledException();
 
                 }

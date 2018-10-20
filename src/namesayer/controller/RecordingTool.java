@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,8 +27,6 @@ import javafx.scene.media.MediaPlayer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
@@ -70,7 +67,6 @@ public class RecordingTool implements Initializable {
     }
 
     // Setting up the FXML injections so that the components can be referenced directly by the code.
-
     public Label upperLabel;
     public Label recordingLabel;
     public Button recordButton;
@@ -109,6 +105,10 @@ public class RecordingTool implements Initializable {
         cancelButton.disableProperty().bind(_isPlaying);
     }
 
+    /**
+     * The corresponding action for when the recording button is clicked, which toggles the start or stop recording
+     * accordingly.
+     */
     public void recordButtonClicked() {
         if (_isRecording.get()) {
             stopRecording();
@@ -117,6 +117,11 @@ public class RecordingTool implements Initializable {
         }
     }
 
+    /**
+     * Records audio via bash using ffmpeg. This method runs in its own task/thread as its process intensive and so that
+     * the GUI does not seem to freeze up. It is important to note that the method also handles potential user errors and
+     * has userability heuristics that help the user recover from the error.
+     */
     private void startRecording() {
         _recordingTask = new Task<Void>() {
 
