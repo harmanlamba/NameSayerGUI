@@ -4,6 +4,10 @@ import javafx.collections.ObservableList;
 import namesayer.model.CreationsListEntry;
 import namesayer.model.Recording;
 
+/**
+ * Each object of the CreationListOuterCell represents a CreationList entry that can either hold a single cell content
+ * or multiple cell content.
+ */
 public class CreationsListOuterCell extends CreationsListCell<CreationsListEntry> {
 
     private ObservableList<Recording> _selectedRecordings;

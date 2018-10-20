@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
+/**
+ * Represents a requested name.
+ * A list of single name words and the available creations needed to build this requested name.
+ */
 public class CreationsListEntry extends ObservableBase {
 
     private final static String NAME_DELIMETER_PATTERN = "[\\s\\-]+";
@@ -37,12 +41,18 @@ public class CreationsListEntry extends ObservableBase {
         _creationStore = creationStore;
     }
 
+    /**
+     * Create from an unparsed string or from a single name.
+     */
     CreationsListEntry(String name, CreationStore creationStore) {
         this(creationStore);
         _names = parseNamesIntoList(name);
         refresh();
     }
 
+    /**
+     * Create from a parsed list of name words to build the desired name.
+     */
     CreationsListEntry(List<String> names, CreationStore creationStore) {
         this(creationStore);
         assert names.size() > 0;
@@ -50,6 +60,9 @@ public class CreationsListEntry extends ObservableBase {
         refresh();
     }
 
+    /**
+     * @return Whether this entry is representable by a single recording.
+     */
     public boolean isSingleRecording() {
         if (_names.size() > 1) return false;
         if (_creations.size() > 1) return false;
@@ -62,18 +75,34 @@ public class CreationsListEntry extends ObservableBase {
         return true;
     }
 
+    /**
+     * @return Name words that make up the full/single name represented by this entry.
+     */
     public List<String> getNames() {
         return new ArrayList<String>(_names);
     }
 
+    /**
+     * @return Creations (in order) that are available for the requested name words.
+     */
     public List<Creation> getCreations() {
         return new ArrayList<Creation>(_creations.values());
     }
 
+    /**
+     * @param name
+     * @return Creation for a given name word, or null if no such creation is available, or if
+     *         the given name word is not part of this CreationsListEntry.
+     */
     public Creation getCreation(String name) {
         return _creations.get(name);
     }
 
+    /**
+     * @return Creation that represents user attempts for the overall concatenated name, if it exists.
+     *         Null if no such attempts were made yet, or if there is only a single name word in
+     *         this CreationsListEntry as such entries don't have an overall concatenated name.
+     */
     public Creation getOverallAttemptsCreation() {
         if (_names.size() == 1) {
             return null;
@@ -82,6 +111,9 @@ public class CreationsListEntry extends ObservableBase {
         }
     }
 
+    /**
+     * @return Sequence of recordings that most optimally satisfy the desired name words.
+     */
     public List<Recording> getRecordings() {
         List<Recording> recordings = new ArrayList<>();
         for (String name : _names) {
@@ -94,6 +126,9 @@ public class CreationsListEntry extends ObservableBase {
         return recordings;
     }
 
+    /**
+     * @return The last modified date of all creations in this entry.
+     */
     public Date lastModified() {
         Date latestDate = new Date(0);
         for (Creation creation : _creations.values()) {
@@ -105,35 +140,53 @@ public class CreationsListEntry extends ObservableBase {
         return latestDate;
     }
 
-    public boolean has(Creation creation) {
-        return getCreations().contains(creation);
-    }
-
     public String toString() {
         return String.join(" ", _names);
     }
 
+    /**
+     * @return The min streak count of the contained creations.
+     */
     public IntegerProperty streaksProperty() {
         return _streaks;
     }
 
-    public boolean matchesRecordings(List<Recording> recordings) {
-        List<Recording> ourRecordings = getRecordings();
-        if (ourRecordings.size() == 0) {
-            return false;
+    /**
+     * Search for the starting index of the first subsequence in the list of recordings that
+     * matches this CreationsListEntry in terms of their associated creations.
+     * @param recordings List in which to search.
+     * @return Starting index of such subsequence, or -1 if not found.
+     */
+    public int findInRecordings(List<Recording> recordings) {
+
+        List<Creation> ourCreations = new ArrayList<>();
+        for (Recording r : getRecordings()) {
+            ourCreations.add(r.getCreation());
         }
-        ;
-        if (ourRecordings.size() != recordings.size()) {
-            return false;
+
+        List<Creation> theirCreations = new ArrayList<>();
+        for (Recording r : recordings) {
+            theirCreations.add(r.getCreation());
         }
-        for (int i = 0; i < ourRecordings.size(); i++) {
-            if (recordings.get(i).getCreation() != ourRecordings.get(i).getCreation()) {
-                return false;
-            }
-        }
-        return true;
+
+        return Collections.indexOfSubList(theirCreations, ourCreations);
     }
 
+    /**
+     * Determines if this CreationsListEntry is represented in the given list of recordings.
+     * @param recordings
+     * @return Whether there exists a representative subsequence in the list.
+     */
+    public boolean includedInRecordings(List<Recording> recordings) {
+        return findInRecordings(recordings) != -1;
+    }
+
+    /**
+     * Call this whenever creations are added or removed to the CreationStore.
+     * This keeps track of the creations that are available to represent the name words requested.
+     * When new creations are added, they are listened for changes in their list of recordings.
+     * When their streaks change, the overall streaks counter is also updated.
+     */
     private void refresh() {
         List<Recording> bestRecordings = new ArrayList<>();
 

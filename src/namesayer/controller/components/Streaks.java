@@ -7,7 +7,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
- * Streaks indicator component. Has a nice fire to it.
+ * Streaks indicator component.
  */
 public class Streaks extends HBox {
 

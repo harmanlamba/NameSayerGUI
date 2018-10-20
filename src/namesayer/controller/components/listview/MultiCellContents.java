@@ -3,6 +3,7 @@ package namesayer.controller.components.listview;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
 import java.util.List;
+import java.util.ArrayList;
 
 import namesayer.controller.components.Streaks;
 import namesayer.model.Creation;
@@ -23,7 +26,10 @@ import namesayer.model.CreationsListEntry;
 import namesayer.model.Recording;
 
 /**
- * Displayed entry for creations with multiple recordings.
+ * Displayed entry for CreationsListEntries.
+ * This entry displays the names that the user requested via the CreationsListEntry, and the
+ * available recordings for each Creation that represents each name word. Each Creation is
+ * displayed as its own inner list of recordings.
  */
 public class MultiCellContents extends VBox implements CellContents {
 
@@ -91,6 +97,11 @@ public class MultiCellContents extends VBox implements CellContents {
         getChildren().setAll(heading, _innerLists);
     }
 
+    /**
+     * Create, configure, and display the recordings of the given creation.
+     * @param title Used to identify the creation - either the creation name, or a certain category.
+     * @param creation The creation whose list of recordings are to be displayed.
+     */
     private void addInnerList(String title, Creation creation) {
         JFXListView<Recording> innerListView = new JFXListView<>();
         innerListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -105,10 +116,26 @@ public class MultiCellContents extends VBox implements CellContents {
         _innerLists.getChildren().add(pane);
     }
 
+    /**
+     * Call this when the selected-recordings has changed.
+     * Ensures this cell's selected state is synchronised with the overall selection.
+     */
     private void updateFromSelectedRecordings() {
-        setSelected(_entry.matchesRecordings(_selectedRecordings));
+        setSelected(_entry.includedInRecordings(_selectedRecordings));
     }
 
+    /**
+     * Call this when there is new information/intention regarding the selection state of this cell.
+     * 1. Updates states of internal components to accurately represent the desired selection state.
+     * 2. Updates the selectedRecordings list if it doesn't realise the intended state.
+     * This can cause a few recursive calls before the state settles.
+     *
+     * Note: This can be called when there are stale event listeners from old cell contents, since
+     * list cells are regularly recycled by the list view. It is important to verify that this
+     * cell contents class is still representing what the cell is displaying.
+     *
+     * @param value True/false refers to whether this cell should be selected or not.
+     */
     public void setSelected(boolean value) {
         if (!isStillValid()) {
             return;
@@ -118,21 +145,47 @@ public class MultiCellContents extends VBox implements CellContents {
         _checkBox.setSelected(value);
         if (value) {
             selectionModel.select(_cell.getIndex());
-            if (!_entry.matchesRecordings(_selectedRecordings)) {
-                _selectedRecordings.setAll(_entry.getRecordings());
+            if (!_entry.includedInRecordings(_selectedRecordings)) {
+                _selectedRecordings.addAll(_entry.getRecordings());
             }
         } else {
             selectionModel.clearSelection(_cell.getIndex());
-            if (_entry.matchesRecordings(_selectedRecordings)) {
-                _selectedRecordings.clear();
+
+            int selectionIdx = _entry.findInRecordings(_selectedRecordings);
+            while (selectionIdx != -1 ) {
+                // Selection contains this CreationsListEntry. Remove the found subsequence by
+                // creating the selection before and after it, and merging it altogether.
+
+                // The list before the subsequence.
+                List<Recording> newSelection = new ArrayList<>(_selectedRecordings.subList(0, selectionIdx));
+
+                // Position after the subsequence.
+                selectionIdx += _entry.getRecordings().size();
+
+                // Merge in the list after the subsequence.
+                newSelection.addAll(_selectedRecordings.subList(selectionIdx, _selectedRecordings.size()));
+
+                // Update the selection.
+                _selectedRecordings.setAll(newSelection);
+
+                // Search for any other occurences.
+                selectionIdx = _entry.findInRecordings(_selectedRecordings);
             }
         }
     }
 
+    /**
+     * @see CellContents#getItem()
+     */
     public Object getItem() {
         return _entry;
     }
 
+    /**
+     * Call this when recordings are added or removed from a creation in the CreationsListEntry.
+     * Ensures this cell's recording availability information displayed to the user accurately
+     * reflects the current CreationsListEntry state.
+     */
     private void updateFromEntry() {
         if (!isStillValid()) {
             return;
@@ -150,6 +203,10 @@ public class MultiCellContents extends VBox implements CellContents {
         }
     }
 
+    /**
+     * @return Whether (true) this cell contents still represent the item currently displayed by the
+     *         actual list cell, or whether (false) this cell contents class has gone stale.
+     */
     private boolean isStillValid() {
         return _entry == _cell.getItem();
     }

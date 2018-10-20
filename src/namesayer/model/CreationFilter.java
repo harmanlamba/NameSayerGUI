@@ -14,9 +14,9 @@ import java.util.List;
 
 
 public class CreationFilter {
-    /*
-    Setting up an enum for the only two possible sorting strategies being by NAME and by DATE, which are presented to
-    the user in the comboBox next to the filter.
+    /**
+     * Setting up an enum for the only two possible sorting strategies being by NAME and by DATE, which are presented to
+     * the user in the comboBox next to the filter.
      */
     public enum SortStrategy {
         DONT_SORT("Not sorted"),
@@ -49,8 +49,9 @@ public class CreationFilter {
         _creationStore = creationStore;
         _filterResults = new CreationsList(creationStore);
         _intermediateList = new CreationsList(creationStore);
-        //Adding listeners to ensure that whenever the text in the filter changes or the creation it self changes,
-        //the filter is upadated.
+
+        // Adding listeners to ensure that whenever the text in the filter changes or the creation it self changes,
+        // the filter is upadated.
         InvalidationListener filterUpdater = o -> updateFilter();
         _requestedNames.addListener(filterUpdater);
         _creationStore.addListener(filterUpdater);
@@ -101,7 +102,7 @@ public class CreationFilter {
             }
         }
 
-        //After having the list, based on the sorting strategy modify the list and then publish the results
+        // After having the list, based on the sorting strategy modify the list and then publish the results.
         switch (_sortStrategy.getValue()) {
             case DONT_SORT:
                 break;

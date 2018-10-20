@@ -7,9 +7,12 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 import javax.sound.sampled.*;
 
+/**
+ * Real-time microphone volume level getter.
+ */
 public class MicrophoneLevel {
 
-    //Setting up Constants that won't change and are needed
+    // Audio parameters.
     private static final float SAMPLE_RATE = 8000;
     private static final int BIT_DEPTH = 8;
     private static final int CHANNELS = 1;
@@ -25,11 +28,12 @@ public class MicrophoneLevel {
         startTask();
     }
 
-    //A method to stop reading the microphone level
+    /**
+     * Stop reading the microphone level, as it consumes computer resources.
+     */
     public void close() {
         _task.cancel(true);
     }
-
 
     public DoubleProperty levelProperty() {
         return _levelProperty;
@@ -39,7 +43,7 @@ public class MicrophoneLevel {
         return _levelProperty.getValue();
     }
 
-    //Starting to pick up the mic levels
+    // Starting to pick up the mic levels.
     private void startTask() {
         assert Platform.isFxApplicationThread();
         assert _task == null;
@@ -85,7 +89,7 @@ public class MicrophoneLevel {
         thread.start();
     }
 
-    //Setting up boundary values in order for the mic level to decay slowly when there is no signal received from the mic
+    // Setting up boundary values in order for the mic level to decay slowly when there is no signal received from the mic.
     private int filterLevel(int oldValue, int rawValue) {
         int level;
         if (rawValue > oldValue) {

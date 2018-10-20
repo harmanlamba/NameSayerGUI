@@ -86,10 +86,11 @@ public class MainScene implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Making node list animate upwards
+        // Making node list animate upwards.
         nodeList.setRotate(180);
         scrollPane.setFitToWidth(true);
-        //Making sure that clicking anywhere in the scene makes it so the nodeLists collapses
+
+        // Making sure that clicking anywhere in the scene makes it so the nodeLists collapses.
         mainGridPane.setOnMouseClicked(e -> {
             if (e.getPickResult().getIntersectedNode() != nodeList) {
                 nodeList.animateList(false);
@@ -98,6 +99,7 @@ public class MainScene implements Initializable {
         listView.setOnMouseClicked(e -> {
             nodeList.animateList(false);
         });
+
         // Bind volume slider to media player.
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
@@ -107,6 +109,7 @@ public class MainScene implements Initializable {
                 }
             }
         });
+
         // Bind list view, sort type combo, tag input, and filter disabler.
         _creationFilter = new CreationFilter(tagInput.getChips(), _creationStore);
         listView.setCreationsList(_creationFilter.getFilterResults());
@@ -172,21 +175,36 @@ public class MainScene implements Initializable {
         });
     }
 
-    //Setting up the action handlers for the buttons
+    // Setting up the action handlers for the buttons
+
+    /**
+     * The associated action when the clear button is pressed. It clears the TagInput, in addition to clearing the
+     * selectedRecordings list
+     */
     public void clearButtonAction() {
         tagInput.getChips().clear();
         _selectedRecordings.clear();
     }
 
+    /**
+     * The associated action when the record button is pressed. The method simply opens the recordingTool, which then
+     * takes over the recording process. Please refer to the comments in the RecordingTool for more further information.s
+     * @throws IOException
+     */
     public void recordButtonAction() throws IOException {
         openRecordingBox(getCombinedName());
     }
 
+    /**
+     * The associated action when the shuffle button is pressed. The method simply shuffles the associated list which
+     * keeps track of the creations. (i.e. _creationFiler)
+     */
     public void shuffleButtonAction() {
         _creationFilter.shuffle();
     }
 
     /**
+     * The associated action when the play button is pressed.
      * The play button has 3 roles.
      * 1. starting the media player.
      * 2. Pausing the media player if it's playing.
@@ -216,16 +234,33 @@ public class MainScene implements Initializable {
         }
     }
 
+    /**
+     * The associated action when the next button (->) is pressed. The method simply
+     * selects the next recording available from the listView.
+     * It is important to note that this method has a recursive call to the method "playButtonAction" which then takes care
+     * of handling the playback.
+     */
     public void nextButtonAction() {
         listView.selectNext();
         playButtonAction();
     }
 
+    /**
+     * The associated action when the previous button (<-) is pressed. The method simply selects the previous recording
+     * available from the listView. It is important to note that this method has a recursive call to the method
+     * "playButtonAction" which then takes care of handling the playback.
+     */
     public void previousButtonAction() {
         listView.selectPrevious();
         playButtonAction();
     }
 
+    /**
+     * This method is responsible to load the media and play it given the path of the file as a String. It is important
+     * to note that it does not only handle the loading and playing but also handles the seek slider and the volume
+     * slider
+     * @param filePath The path to the file that has to be played.
+     */
     public void mediaLoaderAndPlayer(String filePath) {
 
         Media media = new Media(new File(filePath).toURI().toString());
@@ -268,11 +303,17 @@ public class MainScene implements Initializable {
     // Note: The following window-opening routines are repeated in code to encourage customizability
     // and tweaking of each window during our prototyping stage.
 
+    /**
+     * Corresponds to the action, when the "Practice" button is pressed. It sets the properties for the
+     * PracticeTool and opens it in a new "Window/Stage"
+     * @throws IOException
+     */
     public void practiceRecordingsAction() throws IOException {
         Stage practiceRecordingsWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/PracticeTool.fxml"));
         loader.setController(new PracticeTool(this, _creationStore, _selectedRecordings, practiceRecordingsWindow));
         Parent comparingScene = loader.load();
+        // Ensuring that the background stage can not be used while this stage is open
         practiceRecordingsWindow.initModality(Modality.APPLICATION_MODAL);
         practiceRecordingsWindow.setResizable(false);
         practiceRecordingsWindow.setTitle("Practice Tool");
@@ -286,6 +327,12 @@ public class MainScene implements Initializable {
 
     }
 
+    /**
+     * Corresponds to the associated action when the Recording button is pressed. This method sets up the properties
+     * for the RecordingTool and opens it up in a new Stage.
+     * @param creationName The name which is being recorded
+     * @throws IOException
+     */
     public void openRecordingBox(String creationName) throws IOException {
         Stage recordingWindow = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/namesayer/view/RecordingTool.fxml"));
@@ -303,6 +350,10 @@ public class MainScene implements Initializable {
         });
     }
 
+    /**
+     * Corresponds to the button action for "Append". This method passes the chosen database folder to the RecordingStore
+     * for the recordings to appear in the CreationListView and be fully "followed/tracked".
+     */
     public void appendDatabase() {
         tagInput.requestFocus();
         DirectoryChooser dc = new DirectoryChooser();
@@ -316,6 +367,11 @@ public class MainScene implements Initializable {
         }
     }
 
+    /**
+     * Corresponds to the action for the Replace button. It is important to note that in contrast to the append method
+     * this method stops the watcher for the pre-loaded database and creates a new watcher for the new database that is
+     * chosen by the user, which is initialised by passing it into the RecordingStore.
+     */
     public void replaceDatabase() {
         tagInput.requestFocus();
         DirectoryChooser dc = new DirectoryChooser();
@@ -331,8 +387,14 @@ public class MainScene implements Initializable {
         }
     }
 
+    /**
+     * Corresponds to the "Upload List" button action, where a static utility method from the UserTextFile is called
+     * to read the file. A List of List of Strings is used which is then set for the tagInput which then sets the TagInput.
+     * It is important to note that the TagInput distinguishes each list in the list as its own "Tag" i.e. the row in the
+     * text file.
+     */
     public void uploadUserList() {
-        List<List<String>> userNames = UserTextFile.readFile((Stage)bottomLabel.getScene().getWindow());
+        List<List<String>> userNames = UserTextFile.readFile((Stage) bottomLabel.getScene().getWindow());
         tagInput.getChips().addAll(userNames);
     }
 
