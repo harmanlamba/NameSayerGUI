@@ -5,7 +5,7 @@ set -e
 rm -rf ./bin
 mkdir -p ./bin
 
-javac -cp ./lib/jfoenix-8.0.7.jar -d ./bin/ $(find ./src/ -name "*.java") -Xlint
+javac -cp ./lib/jfoenix-8.0.7.jar:./lib/controlsfx-8.40.14.jar -d ./bin/ $(find ./src/ -name "*.java") -Xlint
 
 pushd ./src
 cp --parents $(find . -type f -name "*") ../bin

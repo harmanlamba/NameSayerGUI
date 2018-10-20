@@ -332,6 +332,10 @@ public class MainScene implements Initializable {
         }
     }
 
+    public void expandInput() {
+        tagInput.expand();
+    }
+
     public void uploadUserList() {
         List<List<String>> userNames = UserTextFile.readFile();
         tagInput.getChips().addAll(userNames);
