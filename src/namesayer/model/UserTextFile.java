@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserTextFile {
-
-    private FileChooser fc;
+    
     /*
     This method is in charge of reading the UserText input file and making a list of lists that the TagInput then uses
     to populate the TagInput.
