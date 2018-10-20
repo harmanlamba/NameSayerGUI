@@ -12,6 +12,7 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.application.Platform;
 
 import namesayer.controller.components.QualityStars;
 import namesayer.controller.components.Streaks;
@@ -40,6 +41,10 @@ public class SingleCellContents extends HBox implements CellContents {
     private JFXListCell<?> _cell;
     private ObservableList<Recording> _selectedRecordings;
 
+    private InvalidationListener _selectionUpdater = o -> {
+        Platform.runLater(() -> updateFromSelectedRecordings());
+    };
+
     public SingleCellContents(Recording recording, JFXListCell<?> cell, ObservableList<Recording> selectedRecordings) {
         super();
         _recording = recording;
@@ -49,7 +54,7 @@ public class SingleCellContents extends HBox implements CellContents {
         cell.setDisable(false);
 
         _selectedRecordings = selectedRecordings;
-        _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
+        _selectedRecordings.addListener(_selectionUpdater);
         updateFromSelectedRecordings();
 
         _labelName.setText(recording.getCreation().getName());
@@ -133,6 +138,13 @@ public class SingleCellContents extends HBox implements CellContents {
      */
     public Object getItem() {
         return _recording;
+    }
+
+    /**
+     * @see CellContents#detachListeners()
+     */
+    public void detachListeners() {
+        _selectedRecordings.removeListener(_selectionUpdater);
     }
 
     /**

@@ -18,4 +18,10 @@ public interface CellContents {
      *         associated with.
      */
     public Object getItem();
+
+    /**
+     * When the cell gets reused to display different cell contents, stop the old cell contents
+     * from updating the wrong items.
+     */
+    public void detachListeners();
 }

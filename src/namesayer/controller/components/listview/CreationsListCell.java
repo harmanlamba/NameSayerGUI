@@ -38,6 +38,9 @@ public abstract class CreationsListCell<T> extends JFXListCell<T> {
      */
     protected void setCellContents(Node node) {
         if (node != null) {
+            if (_currentCellContents != null) {
+                _currentCellContents.detachListeners();
+            }
             _currentCellContents = (CellContents) node;
             _item = _currentCellContents.getItem();
         }

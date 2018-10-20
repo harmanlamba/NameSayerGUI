@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -40,12 +41,16 @@ public class MultiCellContents extends VBox implements CellContents {
     private ObservableList<Recording> _selectedRecordings;
     private Label _foundCounter = new Label();
 
+    private InvalidationListener _selectionUpdater = o -> {
+        Platform.runLater(() -> updateFromSelectedRecordings());
+    };
+
     public MultiCellContents(CreationsListEntry entry, JFXListCell<CreationsListEntry> cell, ObservableList<Recording> selectedRecordings) {
         super();
         _entry = entry;
         _cell = cell;
         _selectedRecordings = selectedRecordings;
-        _selectedRecordings.addListener((InvalidationListener) (o -> updateFromSelectedRecordings()));
+        _selectedRecordings.addListener(_selectionUpdater);
         updateFromSelectedRecordings();
 
         entry.addListener(o -> updateFromEntry());
@@ -179,6 +184,13 @@ public class MultiCellContents extends VBox implements CellContents {
      */
     public Object getItem() {
         return _entry;
+    }
+
+    /**
+     * @see CellContents#detachListeners()
+     */
+    public void detachListeners() {
+        _selectedRecordings.removeListener(_selectionUpdater);
     }
 
     /**
