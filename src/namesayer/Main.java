@@ -15,6 +15,11 @@ import namesayer.model.StreaksAndTiers;
 import java.nio.file.Paths;
 
 
+/**
+ * Presented to you by Group 33.
+ * @author Harman Lamba (hlam132)
+ * @author Ernest Wong (ewon746)
+ */
 public class Main extends Application {
 
     private CreationStore _creationStore;

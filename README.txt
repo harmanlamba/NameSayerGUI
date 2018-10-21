@@ -21,6 +21,14 @@ Running the program:
 	*) Note, to run the script file type the following in the terminal >> ./runme.sh
 
 
+Authors:
+--------
+
+Brought to you by Group 33.
+- Harman Lamba (hlam132)
+- Ernest Wong (ewon746)
+
+
 Thanks:
 -------
 
