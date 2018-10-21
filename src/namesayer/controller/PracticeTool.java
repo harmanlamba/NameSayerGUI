@@ -167,7 +167,8 @@ public class PracticeTool implements Initializable {
         databasePlayButton.disableProperty().bind((_isDatabaseMediaPlaying)
             .or(_isUserMediaPlaying).or(_isLooping));
         userRecordButton.disableProperty().bind((_isDatabaseMediaPlaying)
-            .or(_isUserMediaPlaying).or(_isLooping));
+            .or(_isUserMediaPlaying).or(_isLooping)
+            .or(databaseComboBox.valueProperty().isNull()));
         databaseShuffleButton.disableProperty().bind((_isDatabaseMediaPlaying)
             .or(_isUserMediaPlaying).or(_isLooping));
 
