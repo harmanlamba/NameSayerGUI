@@ -7,6 +7,7 @@ Target User: University Student
 
 Requirements for the program:
 -----------------------------
+
 1) Ensure that you have ffmpeg installed on your local machine
 2) Ensure that you have Java 8 installed on your local machine
 
@@ -32,7 +33,7 @@ Brought to you by Group 33.
 Thanks:
 -------
 
-This project uses the Ionicons icon pack and the JFoenix JavaFX Material Design Library. Please see the respective licenses at:
+This project uses the Ionicons icon pack, the JFoenix JavaFX Material Design Library, and the ControlsFX library. Please see the respective licenses at:
 - JFoenix: ./lib/jfoenix-license.txt
 - ControlsFX: ./lib/controlsfx-license.txt
 - Ionicons: ./src/icons/ionicons-license.txt
