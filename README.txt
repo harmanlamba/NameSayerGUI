@@ -34,4 +34,5 @@ Thanks:
 
 This project uses the Ionicons icon pack and the JFoenix JavaFX Material Design Library. Please see the respective licenses at:
 - JFoenix: ./lib/jfoenix-license.txt
+- ControlsFX: ./lib/controlsfx-license.txt
 - Ionicons: ./src/icons/ionicons-license.txt
