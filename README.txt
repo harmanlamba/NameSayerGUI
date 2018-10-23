@@ -29,6 +29,8 @@ Brought to you by Group 33.
 - Harman Lamba (hlam132)
 - Ernest Wong (ewon746)
 
+GitHub: https://github.com/harmanlamba/NameSayerGUI
+
 
 Thanks:
 -------
