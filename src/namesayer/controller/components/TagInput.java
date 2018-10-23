@@ -120,6 +120,12 @@ public class TagInput extends JFXChipView<List<String>> {
         _currentText.addListener(promptUpdater);
         skinProperty().addListener(promptUpdater);
 
+        setOnMouseClicked(e -> {
+            if (_textArea != null) {
+                _textArea.requestFocus();
+            }
+        });
+
     }
 
     /**
