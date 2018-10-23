@@ -128,11 +128,6 @@ public class MainScene implements Initializable {
         filterDisabler.selectedProperty().bindBidirectional(_creationFilter.filterDisableProperty());
         tagInput.setCreationStore(_creationStore);
 
-        // Do not show thumb on playback slider when nothing is selected to play.
-        playbackSlider.setDisable(true);
-        playbackSlider.setMax(-1);
-        playbackSlider.setMin(0);
-
         // Disable and hide components appropriately:
         _selectedRecordings = listView.getSelectedRecordings();
         BooleanBinding isListEmpty = Bindings.isEmpty(_creationFilter.getFilterResults());
@@ -140,13 +135,26 @@ public class MainScene implements Initializable {
         BooleanProperty isTagsNotShown = filterDisabler.selectedProperty();
         BooleanBinding hasMultipleTags = Bindings.size(tagInput.getChips()).greaterThan(1);
 
-        playbackSlider.disableProperty().bind(isSelected.not());
         recordButton.disableProperty().bind(isSelected.not().or(_isMediaPaused.not()));
         shuffleButton.disableProperty().bind(hasMultipleTags.not().or(isTagsNotShown).or(_isMediaPaused.not()));
         playButton.disableProperty().bind(isSelected.not().or(_isMediaLoading));
         topLabel.visibleProperty().bind(isSelected);
         nextButton.disableProperty().bind(isListEmpty.or(_isMediaLoading));
         previousButton.disableProperty().bind(isListEmpty.or(_isMediaLoading));
+
+        // Do not show thumb on playback slider when nothing is selected to play.
+        isSelected.addListener(o -> {
+            if (!isSelected.get()) {
+                playbackSlider.setDisable(true);
+                playbackSlider.setMax(-1);
+                playbackSlider.setMin(0);
+            } else {
+                playbackSlider.setDisable(false);
+            }
+        });
+        playbackSlider.setDisable(true);
+        playbackSlider.setMax(-1);
+        playbackSlider.setMin(0);
 
         // Disable practice button appropriately:
         InvalidationListener practiceButtonDisabler = (Observable observable) -> {
