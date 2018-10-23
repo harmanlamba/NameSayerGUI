@@ -57,9 +57,9 @@ public class MainScene implements Initializable {
     private CreationFilter _creationFilter;
     private MediaView _mediaView = new MediaView();
     private ObservableList<Recording> _selectedRecordings;
-    private BooleanProperty _isMediaPlaying = new SimpleBooleanProperty(false);
     private BooleanProperty _isMediaPaused = new SimpleBooleanProperty(true);
     private BooleanProperty _isMediaLoading = new SimpleBooleanProperty(false);
+    private BooleanProperty _isMediaLoaded = new SimpleBooleanProperty(false);
 
     public Button playButton;
     public Button nextButton;
@@ -179,7 +179,7 @@ public class MainScene implements Initializable {
         _selectedRecordings.addListener((Observable o) -> {
             bottomLabel.setText(getCombinedName());
             playbackSlider.setValue(0);
-            _isMediaPlaying.set(false);
+            _isMediaLoaded.set(false);
             _isMediaPaused.set(true);
             if (_mediaView.getMediaPlayer() != null) {
                 _mediaView.getMediaPlayer().stop();
@@ -244,7 +244,7 @@ public class MainScene implements Initializable {
             return;
         }
 
-        if (!_isMediaPlaying.get()) {
+        if (!_isMediaLoaded.get()) {
             _isMediaLoading.set(true);
             AudioProcessor audioProcessor = new AudioProcessor(_selectedRecordings) {
                 @Override
@@ -258,10 +258,10 @@ public class MainScene implements Initializable {
                     _isMediaLoading.set(false);
                 }
             };
-        } else if (_isMediaPlaying.getValue() && !_isMediaPaused.get()) {
+        } else if (_isMediaLoaded.getValue() && !_isMediaPaused.get()) {
             _mediaView.getMediaPlayer().pause();
             _isMediaPaused.set(true);
-        } else if (_isMediaPlaying.getValue() && _isMediaPaused.get()) {
+        } else if (_isMediaLoaded.getValue() && _isMediaPaused.get()) {
             _mediaView.getMediaPlayer().play();
             _isMediaPaused.set(false);
         }
@@ -312,7 +312,7 @@ public class MainScene implements Initializable {
             }
         });
         mediaPlayer.play();
-        _isMediaPlaying.set(true);
+        _isMediaLoaded.set(true);
         _isMediaPaused.set(false);
         mediaPlayer.setVolume(volumeSlider.getValue() / 100);
 
@@ -325,7 +325,7 @@ public class MainScene implements Initializable {
         });
 
         mediaPlayer.setOnEndOfMedia(() -> {
-            _isMediaPlaying.set(false);
+            _isMediaLoaded.set(false);
             _isMediaPaused.set(true);
             playbackSlider.setValue(playbackSlider.getMax());
         });
@@ -333,7 +333,10 @@ public class MainScene implements Initializable {
         playbackSlider.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                _isMediaLoaded.set(true);
+                _isMediaPaused.set(true);
                 mediaPlayer.seek(Duration.seconds(playbackSlider.getValue()));
+                mediaPlayer.pause();
             }
         });
 
