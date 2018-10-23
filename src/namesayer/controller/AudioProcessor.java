@@ -122,7 +122,7 @@ public abstract class AudioProcessor {
                             "-sample_fmt " + NORMALISED_BITDEPTH + " " +
                             "-filter:a \"volume=" + changeInVol + "dB" + "\"" + " " +
                             "-y " +
-                            "./" + TEMP_CREATIONS_FOLDER + counter.getFileName();
+                            "\"./" + TEMP_CREATIONS_FOLDER + counter.getFileName() + "\"";
 
                         ProcessBuilder normaliseBuilder = new ProcessBuilder("/bin/bash", "-c", normaliseCmd);
                         Process normaliseProcess = normaliseBuilder.start();
