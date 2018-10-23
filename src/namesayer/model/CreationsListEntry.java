@@ -215,6 +215,12 @@ public class CreationsListEntry extends ObservableBase {
             }
         }
 
+        Creation overallCreation = getOverallAttemptsCreation();
+        if (overallCreation != null) {
+            overallCreation.removeListener(_creationChangeHandler);
+            overallCreation.addListener(_creationChangeHandler);
+        }
+
         updateStreaks();
     }
 
